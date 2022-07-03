@@ -20,7 +20,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Navbar />
+      <Navbar/>
       <main className={styles.main}>
         <Container maxWidth="md" className={styles.container}>
           <Typography variant="h4" fontWeight={800} >
