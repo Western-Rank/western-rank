@@ -16,10 +16,6 @@ export default function App({ Component, pageProps }:AppProps) {
       }
     },
 
-    textField: {
-      border: '1px solid black'
-    },
-
     typography: {
       fontFamily: [
         "Lexend",
