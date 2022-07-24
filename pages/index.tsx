@@ -4,13 +4,28 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
 import Link from 'next/link'
 import { AppBar, Toolbar, ThemeProvider, Typography, Box, Container } from '@mui/material'
-
 import MuiLink from '@mui/material/Link'
 
+import { getCourses } from '../lib/courses';
 import Navbar from '../components/Navbar'
 import Searchbar from '../components/Searchbar'
 
-const Home: NextPage = () => {
+interface HomeProps {
+  courses: string[], // list of possible course names to search for
+}
+
+export async function getServerSideProps() {
+  // get all course names from the database
+  const courses = await getCourses();
+  // concatenate course_code and course_name into one entry, e.g. CALC 1000: Calculus 1
+  return {
+    props: {
+      courses: courses.map(({ course_code, course_name }) => `${course_code}: ${course_name}`),
+    }
+  }
+}
+
+const Home: NextPage = ({ courses }: HomeProps) => {
 
   return (
     <div className={styles.container}>
@@ -26,7 +41,7 @@ const Home: NextPage = () => {
           <Typography variant="h4" fontWeight={800} >
             Explore course reviews from <br/> Western University students
           </Typography>
-          <Searchbar />
+          <Searchbar courses={courses}/>
         </Container>
       </main>
 

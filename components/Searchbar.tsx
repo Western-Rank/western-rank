@@ -1,10 +1,20 @@
 // import SearchIcon from '@mui/icons-material/Search'
-import { TextField } from '@mui/material'
+import { Autocomplete, TextField } from '@mui/material'
 import styles from '../styles/Searchbar.module.scss'
 
-const Searchbar = ( {} ) => {
+interface SearchbarProps {
+  courses: string[]; // list of searchable course names, e.g. CALC 1000: Calculus I
+}
+
+const Searchbar = ({ courses }: SearchbarProps) => {
+  
   return (
-    <TextField className={styles.searchbar} variant='outlined' placeholder='Search for courses' />
+    <Autocomplete
+      disablePortal
+      className={styles.searchbar}
+      options={courses}
+      renderInput={(params) => <TextField {...params} />}
+    />
   )
 }
 
