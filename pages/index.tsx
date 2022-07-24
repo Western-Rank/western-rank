@@ -1,4 +1,4 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
@@ -14,18 +14,15 @@ interface HomeProps {
   courses: string[], // list of possible course names to search for
 }
 
-export async function getServerSideProps() {
-  // get all course names from the database
-  const courses = await getCourses();
-  // concatenate course_code and course_name into one entry, e.g. CALC 1000: Calculus 1
+export const getServerSideProps: GetServerSideProps = async () => {
   return {
     props: {
-      courses: courses.map(({ course_code, course_name }) => `${course_code}: ${course_name}`),
+      courses: await getCourses(),
     }
-  }
+  };
 }
 
-const Home: NextPage = ({ courses }: HomeProps) => {
+const Home = ({ courses }: HomeProps) => {
 
   return (
     <div className={styles.container}>

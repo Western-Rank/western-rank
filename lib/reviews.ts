@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import db from './database/database';
 
-interface CourseReview {
+export interface CourseReview {
   course_code: string,
   professor: string,
   review: string,
