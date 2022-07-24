@@ -10,7 +10,9 @@ interface SearchbarProps {
 const Searchbar = ({ courses }: SearchbarProps) => {
   // used to navigate to new course page when selected in the search menu
   const router = useRouter(); 
-  const onCourseSelect = (ev: React.ChangeEvent, value: string) => {
+  const onCourseSelect = (ev: React.SyntheticEvent, value: string | null) => {
+    if (value === null)
+      return;
     // extract the course code from the full course name,
     // encoding it as a valid URI string
     // e.g. CALC 1000: Calculus I -> CALC%201000
