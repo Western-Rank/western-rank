@@ -26,7 +26,7 @@ async function getCourses() {
  * @returns The course information stored in the database
  */
 async function getCourse(courseCode: string) {
-  const course = await db.one('SELECT * from courses where course_code = $1', courseCode) as Course;
+  const course = await db.one('SELECT course_code, course_name, antirequisites, prerequisites, description, location, extra_info from courses where course_code = $1', courseCode) as Course;
   return course;
 }
 
