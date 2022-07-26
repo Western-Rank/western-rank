@@ -7,10 +7,10 @@ import { useUser } from '@auth0/nextjs-auth0';
 
 type NavbarProps = {
     shadow?: boolean,
-    courses?: string[], // if passed, include a searchbar to search for these courses
+    searchBar?: boolean,
 }
 
-const Navbar = ({ shadow, courses }: NavbarProps) => {
+const Navbar = ({ shadow, searchBar }: NavbarProps) => {
   const { user } = useUser();
   return (
     <AppBar component="nav" position="static">
@@ -19,7 +19,7 @@ const Navbar = ({ shadow, courses }: NavbarProps) => {
           <Link href="/" >
             <img src="/logo.svg" alt="logo" className={styles.logo} />
           </Link>
-          {courses && <Searchbar courses={courses} />}
+          {searchBar && <Searchbar />}
           {!user && <MuiLink href="/api/auth/login" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Log in</MuiLink>}
           {user && (
             <div>

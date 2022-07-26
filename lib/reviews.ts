@@ -1,5 +1,3 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-
 import db from './database/database';
 
 export interface CourseReview {

@@ -6,23 +6,10 @@ import Link from 'next/link'
 import { AppBar, Toolbar, ThemeProvider, Typography, Box, Container } from '@mui/material'
 import MuiLink from '@mui/material/Link'
 
-import { getCourses } from '../lib/courses';
 import Navbar from '../components/Navbar'
 import Searchbar from '../components/Searchbar'
 
-interface HomeProps {
-  courses: string[], // list of possible course names to search for
-}
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  return {
-    props: {
-      courses: await getCourses(),
-    }
-  };
-}
-
-const Home = ({ courses }: HomeProps) => {
+const Home = () => {
 
   return (
     <div className={styles.container}>
@@ -32,13 +19,13 @@ const Home = ({ courses }: HomeProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Navbar/>
+      <Navbar />
       <main className={styles.main}>
         <Container maxWidth="md" className={styles.container}>
           <Typography variant="h4" fontWeight={800} >
             Explore course reviews from <br/> Western University students
           </Typography>
-          <Searchbar courses={courses}/>
+          <Searchbar />
         </Container>
       </main>
 

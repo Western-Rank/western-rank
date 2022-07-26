@@ -2,14 +2,26 @@
 import { useRouter } from 'next/router';
 import { Autocomplete, TextField } from '@mui/material'
 import styles from '../styles/Searchbar.module.scss'
+import React from 'react';
+import { debounce } from '../lib/debounce';
 
-interface SearchbarProps {
-  courses: string[]; // list of searchable course names, e.g. CALC 1000: Calculus I
-}
 
-const Searchbar = ({ courses }: SearchbarProps) => {
+const Searchbar = () => {
+  const [courseOptions, setCourseOptions] = React.useState<string[]>([]);
   // used to navigate to new course page when selected in the search menu
-  const router = useRouter(); 
+  const router = useRouter();
+
+  const onCourseSearch = debounce(async (ev: React.SyntheticEvent, value: string | null) => {
+    if (value === null)
+      return;
+    value = value.trim();
+    if (value.length === 0)
+      return;
+    const res = await fetch(`http://localhost:3000/api/courses?${new URLSearchParams({ search: value })}`);
+    const courses = await res.json();
+    setCourseOptions(courses);
+  });
+
   const onCourseSelect = (ev: React.SyntheticEvent, value: string | null) => {
     if (value === null)
       return;
@@ -24,9 +36,11 @@ const Searchbar = ({ courses }: SearchbarProps) => {
     <Autocomplete
       disablePortal
       className={styles.searchbar}
-      options={courses}
+      options={courseOptions}
       renderInput={(params) => <TextField {...params} />}
       onChange={onCourseSelect}
+      onInputChange={onCourseSearch}
+      filterOptions={(x: any) => x} // override default filtering (we filter with onCourseSearch)
     />
   )
 }

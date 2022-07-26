@@ -11,13 +11,42 @@ export interface Course {
 };
 
 /**
- * Get all course stored in the database.
+ * Concatenate course code and course name into one entry, e.g. CALC 1000: Calculus I
+ * @param courseCode
+ * @param courseName
+ * @returns The concatenated full course name
+ */
+export function formatFullCourseName(courseCode: string, courseName: string) {
+  return `${courseCode}: ${courseName}`;
+}
+
+/**
+ * Search for courses stored in the database.
+ * @param query The substring to match course names/codes with
+ * @returns The list of courses that match the given query
+ */
+async function searchCourses(query: string) {
+  const courses = await db.any(`
+    SELECT course_code, course_name 
+    FROM courses 
+    WHERE 
+      course_code LIKE '%$1#%'
+      OR course_name LIKE '%$1#%'
+  `, query.toUpperCase());
+  return courses.map(
+    ({ course_code, course_name }) => formatFullCourseName(course_code, course_name)
+  );
+}
+
+/**
+ * Get all courses stored in the database.
  * @returns The list of courses formatted as '<COURSE_CODE>: <COURSE_NAME>'
  */
 async function getCourses() {
   const courses = await db.any('SELECT course_code, course_name FROM courses;');
-  // concatenate course_code and course_name into one entry, e.g. CALC 1000: Calculus 1
-  return courses.map(({ course_code, course_name }) => `${course_code}: ${course_name}`);
+  return courses.map(
+    ({ course_code, course_name }) => formatFullCourseName(course_code, course_name)
+  );
 }
 
 /**
@@ -33,4 +62,5 @@ async function getCourse(courseCode: string) {
 export {
   getCourses,
   getCourse,
+  searchCourses,
 };
