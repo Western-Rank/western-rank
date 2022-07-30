@@ -9,7 +9,9 @@ export interface CourseReview {
   liked: boolean,
   attendance: number,
   enthusiasm: number,
-  anon: boolean
+  anon: boolean,
+  date_created: Date,
+  last_edited: Date
 };
 
 /**
@@ -35,7 +37,9 @@ async function postReview(courseReview: CourseReview) {
     liked,
     attendance,
     enthusiasm,
-    anon
+    anon,
+    date_created,
+    last_edited
   } = courseReview;
   await db.none(`INSERT INTO reviews(
     course_code,
@@ -46,7 +50,9 @@ async function postReview(courseReview: CourseReview) {
     liked,
     attendance,
     enthusiasm,
-    anon
+    anon,
+    date_created,
+    last_edited
   ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9);`, [
     course_code,
     professor,
@@ -56,7 +62,9 @@ async function postReview(courseReview: CourseReview) {
     liked,
     attendance,
     enthusiasm,
-    anon
+    anon,
+    date_created,
+    last_edited
   ]);
 }
 
