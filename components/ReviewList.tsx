@@ -7,6 +7,7 @@ import { CourseReview } from '../lib/reviews';
 import Review from './Review';
 import ReviewPrompt from './ReviewPrompt';
 import { useUser } from '@auth0/nextjs-auth0';
+import { Box, Stack } from '@mui/material'
 
 interface ReviewListProps {
   courseCode: string,
@@ -14,16 +15,6 @@ interface ReviewListProps {
 }
 
 const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
-  const [showReviewPrompt, setShowReviewPrompt] = React.useState(false);
-  const { user } = useUser();
-
-  const onShowReview = () => {
-    if (!user) 
-      alert("You must be logged in to post a review");
-    else
-      setShowReviewPrompt(true);
-  }
-
   return (
     <>
       <p>Course Reviews (247)</p>
@@ -33,12 +24,16 @@ const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
         <option value="recent">Recent</option>
         <option value="top">Top</option>
       </select>
+      
+      <br></br>
 
-      <button onClick={onShowReview}>Write a review</button>
-
-      {showReviewPrompt && <ReviewPrompt courseCode={courseCode} />}
-
-      {reviews.map(courseReview => <Review courseReview={courseReview} />)}
+      <Stack
+        spacing={2}
+        width="95%"
+        maxWidth="1000px"
+        margin="auto">
+        {reviews.map(courseReview => <Review courseReview={courseReview} />)}
+      </Stack>
     </>
   );
 }

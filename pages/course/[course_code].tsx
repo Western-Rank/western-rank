@@ -7,6 +7,18 @@ import { Course, getCourse } from '../../lib/courses';
 import { getReviews, postReview, CourseReview } from '../../lib/reviews';
 import Navbar from '../../components/Navbar';
 import ReviewList from '../../components/ReviewList';
+import ReviewPrompt from '../../components/ReviewPrompt';
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  Stack,
+  Typography,
+  useTheme
+} from '@mui/material'
+import React from 'react';
+import { useUser } from '@auth0/nextjs-auth0';
 
 const testReviews: CourseReview[] = [
   {
@@ -19,6 +31,8 @@ const testReviews: CourseReview[] = [
     attendance: 11,
     enthusiasm: 24,
     anon: false,
+    date_created: new Date(),
+    last_edited: new Date(),
   },
   {
     course_code: "BBBB 2222",
@@ -30,6 +44,8 @@ const testReviews: CourseReview[] = [
     attendance: 22,
     enthusiasm: 30,
     anon: true,
+    date_created: new Date(),
+    last_edited: new Date(),
   }
 ];
 
@@ -50,33 +66,60 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 const Course = ({ reviews, thisCourse }: CourseProps) => {
+  const [showReviewPrompt, setShowReviewPrompt] = React.useState(false);
+  const { user } = useUser();
+
+  const onShowReview = () => {
+    if (!user) 
+      alert("You must be logged in to post a review");
+    else
+      setShowReviewPrompt(true);
+  }
+  const theme = useTheme();
   return (
     <>
       <header><Navbar searchBar /></header>
-      <div id="header">
-        <h1>{thisCourse.course_code}</h1>
-        <h2>{thisCourse.course_name}</h2>
-        <div id="desc">
-          <p id="descText">{thisCourse.description}</p>
-        </div>
-      </div>
 
-      <div id="main">
-        <div id="reviews"></div>
+      <br></br>
 
-        <div id="infoPanel">
-          <h2>Prerequisites</h2>
-          <p>{thisCourse.prerequisites}</p>
-          <h2>Antirequisites</h2>
-          <p>{thisCourse.antirequisites || "None"}</p>
-          <h2>Extra Info</h2>
-          <p>{thisCourse.extra_info}</p>
-          <h2>Locations</h2>
-          <p>{thisCourse.location}</p>
-        </div>
-      </div>
+      <Box id="main" width="90%" maxWidth="1270px" margin="auto" >
+        <Card sx={{ margin: "auto", padding: "15px", maxWidth: "1000px" }}>
+          <CardContent>
+            <Typography variant="h4">{thisCourse.course_code}</Typography>
+            <Typography variant="h5">{thisCourse.course_name}</Typography>
+            <Typography>{thisCourse.description}</Typography>
+          </CardContent>
 
-      <ReviewList courseCode={thisCourse.course_code} reviews={testReviews} />
+          <CardMedia>
+          </CardMedia>
+        </Card>
+        
+        <Box>
+          <button onClick={onShowReview}>Write a review</button>
+          {showReviewPrompt && <ReviewPrompt courseCode={thisCourse.course_code} />}
+        </Box>
+
+        <Stack display="flex" flexWrap="wrap" direction={{ xs: "column", lg: "row"}} spacing={2}>
+          <Box maxWidth="900px" margin="auto">
+            <ReviewList courseCode={thisCourse.course_code} reviews={testReviews} />
+          </Box>
+          
+          <Box margin="auto">
+            <Card id="infoPanel" sx={{ margin: "auto", padding: "15px", maxWidth: "300px"}}>
+              <h2>Prerequisites</h2>
+              <p>{thisCourse.prerequisites}</p>
+              <h2>Antirequisites</h2>
+              <p>{thisCourse.antirequisites || "None"}</p>
+              <h2>Extra Info</h2>
+              <p>{thisCourse.extra_info}</p>
+              <h2>Locations</h2>
+              <p>{thisCourse.location}</p>
+            </Card>
+          </Box>
+        </Stack>
+      </Box>
+
+      
     </>
   )
 }
