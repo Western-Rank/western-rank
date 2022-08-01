@@ -21,21 +21,23 @@ const Navbar = ({ shadow, searchBar }: NavbarProps) => {
               <img src="/logo.svg" alt="logo" className={styles.logo} style={{ width: "40px" }}/>
             </Link>
           </Box>
-          <Box sx={{ flexBasis: "70%" }}>
+          <Box sx={{ flexBasis: "75%" }}>
             {searchBar && <Searchbar />}
           </Box>
-          {!user && <MuiLink href="/api/auth/login" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Log in</MuiLink>}
-          {user && (
-            <Stack 
-              direction="row"
-              justifyContent="space-around"
-              alignItems="center"
-              sx={{ flexBasis: "20%", flexShrink: 0 }}
-            >
-              <MuiLink href="/profile" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Profile</MuiLink>
-              <MuiLink href="/api/auth/logout" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Log out</MuiLink>
-            </Stack>
-          )}
+          <Stack 
+            direction="row"
+            justifyContent="space-around"
+            alignItems="center"
+            sx={{ flexBasis: "15%", flexShrink: 0 }}
+          >
+            {user
+              ? <>
+                <MuiLink href="/profile" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Profile</MuiLink>
+                <MuiLink href="/api/auth/logout" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Log out</MuiLink>
+              </>
+              : <MuiLink href="/api/auth/login" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Log in</MuiLink>
+            }
+          </Stack>
         </Stack>
       </Toolbar>
     </AppBar>
