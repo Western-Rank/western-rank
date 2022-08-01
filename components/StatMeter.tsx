@@ -1,4 +1,6 @@
 import React from 'react';
+import { Typography } from '@mui/material';
+import { Bar } from './meters/Bar';
 
 export enum MeterType {
   Bar, // bar, where 0% => empty, 100% => full
@@ -16,8 +18,8 @@ interface StatMeterProps {
 const StatMeter = ({ title, value, type }: StatMeterProps) => {
   return (
     <>
-      <p>{title}</p>
-      <p>{value}({type})</p>
+      <Typography>{title}</Typography>
+      {typeof value !== 'boolean' && <Bar value={value} />}
     </>
   );
 }

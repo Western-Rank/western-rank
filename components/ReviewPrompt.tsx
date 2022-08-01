@@ -18,7 +18,9 @@ interface ReviewPromptProps {
     liked,
     attendance,
     enthusiasm,
-    anon
+    anon,
+    date_created,
+    last_edited
  */
 
 const ReviewPrompt = ({ courseCode }: ReviewPromptProps) => {
