@@ -24,6 +24,16 @@ export default function App({ Component, pageProps }:AppProps) {
       body1: {
         fontSize: 14
       },
+    },
+
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 900,
+        lg: 1100,
+        xl: 1536,
+      },
     }
 
   })
