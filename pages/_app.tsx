@@ -21,10 +21,9 @@ export default function App({ Component, pageProps }:AppProps) {
     },
 
     typography: {
-      fontFamily: [
-        "Lexend",
-        "Arial"
-      ].join(',')
+      body1: {
+        fontSize: 14
+      },
     }
 
   })

@@ -13,6 +13,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Grid,
   Stack,
   Typography,
   useTheme
@@ -66,57 +67,48 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 const Course = ({ reviews, thisCourse }: CourseProps) => {
-  const [showReviewPrompt, setShowReviewPrompt] = React.useState(false);
-  const { user } = useUser();
-
-  const onShowReview = () => {
-    if (!user) 
-      alert("You must be logged in to post a review");
-    else
-      setShowReviewPrompt(true);
-  }
   const theme = useTheme();
   return (
     <>
       <header><Navbar searchBar /></header>
 
-      <br></br>
+      <br />
 
-      <Box id="main" width="90%" maxWidth="1270px" margin="auto" >
-        <Card sx={{ margin: "auto", padding: "15px", maxWidth: "1000px" }}>
+      <Box id="main" width="90%" maxWidth="1100px" margin="auto" >
+        <Card>
           <CardContent>
             <Typography variant="h4">{thisCourse.course_code}</Typography>
             <Typography variant="h5">{thisCourse.course_name}</Typography>
             <Typography>{thisCourse.description}</Typography>
           </CardContent>
-
-          <CardMedia>
-          </CardMedia>
         </Card>
-        
-        <Box>
-          <button onClick={onShowReview}>Write a review</button>
-          {showReviewPrompt && <ReviewPrompt courseCode={thisCourse.course_code} />}
-        </Box>
 
-        <Stack display="flex" flexWrap="wrap" direction={{ xs: "column", lg: "row"}} spacing={2}>
-          <Box maxWidth="900px" margin="auto">
+        <br />
+
+        <Grid 
+          container 
+          columns={{ xs: 4, s: 4, md: 12, lg: 12 }} 
+          spacing={2}
+          direction={{ xs: "column-reverse", s: "column-reverse", md: "row", lg: "row" }}>
+
+
+          <Grid item xs={8}>
             <ReviewList courseCode={thisCourse.course_code} reviews={testReviews} />
-          </Box>
-          
-          <Box margin="auto">
-            <Card id="infoPanel" sx={{ margin: "auto", padding: "15px", maxWidth: "300px"}}>
+          </Grid>
+
+          <Grid item xs={4}>
+            <Card id="infoPanel" sx={{ padding: "15px" }}>
               <h2>Prerequisites</h2>
-              <p>{thisCourse.prerequisites}</p>
+              <p>{thisCourse.prerequisites || "None"}</p>
               <h2>Antirequisites</h2>
               <p>{thisCourse.antirequisites || "None"}</p>
               <h2>Extra Info</h2>
-              <p>{thisCourse.extra_info}</p>
+              <p>{thisCourse.extra_info || "None"}</p>
               <h2>Locations</h2>
-              <p>{thisCourse.location}</p>
+              <p>{thisCourse.location.replace(",", ", ")}</p>
             </Card>
-          </Box>
-        </Stack>
+          </Grid>
+        </Grid>
       </Box>
 
       

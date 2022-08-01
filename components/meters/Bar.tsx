@@ -11,11 +11,16 @@ interface BarProps {
 
 export const Bar = ({ value }: BarProps) => {
   const theme = useTheme();
+
+  const containerStyle = {
+    position: 'relative',
+  };
+
   // the style of the parent bar (the empty outline that will be filled)
   const parentStyle = {
     backgroundColor: theme.palette.secondary.light,
+    position: 'relative',
     filter: 'opacity(0.25)',
-    width: 200,
     height: 20,
     borderRadius: 1.5,
   };
@@ -25,7 +30,6 @@ export const Bar = ({ value }: BarProps) => {
     position: 'absolute',
     backgroundColor: theme.palette.secondary.main,
     borderRadius: 1.5,
-
     top: 0,
     bottom: 0,
     width: `${value}%`,
@@ -33,8 +37,9 @@ export const Bar = ({ value }: BarProps) => {
 
   return (
     <>
-      <Box sx={{ position: 'relative' }}>
-        <Box sx={parentStyle} />
+      <Box sx={containerStyle}>
+        <Box sx={parentStyle}>
+        </Box>
         <Box sx={childStyle} />
       </Box>
     </>
