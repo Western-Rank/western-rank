@@ -10,11 +10,12 @@ import { useUser } from '@auth0/nextjs-auth0';
 import { Box, Grid, Stack } from '@mui/material'
 
 interface ReviewListProps {
-  courseCode: string,
+  isProfile: boolean,
+  courseCode?: string,
   reviews: CourseReview[]
 }
 
-const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
+const ReviewList = ({ isProfile, courseCode, reviews }: ReviewListProps) => {
   const [showReviewPrompt, setShowReviewPrompt] = React.useState(false);
   const { user } = useUser();
 
@@ -30,7 +31,7 @@ const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
       <Stack>
         <Stack direction="row" justifyContent="space-between">
           <p>Course Reviews (247)</p>
-          <button onClick={onShowReview}>Write a review</button>
+          {!isProfile && <button onClick={onShowReview}>Write a review</button>}
         </Stack>
       </Stack>
       <label htmlFor="sort">Sort By</label>
@@ -42,7 +43,7 @@ const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
       
       <br></br>
 
-      {showReviewPrompt && <ReviewPrompt courseCode={courseCode} />}
+      {!isProfile && showReviewPrompt && <ReviewPrompt courseCode={courseCode!} />}
 
       <Stack spacing={2}>
         {reviews.map(courseReview => <Review key={courseReview.email} courseReview={courseReview} />)}

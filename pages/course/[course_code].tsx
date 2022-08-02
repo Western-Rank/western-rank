@@ -60,7 +60,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { course_code } = context.params as { course_code: string };
   return {
     props: {
-      reviews: await getReviews(course_code),
+      reviews: JSON.parse(JSON.stringify(await getReviews(course_code))),
       thisCourse: await getCourse(course_code),
     }
   }
@@ -68,6 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Course = ({ reviews, thisCourse }: CourseProps) => {
   const theme = useTheme();
+  console.log(reviews);
   return (
     <>
       <header><Navbar searchBar /></header>
@@ -91,9 +92,8 @@ const Course = ({ reviews, thisCourse }: CourseProps) => {
           spacing={2}
           direction={{ xs: "column-reverse", s: "column-reverse", md: "row", lg: "row" }}>
 
-
           <Grid item xs={8}>
-            <ReviewList courseCode={thisCourse.course_code} reviews={testReviews} />
+            <ReviewList isProfile={false} courseCode={thisCourse.course_code} reviews={reviews} />
           </Grid>
 
           <Grid item xs={4}>

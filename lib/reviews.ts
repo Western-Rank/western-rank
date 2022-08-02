@@ -19,8 +19,37 @@ export interface CourseReview {
  * @param courseCode The course code of the course
  */
 async function getReviews(courseCode: string) {
-    const reviews = await db.any(`SELECT * FROM reviews WHERE course_code = $1;`, courseCode);
+    const reviews = await db.any(`SELECT course_code,
+    professor,
+    review,
+    email,
+    difficulty,
+    liked,
+    attendance,
+    enthusiasm,
+    anon,
+    date_created,
+    last_edited FROM reviews WHERE course_code = $1;`, courseCode);
     return reviews as CourseReview[];
+}
+
+/**
+ * Get reviews for a specific user.
+ * @param email The email of the user
+ */
+async function getUserReviews(email: string) {
+  const reviews = await db.any(`SELECT course_code,
+  professor,
+  review,
+  email,
+  difficulty,
+  liked,
+  attendance,
+  enthusiasm,
+  anon,
+  date_created,
+  last_edited FROM reviews WHERE email = $1;`, email);
+  return reviews as CourseReview[];
 }
 
 /**
@@ -53,7 +82,7 @@ async function postReview(courseReview: CourseReview) {
     anon,
     date_created,
     last_edited
-  ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9);`, [
+  ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`, [
     course_code,
     professor,
     review,
@@ -70,5 +99,6 @@ async function postReview(courseReview: CourseReview) {
 
 export {
   getReviews,
+  getUserReviews,
   postReview
 };

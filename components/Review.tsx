@@ -42,8 +42,8 @@ const Review = ({ courseReview }: ReviewProps) => {
                             </Stack>
                             <Typography variant="h6">{courseReview.anon ? "Anonymous" : courseReview.email.split("@")[0]}</Typography>
                             <Typography>{courseReview.date_created < courseReview.last_edited 
-                                ? `Last Edited: ${courseReview.last_edited.toDateString()}`
-                                : `Posted: ${courseReview.date_created.toDateString()}`}</Typography>
+                                ? `Last Edited: ${(new Date(courseReview.last_edited)).toDateString()}`
+                                : `Posted: ${(new Date(courseReview.date_created)).toDateString()}`}</Typography>
                             <Typography variant="body1">{courseReview.review}</Typography>
                         </Box>
                         <Box className="statBlock" sx={{ flexBasis: "25%",  maxWidth: "200px" }}>

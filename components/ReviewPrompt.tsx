@@ -36,6 +36,8 @@ const ReviewPrompt = ({ courseCode }: ReviewPromptProps) => {
         {/* fixed inputs not chosen by the user */}
         <input type="hidden" name="course_code" defaultValue={courseCode} />
         <input type="hidden" name="email" defaultValue={user!.email!} />
+        <input type="hidden" name="date_created" defaultValue={(new Date()).toDateString()} />
+        <input type="hidden" name="last_edited" defaultValue={(new Date()).toDateString()} />
         
         <br />
         <label htmlFor="liked">Did you like this course?</label>
