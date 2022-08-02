@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Stack, Box, Container } from '@mui/material';
+import { AppBar, Toolbar, Typography, Stack, Box, Container, Button } from '@mui/material';
 import Link from 'next/link';
 import MuiLink from '@mui/material/Link';
 import styles from '../styles/Navbar.module.scss';
@@ -32,10 +32,10 @@ const Navbar = ({ shadow, searchBar }: NavbarProps) => {
           >
             {user
               ? <>
-                <MuiLink href="/profile" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Profile</MuiLink>
-                <MuiLink href="/api/auth/logout" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Log out</MuiLink>
+                <Button href="/profile" color="secondary">Profile</Button>
+                <Button href="/api/auth/logout" color="secondary" >Log out</Button>
               </>
-              : <MuiLink href="/api/auth/login" color="secondary" underline="none" fontWeight={'fontWeightBold'}>Log in</MuiLink>
+              : <Button href="/api/auth/login" color="secondary">Log in</Button>
             }
           </Stack>
         </Stack>

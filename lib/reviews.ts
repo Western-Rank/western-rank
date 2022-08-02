@@ -53,6 +53,16 @@ async function getUserReviews(email: string) {
 }
 
 /**
+ * Delete specific review.
+ * @param email The email of the user
+ * @param course_code The course code
+ */
+function deleteReview(email: string, course_code: string) {
+  return db.none(`DELETE FROM reviews WHERE email = $1 AND course_code = $2`, 
+    [email, course_code]);
+}
+
+/**
  * Post a review.
  * @param courseReview The review to post
  */
@@ -100,5 +110,6 @@ async function postReview(courseReview: CourseReview) {
 export {
   getReviews,
   getUserReviews,
-  postReview
+  deleteReview,
+  postReview,
 };

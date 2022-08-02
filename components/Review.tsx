@@ -1,20 +1,24 @@
-
 import React from 'react';
 import {CourseReview} from '../lib/reviews';
 import {} from '@auth0/nextjs-auth0';
 import StatMeter, { MeterType } from './StatMeter';
 import Link from 'next/link';
+import { useUser } from '@auth0/nextjs-auth0';
 import {
     Avatar,
     Box,
     Card,
+    CardActionArea,
     CardContent,
     Modal,
     Stack,
     Typography,
-    useTheme
+    Button,
+    useTheme,
+    CardActions
 } from '@mui/material'
 import { margin } from '@mui/system';
+import DeleteIcon from '@mui/icons-material'
 
 // profile pic, review text,
 
@@ -24,6 +28,7 @@ interface ReviewProps {
 
 const Review = ({ courseReview }: ReviewProps) => {
     const theme = useTheme();
+    const { user } = useUser();
     return (
         <>
             <Card sx={{ maxWidth: "1000px"}}>
@@ -40,10 +45,18 @@ const Review = ({ courseReview }: ReviewProps) => {
                                 <Avatar src="https://titles.trackercdn.com/valorant-api/agents/9f0d8ba9-4140-b941-57d3-a7ad57c6b417/displayicon.png"
                                     className="reviewPic"/>
                             </Stack>
-                            <Typography variant="h6">{courseReview.anon ? "Anonymous" : courseReview.email.split("@")[0]}</Typography>
-                            <Typography>{courseReview.date_created < courseReview.last_edited 
-                                ? `Last Edited: ${(new Date(courseReview.last_edited)).toDateString()}`
-                                : `Posted: ${(new Date(courseReview.date_created)).toDateString()}`}</Typography>
+                            <Stack direction="row" justifyContent="space-between">
+                                <Box>
+                                    <Typography variant="h6">{courseReview.anon ? "Anonymous" : courseReview.email.split("@")[0]}</Typography>
+                                    <Typography>{courseReview.date_created < courseReview.last_edited 
+                                    ? `Last Edited: ${(new Date(courseReview.last_edited)).toDateString()}`
+                                    : `Posted: ${(new Date(courseReview.date_created)).toDateString()}`}</Typography>
+                                </Box>
+                                <CardActions>
+                                    {courseReview.email === user?.email && 
+                                        <Button color="secondary">Delete</Button>}
+                                </CardActions>
+                            </Stack>
                             <Typography variant="body1">{courseReview.review}</Typography>
                         </Box>
                         <Box className="statBlock" sx={{ flexBasis: "25%",  maxWidth: "200px" }}>
@@ -54,6 +67,7 @@ const Review = ({ courseReview }: ReviewProps) => {
                         </Box>
                     </Stack>
                 </CardContent>
+
             </Card>
         </>
     );

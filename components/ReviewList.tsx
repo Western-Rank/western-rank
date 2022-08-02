@@ -7,7 +7,7 @@ import { CourseReview } from '../lib/reviews';
 import Review from './Review';
 import ReviewPrompt from './ReviewPrompt';
 import { useUser } from '@auth0/nextjs-auth0';
-import { Box, Grid, Stack } from '@mui/material'
+import { Box, Grid, Stack, Button } from '@mui/material'
 
 interface ReviewListProps {
   isProfile: boolean,
@@ -31,7 +31,7 @@ const ReviewList = ({ isProfile, courseCode, reviews }: ReviewListProps) => {
       <Stack>
         <Stack direction="row" justifyContent="space-between">
           <p>Course Reviews ({reviews.length})</p>
-          {!isProfile && <button onClick={onShowReview}>Write a review</button>}
+          {!isProfile && <Button color="secondary" onClick={onShowReview}>Write a review</Button>}
         </Stack>
       </Stack>
       <label htmlFor="sort">Sort By</label>
