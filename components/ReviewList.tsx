@@ -30,7 +30,7 @@ const ReviewList = ({ isProfile, courseCode, reviews }: ReviewListProps) => {
     <>
       <Stack>
         <Stack direction="row" justifyContent="space-between">
-          <p>Course Reviews (247)</p>
+          <p>Course Reviews ({reviews.length})</p>
           {!isProfile && <button onClick={onShowReview}>Write a review</button>}
         </Stack>
       </Stack>

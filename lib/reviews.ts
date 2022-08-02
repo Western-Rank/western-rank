@@ -87,10 +87,10 @@ async function postReview(courseReview: CourseReview) {
     professor,
     review,
     email,
-    difficulty,
+    difficulty*20,
     liked,
     attendance,
-    enthusiasm,
+    enthusiasm*20,
     anon,
     date_created,
     last_edited

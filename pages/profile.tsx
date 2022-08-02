@@ -28,6 +28,7 @@ export const getServerSideProps: GetServerSideProps = withPageAuthRequired({
 });
 
 function Profile({ reviews }: ProfileProps) {
+  const theme = useTheme();
   const { user, error, isLoading } = useUser();
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
@@ -37,7 +38,6 @@ function Profile({ reviews }: ProfileProps) {
   </div>
   );
 
-  const theme = useTheme();
   return (
     <>
       <Navbar searchBar></Navbar>
