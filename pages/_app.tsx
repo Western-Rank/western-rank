@@ -4,6 +4,9 @@ import { UserProvider } from '@auth0/nextjs-auth0';
 import type { AppProps } from 'next/app'
 import CssBaseline from "@mui/material/CssBaseline"
 import { ThemeProvider, createTheme } from '@mui/material'
+import '@fontsource/lexend';
+import '@fontsource/poppins';
+import '@fontsource/open-sans';
 
 export default function App({ Component, pageProps }:AppProps) {
 
@@ -21,8 +24,22 @@ export default function App({ Component, pageProps }:AppProps) {
     },
 
     typography: {
+      fontFamily: 'Open Sans',
+
+      h4: {
+        fontWeight: 'bold',
+        marginBottom: 16,
+      },
+
+      h5: {
+        fontWeight: 'medium',
+        marginBottom: 16,
+      },
+
       body1: {
-        fontSize: 14
+        fontSize: 14,
+        fontFamily: 'Open Sans',
+        marginBottom: 16,
       },
     },
 

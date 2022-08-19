@@ -7,7 +7,8 @@ import { CourseReview } from '../lib/reviews';
 import Review from './Review';
 import ReviewPrompt from './ReviewPrompt';
 import { useUser } from '@auth0/nextjs-auth0';
-import { Box, Grid, Stack, Button } from '@mui/material'
+import { useRouter } from 'next/router';
+import { Box, Grid, Stack, Button, Typography } from '@mui/material'
 
 interface ReviewListProps {
   isProfile: boolean,
@@ -18,6 +19,12 @@ interface ReviewListProps {
 const ReviewList = ({ isProfile, courseCode, reviews }: ReviewListProps) => {
   const [showReviewPrompt, setShowReviewPrompt] = React.useState(false);
   const { user } = useUser();
+  const router = useRouter();
+
+  const userHasReview = !user || reviews.some(({ email }) => user.email === email);
+  const reviewButtonText = !user
+    ? 'Log in to write a review'
+    : userHasReview ? 'Edit your review' : 'Write a review';
 
   const onShowReview = () => {
     if (!user) 
@@ -26,12 +33,22 @@ const ReviewList = ({ isProfile, courseCode, reviews }: ReviewListProps) => {
       setShowReviewPrompt((oldValue: boolean) => !oldValue);
   }
 
+  // called after the review deletes itself to update the review list
+  const onDeleteReview = () => {
+    router.replace(router.asPath);
+  }
+
   return (
     <>
       <Stack>
         <Stack direction="row" justifyContent="space-between">
-          <p>Course Reviews ({reviews.length})</p>
-          {!isProfile && <Button color="secondary" onClick={onShowReview}>Write a review</Button>}
+          <Typography>Course Reviews ({reviews.length})</Typography>
+          {
+            !isProfile && 
+            <Button color="secondary" onClick={onShowReview} disabled={!user}>
+              {reviewButtonText}
+            </Button>
+          }
         </Stack>
       </Stack>
       <label htmlFor="sort">Sort By</label>
@@ -46,7 +63,11 @@ const ReviewList = ({ isProfile, courseCode, reviews }: ReviewListProps) => {
       {!isProfile && showReviewPrompt && <ReviewPrompt courseCode={courseCode!} />}
 
       <Stack spacing={2}>
-        {reviews.map(courseReview => <Review key={courseReview.email} courseReview={courseReview} />)}
+        {reviews.map(courseReview => <Review
+          key={courseReview.email}
+          courseReview={courseReview}
+          onDelete={onDeleteReview}
+        />)}
       </Stack>
     </>
   );

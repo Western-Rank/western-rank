@@ -2,11 +2,31 @@
  * The component for submitting a review and its related information.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
+import { Grid, TextField, Slider, Typography, Box, Card, Rating } from '@mui/material' 
+
+import { CourseReview } from '../lib/courses';
+import { margin } from '@mui/system';
+
+/**
+ * Generate tick labels for a MUI material slider's 'marks' prop from min to max, inclusive
+ */
+function generateSliderTicks(min: number, max: number, step = 1) {
+  const numTicks = Math.floor((max - min) / step) + 1;
+  const arr = Array(numTicks).fill(0);
+  return arr.map((_, idx) => {
+    const tickNum = min + idx * step;
+    return {
+      value: tickNum,
+      label: tickNum.toString(),
+    };
+  });
+}
 
 interface ReviewPromptProps {
   courseCode: string,
+  previousReview?: CourseReview,
 }
 
 /**
@@ -22,56 +42,133 @@ interface ReviewPromptProps {
     date_created,
     last_edited
  */
-
 const ReviewPrompt = ({ courseCode }: ReviewPromptProps) => {
   const { user } = useUser();
+
+  const defaultValues = {
+    course_code: courseCode,
+    email: user!.email!,
+    date_created: (new Date()).toDateString(),
+    last_edited: (new Date()).toDateString(),
+    liked: true,
+    difficulty: 0,
+    enthusiasm: 0,
+    attendance: 0,
+    professor: "",
+    anon: false,
+  }
+
+  const [formValues, setFormValues] = useState(defaultValues);
+  
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+    setFormValues((oldFormValues) => ({
+      ...oldFormValues,
+      [name] : value,
+    }));
+  }
+
+  const handleSliderChange = (name: string) => (_event: any, value: any) => {
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+  }
+
+  const difficultyLabels: {[index: string]: string} = {
+    0: "Free",
+    0.5: "Bird",
+    1: "Super Easy",
+    1.5: "Very Easy",
+    2: "Pretty Easy",
+    2.5: "Okay",
+    3: "Doable",
+    3.5: "Some Effort",
+    4: "Hard",
+    4.5: "Very Hard",
+    5: "Oof"
+  }
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault()
+  }
+
   return (
     <>
-      <h1>Review</h1>
-      <p>Minimum 15 words</p>
-      <textarea name="review" form="review-form" />
+      
   
       {/* i know we shouldn't use <br /> like this but this is just a mockup :) */}
-      <form action="/api/reviews" method="post" id="review-form">
-        {/* fixed inputs not chosen by the user */}
-        <input type="hidden" name="course_code" defaultValue={courseCode} />
-        <input type="hidden" name="email" defaultValue={user!.email!} />
-        <input type="hidden" name="date_created" defaultValue={(new Date()).toDateString()} />
-        <input type="hidden" name="last_edited" defaultValue={(new Date()).toDateString()} />
-        
-        <br />
-        <label htmlFor="liked">Did you like this course?</label>
-        <label htmlFor="liked-yes">Yes</label>
-        <input type="radio" id="liked-yes" name="liked" value="true" required />
-        <label htmlFor="liked-no">No</label>
-        <input type="radio" id="liked-no" name="liked" value="false" required />
+      <Card sx={{ padding: "15px" }}>
+        <Typography variant="h5">Review</Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container 
+            spacing={2}
+            direction={{ xs: "column", s: "column", md: "row", lg: "row" }}>
 
-        <br />
-        <label htmlFor="difficulty">How difficult was the course content and/or evaluations?</label>
-        <input type="number" name="difficulty" min="1" max="5" required/> 
-        
-        <br />
-        <label htmlFor="enthusiasm">How excited were you about the course?</label>
-        <input type="number" name="enthusiasm" min="1" max="5" required/>
+            <Grid item xs={8}>
+              <TextField id="professor" label="Professor" variant="filled"></TextField>
+            </Grid> 
 
-        <br />
-        <label htmlFor="attendance">What % of lectures did you attend?</label>
-        <input type="number" name="attendance" min="0" max="100" required/>
-        
-        <br />
-        <label htmlFor="professor">Professor:</label>
-        <input name="professor" required/>
-        
-        <br />
-        <label htmlFor="anon">Submit anonymously</label>
-        <label htmlFor="anon-yes">Yes</label>
-        <input type="radio" id="anon-yes" name="anon" value="true" required />
-        <label htmlFor="anon-no">No</label>
-        <input type="radio" id="anon-no" name="anon" value="false" required />
-        
-        <br />
-        <input type="submit"></input>
-      </form>
+            <Grid item xs={4}>
+              <TextField id="professor" label="Professor" variant="filled"></TextField>
+            </Grid> 
+
+            <Grid item xs={12}>
+              <TextField 
+                fullWidth 
+                multiline
+                minRows={6}
+                id="review" 
+                label="Review" 
+                variant="filled"
+                placeholder="Write your review here...">
+              </TextField>
+            </Grid>
+
+            <Grid item xs={4} justifyContent="center">
+              <Typography variant="h6" gutterBottom>Difficulty</Typography>
+              <Box sx={{ maxWidth: "600px", width: "95%", margin: "auto"}}>
+                <Slider 
+                  color="secondary"
+                  aria-label="difficulty"
+                  valueLabelDisplay="auto"
+                  marks={generateSliderTicks(1, 5)}
+                  min={1}
+                  max={5}
+                />
+              </Box>
+            </Grid> 
+
+            <Grid item xs={4} justifyContent="center">
+              <Typography variant="h6" gutterBottom>Enthusiasm</Typography>
+              <Box sx={{ maxWidth: "600px", width: "95%", margin: "auto"}}>
+                <Slider 
+                  color="secondary"
+                  aria-label="enthusiasm"
+                  valueLabelDisplay="auto"
+                  marks={generateSliderTicks(1, 5)}
+                  min={1}
+                  max={5}
+                />
+              </Box>
+            </Grid> 
+
+            <Grid item xs={4} justifyContent="center">
+              <Typography variant="h6" gutterBottom>Attendance</Typography>
+              <Box sx={{ maxWidth: "600px", width: "95%", margin: "auto"}}>
+                <Slider 
+                  color="secondary"
+                  aria-label="attendance"
+                  valueLabelDisplay="auto"
+                  marks={generateSliderTicks(1, 5)}
+                  min={1}
+                  max={5}
+                />
+              </Box>
+            </Grid> 
+          </Grid>
+        </form>
+      </Card>
     </>
   );
 }

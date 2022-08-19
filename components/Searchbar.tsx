@@ -17,7 +17,7 @@ const Searchbar = () => {
     value = value.trim();
     if (value.length === 0)
       return;
-    const res = await fetch(`http://localhost:3000/api/courses?${new URLSearchParams({ search: value })}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/courses?${new URLSearchParams({ search: value })}`);
     const courses = await res.json();
     setCourseOptions(courses);
   });
@@ -37,7 +37,7 @@ const Searchbar = () => {
       disablePortal
       className={styles.searchbar}
       options={courseOptions}
-      renderInput={(params) => <TextField {...params} />}
+      renderInput={(params) => <TextField {...params}/>}
       onChange={onCourseSelect}
       onInputChange={onCourseSearch}
       filterOptions={(x: any) => x} // override default filtering (we filter with onCourseSearch)

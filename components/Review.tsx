@@ -1,34 +1,48 @@
 import React from 'react';
-import {CourseReview} from '../lib/reviews';
-import {} from '@auth0/nextjs-auth0';
+import { CourseReview } from '../lib/reviews';
 import StatMeter, { MeterType } from './StatMeter';
 import Link from 'next/link';
+import { useRouter } from 'next/router'
 import { useUser } from '@auth0/nextjs-auth0';
 import {
     Avatar,
     Box,
     Card,
-    CardActionArea,
     CardContent,
-    Modal,
     Stack,
     Typography,
     Button,
-    useTheme,
     CardActions
 } from '@mui/material'
+import { deleteReview } from '../lib/reviews';
 import { margin } from '@mui/system';
 import DeleteIcon from '@mui/icons-material'
 
 // profile pic, review text,
 
 interface ReviewProps {
-    courseReview: CourseReview
+    courseReview: CourseReview,
+    onDelete: () => void,
 }
 
-const Review = ({ courseReview }: ReviewProps) => {
-    const theme = useTheme();
+const Review = ({ courseReview, onDelete }: ReviewProps) => {
     const { user } = useUser();
+
+    // Async function to delete user review
+    const onDeleteReview = async () => {
+        const deleteReviewURL = `${process.env.NEXT_PUBLIC_BASE_PATH}/api/reviews`; // API path for DELETE request
+        const searchParams = new URLSearchParams({ // Query parameters: user email and course code
+            email: user!.email!,
+            course_code: courseReview.course_code,
+        });
+        console.log(`Deleting ${user!.email!}, ${courseReview.course_code}`)
+        console.log(deleteReviewURL);
+        console.log(searchParams);
+        await fetch(`${deleteReviewURL}?${searchParams}`, { method: 'DELETE' }); // Send HTML DELETE request
+        // reload page to update review list without deleted item
+        onDelete();
+    }
+
     return (
         <>
             <Card sx={{ maxWidth: "1000px"}}>
@@ -54,7 +68,7 @@ const Review = ({ courseReview }: ReviewProps) => {
                                 </Box>
                                 <CardActions>
                                     {courseReview.email === user?.email && 
-                                        <Button color="secondary">Delete</Button>}
+                                        <Button color="secondary" onClick={() => onDeleteReview()}>Delete</Button>}
                                 </CardActions>
                             </Stack>
                             <Typography variant="body1">{courseReview.review}</Typography>

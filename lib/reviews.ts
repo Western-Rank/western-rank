@@ -57,8 +57,8 @@ async function getUserReviews(email: string) {
  * @param email The email of the user
  * @param course_code The course code
  */
-function deleteReview(email: string, course_code: string) {
-  return db.none(`DELETE FROM reviews WHERE email = $1 AND course_code = $2`, 
+async function deleteReview(email: string, course_code: string) {
+  return await db.none(`DELETE FROM reviews WHERE email = $1 AND course_code = $2`, 
     [email, course_code]);
 }
 

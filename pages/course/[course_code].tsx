@@ -68,7 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Course = ({ reviews, thisCourse }: CourseProps) => {
   const theme = useTheme();
-  console.log(reviews);
+  
   return (
     <>
       <header><Navbar searchBar /></header>
@@ -98,14 +98,14 @@ const Course = ({ reviews, thisCourse }: CourseProps) => {
 
           <Grid item xs={4}>
             <Card id="infoPanel" sx={{ padding: "15px" }}>
-              <h2>Prerequisites</h2>
-              <p>{thisCourse.prerequisites || "None"}</p>
-              <h2>Antirequisites</h2>
-              <p>{thisCourse.antirequisites || "None"}</p>
-              <h2>Extra Info</h2>
-              <p>{thisCourse.extra_info || "None"}</p>
-              <h2>Locations</h2>
-              <p>{thisCourse.location.replace(",", ", ")}</p>
+              <Typography variant='h5'>Prerequisites</Typography>
+              <Typography>{thisCourse.prerequisites || "None"}</Typography>
+              <Typography variant='h5'>Antirequisites</Typography>
+              <Typography>{thisCourse.antirequisites || "None"}</Typography>
+              <Typography variant='h5'>Extra Info</Typography>
+              <Typography>{thisCourse.extra_info || "None"}</Typography>  
+              <Typography variant='h5'>Locations</Typography>
+              <Typography>{thisCourse.location.replace(",", ", ")}</Typography>
             </Card>
           </Grid>
         </Grid>
@@ -116,7 +116,4 @@ const Course = ({ reviews, thisCourse }: CourseProps) => {
   )
 }
 
-export default Course
-
-
-
+export default Course;
