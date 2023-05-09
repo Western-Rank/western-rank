@@ -29,7 +29,7 @@ async function getReviews(courseCode: string) {
     enthusiasm,
     anon,
     date_created,
-    last_edited FROM reviews WHERE course_code = $1;`, courseCode);
+    last_edited FROM course_reviews WHERE course_code = $1;`, courseCode);
     return reviews as CourseReview[];
 }
 
@@ -48,7 +48,7 @@ async function getUserReviews(email: string) {
   enthusiasm,
   anon,
   date_created,
-  last_edited FROM reviews WHERE email = $1;`, email);
+  last_edited FROM course_reviews WHERE email = $1;`, email);
   return reviews as CourseReview[];
 }
 
@@ -58,7 +58,7 @@ async function getUserReviews(email: string) {
  * @param course_code The course code
  */
 async function deleteReview(email: string, course_code: string) {
-  return await db.none(`DELETE FROM reviews WHERE email = $1 AND course_code = $2`, 
+  return await db.none(`DELETE FROM course_reviews WHERE email = $1 AND course_code = $2`, 
     [email, course_code]);
 }
 
@@ -80,7 +80,7 @@ async function postReview(courseReview: CourseReview) {
     date_created,
     last_edited
   } = courseReview;
-  await db.none(`INSERT INTO reviews(
+  await db.none(`INSERT INTO course_reviews(
     course_code,
     professor,
     review,

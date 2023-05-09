@@ -17,7 +17,7 @@ const Searchbar = () => {
     value = value.trim();
     if (value.length === 0)
       return;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/courses?${new URLSearchParams({ search: value })}`);
+    const res = await fetch(`/api/courses?${new URLSearchParams({ search: value })}`);
     const courses = await res.json();
     setCourseOptions(courses);
   });
