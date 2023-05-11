@@ -1,0 +1,5 @@
+{
+    "out": "./migrations-folder",
+    "schema": "./src/database/schema",
+    "breakpoints": false
+}
