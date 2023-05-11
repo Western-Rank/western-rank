@@ -58,6 +58,7 @@ interface CourseProps {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // provided by the dynamic route, e.g. /course/CALC1000
   const { course_code } = context.params as { course_code: string };
+  console.log(course_code);
   return {
     props: {
       reviews: JSON.parse(JSON.stringify(await getReviews(course_code))),
@@ -68,6 +69,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Course = ({ reviews, thisCourse }: CourseProps) => {
   const theme = useTheme();
+  console.log(thisCourse);
   
   return (
     <>
@@ -80,7 +82,7 @@ const Course = ({ reviews, thisCourse }: CourseProps) => {
           <CardContent>
             <Typography variant="h4">{thisCourse.course_code}</Typography>
             <Typography variant="h5">{thisCourse.course_name}</Typography>
-            <Typography>{thisCourse.description}</Typography>
+            <Typography>{thisCourse?.description}</Typography>
           </CardContent>
         </Card>
 
@@ -99,13 +101,13 @@ const Course = ({ reviews, thisCourse }: CourseProps) => {
           <Grid item xs={4}>
             <Card id="infoPanel" sx={{ padding: "15px" }}>
               <Typography variant='h5'>Prerequisites</Typography>
-              <Typography>{thisCourse.prerequisites || "None"}</Typography>
+              <Typography>{thisCourse?.prerequisites || "None"}</Typography>
               <Typography variant='h5'>Antirequisites</Typography>
-              <Typography>{thisCourse.antirequisites || "None"}</Typography>
+              <Typography>{thisCourse?.antirequisites || "None"}</Typography>
               <Typography variant='h5'>Extra Info</Typography>
-              <Typography>{thisCourse.extra_info || "None"}</Typography>  
+              <Typography>{thisCourse?.extra_info || "None"}</Typography>  
               <Typography variant='h5'>Locations</Typography>
-              <Typography>{thisCourse.location.replace(",", ", ")}</Typography>
+              <Typography>{thisCourse.location?.replace(",", ", ")}</Typography>
             </Card>
           </Grid>
         </Grid>

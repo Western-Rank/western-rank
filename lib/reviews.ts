@@ -1,4 +1,6 @@
-import db from './database/database';
+import { and, eq } from 'drizzle-orm';
+import { db } from './database/db';
+import { course_reviews } from './database/schema';
 
 export interface CourseReview {
   course_code: string,
@@ -19,18 +21,22 @@ export interface CourseReview {
  * @param courseCode The course code of the course
  */
 async function getReviews(courseCode: string) {
-    const reviews = await db.any(`SELECT course_code,
-    professor,
-    review,
-    email,
-    difficulty,
-    liked,
-    attendance,
-    enthusiasm,
-    anon,
-    date_created,
-    last_edited FROM course_reviews WHERE course_code = $1;`, courseCode);
-    return reviews as CourseReview[];
+  const all_reviews = await db.select({
+    course_code: course_reviews.course_code,
+    professor: course_reviews.professor,
+    review: course_reviews.review,
+    email: course_reviews.email,
+    difficulty: course_reviews.difficulty,
+    liked: course_reviews.liked,
+    attendance: course_reviews.attendance,
+    enthusiasm: course_reviews.enthusiasm,
+    anon: course_reviews.anon,
+    date_created: course_reviews.date_created,
+    last_edited: course_reviews.last_edited
+  }).from(course_reviews).where(
+    eq(course_reviews.course_code, courseCode)
+  )
+  return all_reviews as CourseReview[];
 }
 
 /**
@@ -38,28 +44,36 @@ async function getReviews(courseCode: string) {
  * @param email The email of the user
  */
 async function getUserReviews(email: string) {
-  const reviews = await db.any(`SELECT course_code,
-  professor,
-  review,
-  email,
-  difficulty,
-  liked,
-  attendance,
-  enthusiasm,
-  anon,
-  date_created,
-  last_edited FROM course_reviews WHERE email = $1;`, email);
-  return reviews as CourseReview[];
+  const all_user_reviews = await db.select({
+    course_code: course_reviews.course_code,
+    professor: course_reviews.professor,
+    review: course_reviews.review,
+    email: course_reviews.email,
+    difficulty: course_reviews.difficulty,
+    liked: course_reviews.liked,
+    attendance: course_reviews.attendance,
+    enthusiasm: course_reviews.enthusiasm,
+    anon: course_reviews.anon,
+    date_created: course_reviews.date_created,
+    last_edited: course_reviews.last_edited
+  }).from(course_reviews).where(
+    eq(course_reviews.email, email)
+  )
+  console.log('All reviews from the user with email ', email, all_user_reviews)
+  return all_user_reviews as CourseReview[];
 }
 
 /**
  * Delete specific review.
  * @param email The email of the user
- * @param course_code The course code
+ * @param courseCode The course code
  */
-async function deleteReview(email: string, course_code: string) {
-  return await db.none(`DELETE FROM course_reviews WHERE email = $1 AND course_code = $2`, 
-    [email, course_code]);
+async function deleteReview(email: string, courseCode: string) {
+  console.log('Deleting Review from user ', email, ' for course ', courseCode);
+  await db.delete(course_reviews).where(and(
+    eq(course_reviews.email, email),
+    eq(course_reviews.course_code, courseCode)
+  ))
 }
 
 /**
@@ -67,44 +81,8 @@ async function deleteReview(email: string, course_code: string) {
  * @param courseReview The review to post
  */
 async function postReview(courseReview: CourseReview) {
-  const {
-    course_code,
-    professor,
-    review,
-    email,
-    difficulty,
-    liked,
-    attendance,
-    enthusiasm,
-    anon,
-    date_created,
-    last_edited
-  } = courseReview;
-  await db.none(`INSERT INTO course_reviews(
-    course_code,
-    professor,
-    review,
-    email,
-    difficulty,
-    liked,
-    attendance,
-    enthusiasm,
-    anon,
-    date_created,
-    last_edited
-  ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`, [
-    course_code,
-    professor,
-    review,
-    email,
-    difficulty*20,
-    liked,
-    attendance,
-    enthusiasm*20,
-    anon,
-    date_created,
-    last_edited
-  ]);
+  console.log("Inserting Review\n", courseReview);
+  await db.insert(course_reviews).values(courseReview);
 }
 
 export {
