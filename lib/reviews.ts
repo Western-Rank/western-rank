@@ -59,6 +59,7 @@ async function getUserReviews(email: string) {
   }).from(course_reviews).where(
     eq(course_reviews.email, email)
   )
+  console.log('All reviews from the user with email ', email, all_user_reviews)
   return all_user_reviews as CourseReview[];
 }
 
@@ -68,7 +69,8 @@ async function getUserReviews(email: string) {
  * @param courseCode The course code
  */
 async function deleteReview(email: string, courseCode: string) {
-  return await db.delete(course_reviews).where(and(
+  console.log('Deleting Review from user ', email, ' for course ', courseCode);
+  await db.delete(course_reviews).where(and(
     eq(course_reviews.email, email),
     eq(course_reviews.course_code, courseCode)
   ))
@@ -79,6 +81,7 @@ async function deleteReview(email: string, courseCode: string) {
  * @param courseReview The review to post
  */
 async function postReview(courseReview: CourseReview) {
+  console.log("Inserting Review\n", courseReview);
   await db.insert(course_reviews).values(courseReview);
 }
 

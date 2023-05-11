@@ -39,6 +39,8 @@ async function searchCourses(query: string) {
     )
   );
 
+  console.log(matched_courses);
+
   return matched_courses.map(
     ({ course_code, course_name }) => (
       formatFullCourseName(course_code, course_name)
@@ -79,8 +81,10 @@ async function getCourse(courseCode: string) {
   }).from(courses).where(
     eq(courses.course_code, courseCode)
   ).limit(1);
+  
+  console.log(course);
 
-  return course;
+  return course[0];
 }
 
 export {
