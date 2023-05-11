@@ -34,15 +34,15 @@ async function searchCourses(query: string) {
     course_name: courses.course_name
   }).from(courses).where(
     or(
-      like(courses.course_code, `%${query}#%`), 
-      like(courses.course_name, `%${query}#%`)
+      like(courses.course_code, `%${query}%`), 
+      like(courses.course_name, `%${query}%`)
     )
   );
 
   return matched_courses.map(
-    ({ course_code, course_name }) => {
-      formatFullCourseName(course_code, course_name);
-    }
+    ({ course_code, course_name }) => (
+      formatFullCourseName(course_code, course_name)
+    )
   );
 }
 
@@ -56,18 +56,18 @@ async function getCourses() {
     course_name: courses.course_name
   }).from(courses);
   return all_courses.map(
-    ({ course_code, course_name }) => {
+    ({ course_code, course_name }) => (
       formatFullCourseName(course_code, course_name)
-    }
+    )
   );
 }
 
 /**
  * Get the course information stored in the database for a given course.
- * @param courseCodeQuery The course code of the course to fetch
+ * @param courseCode The course code of the course to fetch
  * @returns The course information stored in the database
  */
-async function getCourse(courseCodeQuery: string) {
+async function getCourse(courseCode: string) {
   const course = await db.select({
     course_code: courses.course_code,
     course_name: courses.course_name,
@@ -77,7 +77,7 @@ async function getCourse(courseCodeQuery: string) {
     location: courses.location,
     extra_info: courses.extra_info
   }).from(courses).where(
-    eq(courses.course_code, courseCodeQuery)
+    eq(courses.course_code, courseCode)
   ).limit(1);
 
   return course;
