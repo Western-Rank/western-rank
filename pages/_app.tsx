@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }:AppProps) {
     },
 
     typography: {
-      fontFamily: 'Open Sans',
+      fontFamily: 'Lexend',
 
       h4: {
         fontWeight: 'bold',
@@ -38,7 +38,7 @@ export default function App({ Component, pageProps }:AppProps) {
 
       body1: {
         fontSize: 14,
-        fontFamily: 'Open Sans',
+        fontFamily: 'Lexend',
         marginBottom: 16,
       },
     },
