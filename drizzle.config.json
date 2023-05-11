@@ -1,5 +1,5 @@
 {
-    "out": "./migrations-folder",
-    "schema": "./src/database/schema",
+    "out": "./migrations",
+    "schema": "./src/database/schema.ts",
     "breakpoints": false
 }
