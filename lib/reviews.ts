@@ -1,4 +1,4 @@
-import db from './database/database';
+import db from './database/db';
 
 export interface CourseReview {
   course_code: string,

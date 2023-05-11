@@ -1,9 +1,8 @@
-import { pgTable, serial, text, varchar } from 'drizzle-orm/pg-core';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 
-import { courses } from './schema/courses';
-import { reviews } from './schema/reviews';
+import { courses } from './schema';
+import { course_reviews } from './schema';
 
 const pool = new Pool({
   host: process.env.DB_HOST_NAME,

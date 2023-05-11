@@ -1,18 +1,18 @@
 import { pgTable, varchar, text, integer, boolean, timestamp } from "drizzle-orm/pg-core"
 
 export const courses = pgTable("courses", {
-	courseCode: varchar("course_code", { length: 255 }).notNull(),
-	courseName: text("course_name").notNull(),
+	course_code: varchar("course_code", { length: 255 }).notNull(),
+	course_name: text("course_name").notNull(),
 	antirequisites: text("antirequisites"),
 	prerequisites: text("prerequisites"),
 	description: text("description"),
 	location: text("location"),
-	extraInfo: text("extra_info"),
+	extra_info: text("extra_info"),
 });
 
-export const courseReviews = pgTable("course_reviews", {
-	reviewId: integer("review_id").notNull(),
-	courseCode: varchar("course_code", { length: 255 }).references(() => courses.courseCode),
+export const course_reviews = pgTable("course_reviews", {
+	review_id: integer("review_id").notNull(),
+	course_code: varchar("course_code", { length: 255 }).references(() => courses.course_code),
 	professor: text("professor"),
 	review: text("review"),
 	email: text("email"),
@@ -21,6 +21,6 @@ export const courseReviews = pgTable("course_reviews", {
 	attendance: integer("attendance"),
 	enthusiasm: integer("enthusiasm"),
 	anon: boolean("anon"),
-	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }),
-	lastEdited: timestamp("last_edited", { withTimezone: true, mode: 'string' }),
+	date_created: timestamp("date_created", { withTimezone: true, mode: 'string' }),
+	last_edited: timestamp("last_edited", { withTimezone: true, mode: 'string' }),
 });

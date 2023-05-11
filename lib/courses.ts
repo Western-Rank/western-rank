@@ -1,4 +1,7 @@
-import db from './database/database';
+import { eq, or, like } from "drizzle-orm";
+
+import { db } from "./database/db";
+import { courses } from "./database/schema";
 
 export interface Course {
   course_code: string,
@@ -26,15 +29,20 @@ export function formatFullCourseName(courseCode: string, courseName: string) {
  * @returns The list of courses that match the given query
  */
 async function searchCourses(query: string) {
-  const courses = await db.any(`
-    SELECT course_code, course_name 
-    FROM courses 
-    WHERE 
-      course_code LIKE '%$1#%'
-      OR course_name LIKE '%$1#%'
-  `, query.toUpperCase());
-  return courses.map(
-    ({ course_code, course_name }) => formatFullCourseName(course_code, course_name)
+  const matched_courses = await db.select({
+    course_code: courses.course_code,
+    course_name: courses.course_name
+  }).from(courses).where(
+    or(
+      like(courses.course_code, `%${query}#%`), 
+      like(courses.course_name, `%${query}#%`)
+    )
+  );
+
+  return matched_courses.map(
+    ({ course_code, course_name }) => {
+      formatFullCourseName(course_code, course_name);
+    }
   );
 }
 
@@ -43,19 +51,35 @@ async function searchCourses(query: string) {
  * @returns The list of courses formatted as '<COURSE_CODE>: <COURSE_NAME>'
  */
 async function getCourses() {
-  const courses = await db.any('SELECT course_code, course_name FROM courses;');
-  return courses.map(
-    ({ course_code, course_name }) => formatFullCourseName(course_code, course_name)
+  const all_courses = await db.select({
+    course_code: courses.course_code,
+    course_name: courses.course_name
+  }).from(courses);
+  return all_courses.map(
+    ({ course_code, course_name }) => {
+      formatFullCourseName(course_code, course_name)
+    }
   );
 }
 
 /**
  * Get the course information stored in the database for a given course.
- * @param courseCode The course code of the course to fetch
+ * @param courseCodeQuery The course code of the course to fetch
  * @returns The course information stored in the database
  */
-async function getCourse(courseCode: string) {
-  const course = await db.one('SELECT course_code, course_name, antirequisites, prerequisites, description, location, extra_info from courses where course_code = $1', courseCode) as Course;
+async function getCourse(courseCodeQuery: string) {
+  const course = await db.select({
+    course_code: courses.course_code,
+    course_name: courses.course_name,
+    antirequisites: courses.antirequisites,
+    prerequisites: courses.prerequisites,
+    description: courses.description,
+    location: courses.location,
+    extra_info: courses.extra_info
+  }).from(courses).where(
+    eq(courses.course_code, courseCodeQuery)
+  ).limit(1);
+
   return course;
 }
 
