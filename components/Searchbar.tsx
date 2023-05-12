@@ -4,6 +4,7 @@ import { Autocomplete, TextField } from '@mui/material'
 import styles from '../styles/Searchbar.module.scss'
 import { useState, useEffect } from 'react';
 import { debounce } from '../lib/debounce';
+import { useQuery } from '@tanstack/react-query';
 const { Index } = require("flexsearch");
 
 const course_index = Index({
@@ -16,25 +17,29 @@ const Searchbar = () => {
   // used to navigate to new course page when selected in the search menu
   const router = useRouter();
 
-  useEffect(() => {
-    fetch(`/api/courses`)
-      .then((res) => res.json())
-      .then((data) => {
-        setAllCourses(data);
-        // populate the search index
-        data.forEach((course: string, index: number) => {
-          course_index.add(index, course);
-        })
+  useQuery({
+    queryFn: async () => {
+      const response = await fetch('/api/courses');
+      if (!response.ok) {
+        throw new Error('Courses were not found');
+      }
+      return response.json();
+    },
+    onSuccess(data: string[]) {
+      console.log(data);
+      setAllCourses(data);
+      data.forEach((course: string, index: number) => {
+        course_index.add(index, course);
       })
-      .catch((err) => {
-        console.log(err);
-      })
-  }, []);
+    },
+    refetchOnWindowFocus: false
+  });
 
   const onCourseSearch = debounce(async (ev: React.SyntheticEvent, value: string | null) => {
     if (value !== null && value.trim().length !== 0) {
       const course_index_results = course_index.search(value, 20);
       const courses = course_index_results.map((index: number) => allCourses[index]);
+      console.log(value, courses);
       setCourseOptions(courses);
     } else {
       setCourseOptions(allCourses.slice(0,20));
