@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { searchCourses } from '../../lib/courses';
+import { getAllCourses } from '../../lib/courses';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
-    case 'GET': getCourses(req, res); break;
+    case 'GET': await getCourses(req, res); break;
     default: res.send('Invalid API route'); break;
   }
 }
@@ -16,8 +16,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
  */
 async function getCourses(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { search } = req.query as { search: string }
-    const courses = await searchCourses(search);
+    const courses = await getAllCourses()
     res.send(courses);
   } catch (err: any) {
     res.send(`Error: ${err.message}\nDetails: ${err.details}`);

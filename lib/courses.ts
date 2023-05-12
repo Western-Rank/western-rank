@@ -52,7 +52,7 @@ async function searchCourses(query: string) {
  * Get all courses stored in the database.
  * @returns The list of courses formatted as '<COURSE_CODE>: <COURSE_NAME>'
  */
-async function getCourses() {
+async function getAllCourses() {
   const all_courses = await db.select({
     course_code: courses.course_code,
     course_name: courses.course_name
@@ -88,7 +88,7 @@ async function getCourse(courseCode: string) {
 }
 
 export {
-  getCourses,
+  getAllCourses,
   getCourse,
   searchCourses,
 };
