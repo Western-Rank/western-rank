@@ -1,46 +1,48 @@
 // import SearchIcon from '@mui/icons-material/Search'
 import { useRouter } from 'next/router';
-import { Autocomplete, TextField } from '@mui/material'
+import { Autocomplete, TextField, createFilterOptions } from '@mui/material'
 import styles from '../styles/Searchbar.module.scss'
-import React from 'react';
-import { debounce } from '../lib/debounce';
-
+import { useQuery } from '@tanstack/react-query';
 
 const Searchbar = () => {
-  const [courseOptions, setCourseOptions] = React.useState<string[]>([]);
-  // used to navigate to new course page when selected in the search menu
   const router = useRouter();
+  const filterOptions = createFilterOptions({
+    matchFrom: 'any',
+    limit: 15
+  })
 
-  const onCourseSearch = debounce(async (ev: React.SyntheticEvent, value: string | null) => {
-    if (value === null)
-      return;
-    value = value.trim();
-    if (value.length === 0)
-      return;
-    const res = await fetch(`/api/courses?${new URLSearchParams({ search: value })}`);
-    const courses = await res.json();
-    setCourseOptions(courses);
+  const { data, isLoading, isError }= useQuery({
+    queryFn: async () => {
+      const response = await fetch('/api/courses');
+      if (!response.ok) {
+        throw new Error('Courses were not found');
+      }
+      return response.json();
+    },
+    refetchOnWindowFocus: false,
+    onSuccess(data) {
+      data.sort();
+    }
   });
 
-  const onCourseSelect = (ev: React.SyntheticEvent, value: string | null) => {
-    if (value === null)
+  const onCourseSelect = (ev: React.SyntheticEvent, value: unknown) => {
+    if (typeof(value) !== 'string' || value === null)
       return;
+
     // extract the course code from the full course name,
     // encoding it as a valid URI string
     // e.g. CALC 1000: Calculus I -> CALC%201000
-    const courseCodeURI = encodeURIComponent(value.split(':')[0]);
+    const courseCodeURI = encodeURIComponent(value?.split(':')[0]);
     router.push(`/course/${courseCodeURI}`);
   }
 
   return (
     <Autocomplete
-      disablePortal
       className={styles.searchbar}
-      options={courseOptions}
+      options={!isLoading && !isError ? data : []}
       renderInput={(params) => <TextField {...params}/>}
       onChange={onCourseSelect}
-      onInputChange={onCourseSearch}
-      filterOptions={(x: any) => x} // override default filtering (we filter with onCourseSearch)
+      filterOptions={filterOptions}
     />
   )
 }

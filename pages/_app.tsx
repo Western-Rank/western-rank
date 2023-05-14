@@ -4,9 +4,16 @@ import { UserProvider } from '@auth0/nextjs-auth0';
 import type { AppProps } from 'next/app'
 import CssBaseline from "@mui/material/CssBaseline"
 import { ThemeProvider, createTheme } from '@mui/material'
+import {
+  QueryClient,
+  QueryClientProvider
+} from '@tanstack/react-query'
+
 import '@fontsource/lexend';
 import '@fontsource/poppins';
 import '@fontsource/open-sans';
+
+const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }:AppProps) {
 
@@ -24,7 +31,7 @@ export default function App({ Component, pageProps }:AppProps) {
     },
 
     typography: {
-      fontFamily: 'Open Sans',
+      fontFamily: 'Lexend',
 
       h4: {
         fontWeight: 'bold',
@@ -38,7 +45,7 @@ export default function App({ Component, pageProps }:AppProps) {
 
       body1: {
         fontSize: 14,
-        fontFamily: 'Open Sans',
+        fontFamily: 'Lexend',
         marginBottom: 16,
       },
     },
@@ -57,10 +64,12 @@ export default function App({ Component, pageProps }:AppProps) {
 
   return (
     <UserProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </QueryClientProvider>
     </UserProvider>
   );
 }
