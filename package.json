@@ -20,7 +20,6 @@
     "@mui/material": "^5.8.5",
     "@tanstack/react-query": "^4.29.5",
     "drizzle-orm": "^0.25.4",
-    "flexsearch": "^0.7.31",
     "next": "12.1.6",
     "pg": "^8.10.0",
     "pg-promise": "^10.11.1",
