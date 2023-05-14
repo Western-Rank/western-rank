@@ -2,8 +2,6 @@
 import { useRouter } from 'next/router';
 import { Autocomplete, TextField, createFilterOptions } from '@mui/material'
 import styles from '../styles/Searchbar.module.scss'
-import { useState, useEffect } from 'react';
-import { debounce } from '../lib/debounce';
 import { useQuery } from '@tanstack/react-query';
 
 const Searchbar = () => {
