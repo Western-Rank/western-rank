@@ -1,4 +1,4 @@
-import { pgTable, varchar, text, integer, boolean, timestamp, serial } from "drizzle-orm/pg-core"
+import { pgTable, varchar, text, integer, boolean, timestamp, serial, date } from "drizzle-orm/pg-core"
 
 export const courses = pgTable("courses", {
   course_code: varchar("course_code", { length: 255 }).notNull(),
@@ -23,4 +23,5 @@ export const course_reviews = pgTable("course_reviews", {
   anon: boolean("anon"),
   date_created: timestamp("date_created", { withTimezone: true, mode: 'date' }),
   last_edited: timestamp("last_edited", { withTimezone: true, mode: 'date' }),
+  date_taken: date('date_taken', { mode: 'date' }),
 });
