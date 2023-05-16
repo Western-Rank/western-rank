@@ -34,6 +34,8 @@ const testReviews: CourseReview[] = [
     anon: false,
     date_created: new Date(),
     last_edited: new Date(),
+    term_taken: 'fall',
+    year_taken: 2021
   },
   {
     course_code: "BBBB 2222",
@@ -47,6 +49,8 @@ const testReviews: CourseReview[] = [
     anon: true,
     date_created: new Date(),
     last_edited: new Date(),
+    term_taken: 'winter',
+    year_taken: 2022
   }
 ];
 
