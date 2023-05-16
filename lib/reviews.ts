@@ -19,6 +19,11 @@ export interface CourseReview {
   year_taken: number,
 };
 
+/**
+ * Get the school semester/term given the month (as a number).
+ * @param month (0-11) representation of the month
+ * @returns the school term of type Term ('fall', 'winter', 'summer')
+ */
 function getTermFromMonth(month: number): Term {
     /**
    * fall: sept (9), oct (10), nov (11), dec (12)
@@ -34,6 +39,11 @@ function getTermFromMonth(month: number): Term {
     return 'summer'
 }
 
+/**
+ * Get the school term and year from a JavaScript date object.
+ * @param date A JavaScript date object.
+ * @returns the school term and year as an array [term: Term, year: number]
+ */
 function convertDateToTermAndYear(date: Date): [Term, number] {
   const year = date.getFullYear();
   const term = getTermFromMonth(date.getMonth());
