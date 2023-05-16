@@ -2,6 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { db } from './database/db';
 import { course_reviews } from './database/schema';
 
+type Term = 'fall' | 'winter' | 'summer';
 export interface CourseReview {
   course_code: string,
   professor: string,
@@ -13,8 +14,42 @@ export interface CourseReview {
   enthusiasm: number,
   anon: boolean,
   date_created: Date,
-  last_edited: Date
+  last_edited: Date,
+  term_taken: Term,
+  year_taken: number,
 };
+
+/**
+ * Get the school semester/term given the month (as a number).
+ * @param month (0-11) representation of the month
+ * @returns the school term of type Term ('fall', 'winter', 'summer')
+ */
+function getTermFromMonth(month: number): Term {
+    /**
+   * fall: sept (9), oct (10), nov (11), dec (12)
+   * winter: jan (1), feb (2), march (3), april (4)
+   * summer: may (5), june (6), july (7), august (8)
+   */
+
+  if (9 <= month && month <= 12)
+    return 'fall'
+  else if (1 <= month && month <= 4)
+    return 'winter'
+  else
+    return 'summer'
+}
+
+/**
+ * Get the school term and year from a JavaScript date object.
+ * @param date A JavaScript date object.
+ * @returns the school term and year as an array [term: Term, year: number]
+ */
+function convertDateToTermAndYear(date: Date): [Term, number] {
+  const year = date.getFullYear();
+  const term = getTermFromMonth(date.getMonth());
+
+  return [term, year];
+}
 
 /**
  * Get reviews for a specific course.
@@ -32,11 +67,22 @@ async function getReviews(courseCode: string) {
     enthusiasm: course_reviews.enthusiasm,
     anon: course_reviews.anon,
     date_created: course_reviews.date_created,
-    last_edited: course_reviews.last_edited
+    last_edited: course_reviews.last_edited,
+    date_taken: course_reviews.date_taken,
   }).from(course_reviews).where(
     eq(course_reviews.course_code, courseCode)
   )
-  return all_reviews as CourseReview[];
+
+  return all_reviews.map(review => {
+    const { date_taken, ...review_without_date_taken } = review;
+    const [term_taken, year_taken] = convertDateToTermAndYear(date_taken as Date)
+
+    return {
+      term_taken,
+      year_taken,
+      ...review_without_date_taken
+    }
+  }) as CourseReview[];
 }
 
 /**
