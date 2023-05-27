@@ -9,7 +9,7 @@ import {
   date,
   primaryKey,
 } from "drizzle-orm/pg-core"
-// import { ProviderType } from "next-auth/providers"
+import { ProviderType } from "next-auth/providers"
 
 export const courses = pgTable("courses", {
   course_code: varchar("course_code", { length: 255 }).notNull(),
@@ -55,8 +55,7 @@ export const accounts = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").notNull(),
-    // type: text("type").$type<ProviderType>().notNull(),
+    type: text("type").$type<ProviderType>().notNull(),
     provider: text("provider").notNull(),
     providerAccountId: text("providerAccountId").notNull(),
     refresh_token: text("refresh_token"),
