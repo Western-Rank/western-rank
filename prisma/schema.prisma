@@ -32,5 +32,5 @@ model Course_Review {
   date_created DateTime? @db.Timestamptz(6)
   last_edited  DateTime? @db.Timestamptz(6)
   date_taken   DateTime? @db.Date
-  course       Course?   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_course")
+  course       Course?   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
 }
