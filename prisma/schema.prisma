@@ -20,7 +20,6 @@ model Course {
 
 model Course_Review {
   review_id    Int       @id @default(autoincrement())
-  course_code  String?   @db.VarChar(255)
   professor    String?
   review       String?
   email        String?
@@ -33,4 +32,5 @@ model Course_Review {
   last_edited  DateTime? @db.Timestamptz(6)
   date_taken   DateTime? @db.Date
   course       Course?   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
+  course_code  String?   @db.VarChar(255)
 }
