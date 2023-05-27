@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,7 +8,7 @@ datasource db {
 }
 
 model courses {
-  course_code    String           @id @unique @default(cuid())
+  course_code    String           @id @default(cuid()) @db.VarChar(255)
   course_name    String
   antirequisites String?
   prerequisites  String?
@@ -23,6 +20,7 @@ model courses {
 
 model course_reviews {
   review_id    Int       @id @default(autoincrement())
+  course_code  String?   @db.VarChar(255)
   professor    String?
   review       String?
   email        String?
@@ -31,9 +29,8 @@ model course_reviews {
   attendance   Int?
   enthusiasm   Int?
   anon         Boolean?
-  date_taken   DateTime?
-  date_created DateTime  @default(now())
-  last_edited  DateTime  @default(now())
-  course_code  String
-  courses      courses   @relation(fields: [course_code], references: [course_code])
+  date_created DateTime? @db.Timestamptz(6)
+  last_edited  DateTime? @db.Timestamptz(6)
+  date_taken   DateTime? @db.Date
+  courses      courses?  @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_course")
 }
