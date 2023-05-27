@@ -7,18 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model courses {
-  course_code    String           @id @default(cuid()) @db.VarChar(255)
+model Course {
+  course_code    String          @id @default(cuid()) @db.VarChar(255)
   course_name    String
   antirequisites String?
   prerequisites  String?
   description    String?
   location       String?
   extra_info     String?
-  course_reviews course_reviews[]
+  course_reviews Course_Review[]
 }
 
-model course_reviews {
+model Course_Review {
   review_id    Int       @id @default(autoincrement())
   course_code  String?   @db.VarChar(255)
   professor    String?
@@ -32,5 +32,5 @@ model course_reviews {
   date_created DateTime? @db.Timestamptz(6)
   last_edited  DateTime? @db.Timestamptz(6)
   date_taken   DateTime? @db.Date
-  courses      courses?  @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_course")
+  course       Course?   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_course")
 }
