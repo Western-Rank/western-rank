@@ -47,6 +47,16 @@ export function updateReview(review: Course_Review) {
   })
 }
 
+export function upsertReview(review: Course_Review) {
+  return prisma.course_Review.upsert({
+    where: {
+      review_id: review.review_id,
+    },
+    create: review,
+    update: review,
+  })
+}
+
 /**
  * Delete specific review by a user for a course.
  * @param email email of the user
