@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getAllCourses } from "../../services/course"
+import { formatFullCourseName } from "../../lib/courses"
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,8 +23,16 @@ export default async function handler(
  */
 async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
   try {
+    const format = req.query.format as string
+
     const courses = await getAllCourses()
-    res.send(courses)
+
+    if (format === "names")
+      courses.map((course) =>
+        formatFullCourseName(course.course_code, course.course_name),
+      )
+
+    res.status(200).json(courses)
   } catch (err: any) {
     res.send(`Error: ${err.message}\nDetails: ${err.details}`)
   }
