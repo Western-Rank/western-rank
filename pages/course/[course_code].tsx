@@ -111,11 +111,7 @@ const Course = ({ reviews, course }: CourseProps) => {
           }}
         >
           <Grid item xs={8}>
-            <ReviewList
-              isProfile={false}
-              courseCode={course.course_code}
-              reviews={reviews}
-            />
+            <ReviewList courseCode={course.course_code} reviews={reviews} />
           </Grid>
 
           <Grid item xs={4}>
