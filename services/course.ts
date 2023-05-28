@@ -1,4 +1,3 @@
-import { Course } from "@prisma/client"
 import { prisma } from "../lib/db"
 
 /**
