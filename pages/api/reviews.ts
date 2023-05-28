@@ -4,13 +4,13 @@ import { Course_Review } from "@prisma/client"
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
-    case "DELETE":
-      handleDeleteReview(req, res)
-      break
     case "PUT":
       handlePutReview(req, res)
     case "POST":
       handlePostReview(req, res)
+      break
+    case "DELETE":
+      handleDeleteReview(req, res)
       break
     default:
       res.send("Invalid API route")
