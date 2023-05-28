@@ -38,6 +38,15 @@ export function getReviewsbyUser(email: string) {
   })
 }
 
+export function updateReview(review: Course_Review) {
+  return prisma.course_Review.update({
+    where: {
+      review_id: review.review_id,
+    },
+    data: review,
+  })
+}
+
 /**
  * Delete specific review by a user for a course.
  * @param email email of the user
