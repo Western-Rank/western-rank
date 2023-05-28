@@ -1,8 +1,7 @@
-// import SearchIcon from '@mui/icons-material/Search'
 import { Autocomplete, TextField, createFilterOptions } from "@mui/material"
-import { Course } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/router"
+import { FullCourseName } from "../lib/courses"
 import styles from "../styles/Searchbar.module.scss"
 
 const Searchbar = () => {
@@ -14,10 +13,10 @@ const Searchbar = () => {
 
   const { data, isLoading, isError } = useQuery({
     queryFn: async () => {
-      const response = await fetch("/api/courses")
+      const response = await fetch("/api/courses?format=names")
       if (!response.ok) throw new Error("Courses were not found")
 
-      return response.json() as Promise<Course[]>
+      return response.json() as Promise<FullCourseName[]>
     },
     refetchOnWindowFocus: false,
     onSuccess(data) {
@@ -25,13 +24,12 @@ const Searchbar = () => {
     },
   })
 
-  const onCourseSelect = (ev: React.SyntheticEvent, value: unknown) => {
+  const onCourseSelect = (e: React.SyntheticEvent, value: unknown) => {
     if (typeof value !== "string" || value === null) return
 
-    // extract the course code from the full course name,
-    // encoding it as a valid URI string
     // e.g. CALC 1000: Calculus I -> CALC%201000
-    const courseCodeURI = encodeURIComponent(value?.split(":")[0])
+    const courseCodeURI = encodeURIComponent(value.split(":")[0])
+
     router.push(`/course/${courseCodeURI}`)
   }
 
