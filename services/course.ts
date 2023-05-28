@@ -6,7 +6,7 @@ import { prisma } from "../lib/db"
  * @param query Substring to match course names/codes with
  * @returns List of courses that match the given query
  */
-export function searchCourses(query: string): Promise<Course[]> {
+export function searchCourses(query: string) {
   return prisma.course.findMany({
     where: {
       OR: [
@@ -19,7 +19,7 @@ export function searchCourses(query: string): Promise<Course[]> {
 
 /**
  * Get all courses stored in the database.
- * @returns The list of courses formatted as '<COURSE_CODE>: <COURSE_NAME>'
+ * @returns List of all courses stored in the database
  */
 export function getAllCourses() {
   return prisma.course.findMany()
