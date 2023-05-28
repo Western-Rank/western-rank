@@ -1,5 +1,5 @@
 import { AppBar, Box, Button, Stack, Toolbar } from "@mui/material"
-import { useSession } from "next-auth/react"
+import { signIn, signOut, useSession } from "next-auth/react"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import styles from "../styles/Navbar.module.scss"
@@ -29,7 +29,8 @@ const Navbar = ({ searchBar }: NavbarProps) => {
                 src="/logo.svg"
                 alt="logo"
                 className={styles.logo}
-                style={{ width: "40px" }}
+                width={40}
+                height={40}
               />
             </Button>
           </Box>
@@ -48,15 +49,17 @@ const Navbar = ({ searchBar }: NavbarProps) => {
                   Profile
                 </Button>
                 <Button
-                  href="/api/auth/logout"
                   color="secondary"
+                  href="/api/auth/signout"
                   sx={{ whiteSpace: "nowrap" }}
                 >
+                  {/* TODO change to onclick with signout() */}
                   Log out
                 </Button>
               </>
             ) : (
-              <Button href="/api/auth/login" color="secondary">
+              <Button href="/api/auth/signin" color="secondary">
+                {/* TODO change to onclick with signin() */}
                 Log in
               </Button>
             )}
