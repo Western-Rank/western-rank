@@ -7,7 +7,7 @@ export default async function handler(
 ) {
   switch (req.method) {
     case "GET":
-      await getCourses(req, res)
+      await handleGetCourses(req, res)
       break
     default:
       res.send("Invalid API route")
@@ -20,7 +20,7 @@ export default async function handler(
  * @param req The Next.js API request object
  * @param res The Next.js API response object
  */
-async function getCourses(req: NextApiRequest, res: NextApiResponse) {
+async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
   try {
     const courses = await getAllCourses()
     res.send(courses)
