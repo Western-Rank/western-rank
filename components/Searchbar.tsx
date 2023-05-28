@@ -3,6 +3,7 @@ import { useRouter } from "next/router"
 import { Autocomplete, TextField, createFilterOptions } from "@mui/material"
 import styles from "../styles/Searchbar.module.scss"
 import { useQuery } from "@tanstack/react-query"
+import { Course } from "@prisma/client"
 
 const Searchbar = () => {
   const router = useRouter()
@@ -16,7 +17,7 @@ const Searchbar = () => {
       const response = await fetch("/api/courses")
       if (!response.ok) throw new Error("Courses were not found")
 
-      return response.json()
+      return response.json() as Promise<Course[]>
     },
     refetchOnWindowFocus: false,
     onSuccess(data) {
