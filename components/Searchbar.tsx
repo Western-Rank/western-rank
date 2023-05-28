@@ -1,9 +1,9 @@
 // import SearchIcon from '@mui/icons-material/Search'
-import { useRouter } from "next/router"
 import { Autocomplete, TextField, createFilterOptions } from "@mui/material"
-import styles from "../styles/Searchbar.module.scss"
-import { useQuery } from "@tanstack/react-query"
 import { Course } from "@prisma/client"
+import { useQuery } from "@tanstack/react-query"
+import { useRouter } from "next/router"
+import styles from "../styles/Searchbar.module.scss"
 
 const Searchbar = () => {
   const router = useRouter()
