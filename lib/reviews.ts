@@ -12,9 +12,11 @@ function getTermFromMonth(month: number): Term {
    * summer: may (5), june (6), july (7), august (8)
    */
 
-  if (9 <= month && month <= 12) return "Fall"
-  else if (1 <= month && month <= 4) return "Winter"
-  else return "Summer"
+  if (month > 12 || month < 0) throw new Error("Invalid month (1-12)")
+
+  if (month >= 9) return "Fall"
+  else if (month >= 5) return "Summer"
+  else return "Winter"
 }
 
 /**
