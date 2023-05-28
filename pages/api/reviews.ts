@@ -8,6 +8,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       handleDeleteReview(req, res)
       break
     case "PUT":
+      handlePutReview(req, res)
     case "POST":
       handlePostReview(req, res)
       break
@@ -42,6 +43,21 @@ async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
  * @param res
  */
 async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const review = req.body as Course_Review
+    await createReview(review)
+    res.status(200).json({ message: "Review updated" })
+  } catch (err: any) {
+    res.send(`Error: ${err.message}\nDetails: ${err.details}`)
+  }
+}
+
+/**
+ * Update a review in the database.
+ * @param req A request containing the course review formatted as a JSON in the body.
+ * @param res
+ */
+async function handlePutReview(req: NextApiRequest, res: NextApiResponse) {
   try {
     const review = req.body as Course_Review
     await upsertReview(review)
