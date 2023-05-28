@@ -1,18 +1,20 @@
-import { UserProvider } from "@auth0/nextjs-auth0"
 import { ThemeProvider, createTheme } from "@mui/material"
 import CssBaseline from "@mui/material/CssBaseline"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { SessionProvider } from "next-auth/react"
 import type { AppProps } from "next/app"
-import GoogleProvider from "next-auth/providers/google"
 
-import "../styles/globals.scss"
 import "@fontsource/lexend"
 import "@fontsource/open-sans"
 import "@fontsource/poppins"
+import "../styles/globals.scss"
 
 const queryClient = new QueryClient()
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   const theme = createTheme({
     palette: {
       background: {
@@ -58,13 +60,13 @@ export default function App({ Component, pageProps }: AppProps) {
   })
 
   return (
-    <UserProvider>
+    <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Component {...pageProps} />
         </ThemeProvider>
       </QueryClientProvider>
-    </UserProvider>
+    </SessionProvider>
   )
 }
