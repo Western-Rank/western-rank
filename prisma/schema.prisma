@@ -21,13 +21,13 @@ model Course {
 model Course_Review {
   review_id    Int       @id @default(autoincrement())
   professor    String?
-  review       String?
-  difficulty   Int?
-  liked        Boolean?
-  attendance   Int?
-  enthusiasm   Int?
-  anon         Boolean?
-  term_taken   Term?
+  review       String
+  difficulty   Int
+  liked        Boolean
+  attendance   Int
+  enthusiasm   Int
+  anon         Boolean
+  term_taken   Term
   date_taken   DateTime? @db.Date
   date_created DateTime  @default(now()) @db.Timestamptz(6)
   last_edited  DateTime  @default(now()) @db.Timestamptz(6)
