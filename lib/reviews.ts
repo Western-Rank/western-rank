@@ -1,5 +1,19 @@
 import { Term } from "@prisma/client"
 
+const DIFFICULTY_LABELS = {
+  0: "Free",
+  0.5: "Bird",
+  1: "Super Easy",
+  1.5: "Very Easy",
+  2: "Pretty Easy",
+  2.5: "Okay",
+  3: "Doable",
+  3.5: "Some Effort",
+  4: "Hard",
+  4.5: "Very Hard",
+  5: "Oof",
+} as const
+
 /**
  * Get the school semester/term given the month (as a number).
  * @param month (0-11) representation of the month
