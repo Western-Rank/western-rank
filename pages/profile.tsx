@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const user = getUserbyEmail(session.user.email)
+  const user = await getUserbyEmail(session.user.email)
   const reviews = (await getReviewsbyUser(session.user.email)) || []
 
   return {

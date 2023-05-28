@@ -5,7 +5,7 @@ import { prisma } from "../lib/db"
  * @param email email of the user
  * @returns The user object in the database
  */
-export const getUserbyEmail = async (email: string) => {
+export async function getUserByEmail(email: string) {
   return prisma.user.findUnique({
     where: {
       email,
