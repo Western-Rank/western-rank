@@ -45,7 +45,7 @@ async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
   try {
     const review = req.body as Course_Review
     await upsertReview(review)
-    res.status(200).end()
+    res.status(200).json({ message: "Review updated" })
   } catch (err: any) {
     res.send(`Error: ${err.message}\nDetails: ${err.details}`)
   }
