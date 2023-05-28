@@ -22,15 +22,22 @@ model Course_Review {
   review_id    Int       @id @default(autoincrement())
   professor    String?
   review       String?
-  email        String?
+  email        String
   difficulty   Int?
   liked        Boolean?
   attendance   Int?
   enthusiasm   Int?
   anon         Boolean?
+  term_taken   Term?
+  date_taken   DateTime? @db.Date
   date_created DateTime? @db.Timestamptz(6)
   last_edited  DateTime? @db.Timestamptz(6)
-  date_taken   DateTime? @db.Date
   course       Course?   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
   course_code  String?   @db.VarChar(255)
+}
+
+enum Term {
+  Fall
+  Winter
+  Summer
 }
