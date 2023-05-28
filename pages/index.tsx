@@ -1,16 +1,11 @@
-import type { GetServerSideProps } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.scss'
-import Link from 'next/link'
-import { AppBar, Toolbar, ThemeProvider, Typography, Box, Container } from '@mui/material'
-import MuiLink from '@mui/material/Link'
+import { Container, Typography } from "@mui/material"
+import Head from "next/head"
+import styles from "../styles/Home.module.scss"
 
-import Navbar from '../components/Navbar'
-import Searchbar from '../components/Searchbar'
+import Navbar from "../components/Navbar"
+import Searchbar from "../components/Searchbar"
 
 const Home = () => {
-
   return (
     <div className={styles.container}>
       <Head>
@@ -22,15 +17,14 @@ const Home = () => {
       <Navbar />
       <main className={styles.main}>
         <Container maxWidth="md" className={styles.container}>
-          <Typography variant="h4" fontWeight={800} >
-            Explore course reviews from <br/> Western University students
+          <Typography variant="h4" fontWeight={800}>
+            Explore course reviews from <br /> Western University students
           </Typography>
           <Searchbar />
         </Container>
       </main>
 
-      <footer className={styles.footer}>
-      </footer>
+      <footer className={styles.footer}></footer>
     </div>
   )
 }
