@@ -26,11 +26,14 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
     const format = req.query.format as string
 
     const courses = await getAllCourses()
-
-    if (format === "names")
-      courses.map((course) =>
-        formatFullCourseName(course.course_code, course.course_name),
+      .then((courses) =>
+        format === "names"
+          ? courses.map((course) =>
+              formatFullCourseName(course.course_code, course.course_name),
+            )
+          : courses,
       )
+      .catch((err) => res.status(500).json({ error: "Something went wrong" }))
 
     res.status(200).json(courses)
   } catch (err: any) {
