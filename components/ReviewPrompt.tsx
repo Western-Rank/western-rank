@@ -1,7 +1,8 @@
 import { useUser } from "@auth0/nextjs-auth0"
 import { Box, Card, Grid, Slider, TextField, Typography } from "@mui/material"
 import { Course, Course_Review } from "@prisma/client"
-import { FormEvent, useState } from "react"
+import { useSession } from "next-auth/react"
+import { FormEvent, useEffect, useState } from "react"
 
 /**
  * Generate tick labels for a MUI material slider's 'marks' prop from min to max, inclusive
@@ -27,11 +28,11 @@ interface ReviewPromptProps {
  * The component for submitting a review and its related information.
  */
 const ReviewPrompt = ({ courseCode }: ReviewPromptProps) => {
-  const { user } = useUser()
+  const { data: auth } = useSession()
 
   const [formValues, setFormValues] = useState({
     course_code: courseCode,
-    email: user!.email!,
+    email: "",
     date_created: new Date().toDateString(),
     last_edited: new Date().toDateString(),
     liked: true,
@@ -47,6 +48,8 @@ const ReviewPrompt = ({ courseCode }: ReviewPromptProps) => {
       ...prev,
       [name]: value,
     }))
+
+  useEffect(() => updateForm("email", auth?.user?.email ?? ""), [auth])
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target
