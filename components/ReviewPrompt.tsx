@@ -1,6 +1,5 @@
-import { useUser } from "@auth0/nextjs-auth0"
 import { Box, Card, Grid, Slider, TextField, Typography } from "@mui/material"
-import { Course, Course_Review } from "@prisma/client"
+import { Course } from "@prisma/client"
 import { useSession } from "next-auth/react"
 import { FormEvent, useEffect, useState } from "react"
 
