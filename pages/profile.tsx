@@ -6,7 +6,7 @@ import Image from "next/image"
 import Navbar from "../components/Navbar"
 import ReviewList from "../components/ReviewList"
 import { getReviewsbyUser } from "../services/review"
-import { getUserbyEmail } from "../services/user"
+import { getUserByEmail } from "../services/user"
 import { authOptions } from "./api/auth/[...nextauth]"
 
 interface ProfileProps {
@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const user = await getUserbyEmail(session.user.email)
+  const user = await getUserByEmail(session.user.email)
   const reviews = (await getReviewsbyUser(session.user.email)) || []
 
   return {
@@ -56,7 +56,12 @@ function Profile({ reviews, user }: ProfileProps) {
               id="userInfo"
               sx={{ padding: "15px", display: "inline-block" }}
             >
-              <Image src={user.image ?? ""} alt={user.name ?? ""} />
+              <Image
+                src={user.image ?? ""}
+                alt={user.name ?? ""}
+                width={96}
+                height={96}
+              />
               <Typography>{user.email}</Typography>
             </Card>
           </Grid>
