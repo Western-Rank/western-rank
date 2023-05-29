@@ -10,7 +10,7 @@ type NavbarProps = {
 }
 
 const Navbar = ({ searchBar }: NavbarProps) => {
-  const { data } = useSession()
+  const { data: auth } = useSession()
 
   const router = useRouter()
 
@@ -43,7 +43,7 @@ const Navbar = ({ searchBar }: NavbarProps) => {
             alignItems="center"
             sx={{ flexBasis: "15%", flexShrink: 0 }}
           >
-            {data?.user ? (
+            {auth?.user ? (
               <>
                 <Button href="/profile" color="secondary">
                   Profile
