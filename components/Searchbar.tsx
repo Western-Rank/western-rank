@@ -11,7 +11,7 @@ const Searchbar = () => {
     limit: 15,
   })
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery(["courseNames"], {
     queryFn: async () => {
       const response = await fetch("/api/courses?format=names")
       if (!response.ok) throw new Error("Courses were not found")
