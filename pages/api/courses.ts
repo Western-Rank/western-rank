@@ -2,10 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getAllCourses } from "../../services/course";
 import { formatFullCourseName } from "../../lib/courses";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
       return await handleGetCourses(req, res);
@@ -29,9 +26,7 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
       return res
         .status(200)
         .json(
-          courses.map((course) =>
-            formatFullCourseName(course.course_code, course.course_name)
-          )
+          courses.map((course) => formatFullCourseName(course.course_code, course.course_name)),
         );
     } else {
       return res.status(200).json(courses);

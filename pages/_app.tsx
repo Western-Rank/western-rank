@@ -1,20 +1,17 @@
-import { ThemeProvider, createTheme } from "@mui/material"
-import CssBaseline from "@mui/material/CssBaseline"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { SessionProvider } from "next-auth/react"
-import type { AppProps } from "next/app"
+import { ThemeProvider, createTheme } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SessionProvider } from "next-auth/react";
+import type { AppProps } from "next/app";
 
-import "@fontsource/lexend"
-import "@fontsource/open-sans"
-import "@fontsource/poppins"
-import "../styles/globals.scss"
+import "@fontsource/lexend";
+import "@fontsource/open-sans";
+import "@fontsource/poppins";
+import "../styles/globals.scss";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
-export default function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const theme = createTheme({
     palette: {
       background: {
@@ -57,7 +54,7 @@ export default function App({
         xl: 1536,
       },
     },
-  })
+  });
 
   return (
     <SessionProvider session={session}>
@@ -68,5 +65,5 @@ export default function App({
         </ThemeProvider>
       </QueryClientProvider>
     </SessionProvider>
-  )
+  );
 }

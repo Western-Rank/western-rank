@@ -1,4 +1,4 @@
-import { Term } from "@prisma/client"
+import { Term } from "@prisma/client";
 
 const DIFFICULTY_LABELS = {
   0: "Free",
@@ -12,7 +12,7 @@ const DIFFICULTY_LABELS = {
   4: "Hard",
   4.5: "Very Hard",
   5: "Oof",
-} as const
+} as const;
 
 /**
  * Get the school semester/term given the month (as a number).
@@ -26,11 +26,11 @@ function getTermFromMonth(month: number): Term {
    * summer: may (5), june (6), july (7), august (8)
    */
 
-  if (month > 12 || month < 0) throw new Error("Invalid month (1-12)")
+  if (month > 12 || month < 0) throw new Error("Invalid month (1-12)");
 
-  if (month >= 9) return "Fall"
-  else if (month >= 5) return "Summer"
-  else return "Winter"
+  if (month >= 9) return "Fall";
+  else if (month >= 5) return "Summer";
+  else return "Winter";
 }
 
 /**
@@ -39,8 +39,8 @@ function getTermFromMonth(month: number): Term {
  * @returns the school term and year as an array [term: Term, year: number]
  */
 export function dateToTermAndYear(date: Date): [Term, number] {
-  const year = date.getFullYear()
-  const term = getTermFromMonth(date.getMonth())
+  const year = date.getFullYear();
+  const term = getTermFromMonth(date.getMonth());
 
-  return [term, year]
+  return [term, year];
 }

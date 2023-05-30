@@ -1,37 +1,26 @@
-import { AppBar, Box, Button, Stack, Toolbar } from "@mui/material"
-import { signIn, signOut, useSession } from "next-auth/react"
-import Image from "next/image"
-import { useRouter } from "next/router"
-import styles from "../styles/Navbar.module.scss"
-import Searchbar from "./Searchbar"
+import { AppBar, Box, Button, Stack, Toolbar } from "@mui/material";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import styles from "../styles/Navbar.module.scss";
+import Searchbar from "./Searchbar";
 
 type NavbarProps = {
-  searchBar?: boolean
-}
+  searchBar?: boolean;
+};
 
 const Navbar = ({ searchBar }: NavbarProps) => {
-  const { data: auth } = useSession()
+  const { data: auth } = useSession();
 
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <AppBar component="nav" position="static">
       <Toolbar>
-        <Stack
-          direction="row"
-          width="1100px"
-          justifyContent="space-between"
-          margin="auto"
-        >
+        <Stack direction="row" width="1100px" justifyContent="space-between" margin="auto">
           <Box display="flex" justifyContent="center" flexBasis="10%">
             <Button onClick={() => router.push("/")}>
-              <Image
-                src="/logo.svg"
-                alt="logo"
-                className={styles.logo}
-                width={40}
-                height={40}
-              />
+              <Image src="/logo.svg" alt="logo" className={styles.logo} width={40} height={40} />
             </Button>
           </Box>
           <Box mb={-16} sx={{ flexBasis: "75%" }}>
@@ -48,11 +37,7 @@ const Navbar = ({ searchBar }: NavbarProps) => {
                 <Button href="/profile" color="secondary">
                   Profile
                 </Button>
-                <Button
-                  color="secondary"
-                  href="/api/auth/signout"
-                  sx={{ whiteSpace: "nowrap" }}
-                >
+                <Button color="secondary" href="/api/auth/signout" sx={{ whiteSpace: "nowrap" }}>
                   {/* TODO change to onclick with signout() */}
                   Log out
                 </Button>
@@ -67,7 +52,7 @@ const Navbar = ({ searchBar }: NavbarProps) => {
         </Stack>
       </Toolbar>
     </AppBar>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

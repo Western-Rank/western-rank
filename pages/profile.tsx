@@ -1,21 +1,21 @@
-import { Box, Card, Grid, Typography, useTheme } from "@mui/material"
-import { Course_Review, User } from "@prisma/client"
-import { GetServerSideProps } from "next"
-import { getServerSession } from "next-auth"
-import Image from "next/image"
-import Navbar from "../components/Navbar"
-import ReviewList from "../components/ReviewList"
-import { getReviewsbyUser } from "../services/review"
-import { getUserByEmail } from "../services/user"
-import { authOptions } from "./api/auth/[...nextauth]"
+import { Box, Card, Grid, Typography, useTheme } from "@mui/material";
+import { Course_Review, User } from "@prisma/client";
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
+import Image from "next/image";
+import Navbar from "../components/Navbar";
+import ReviewList from "../components/ReviewList";
+import { getReviewsbyUser } from "../services/review";
+import { getUserByEmail } from "../services/user";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 interface ProfileProps {
-  user: User
-  reviews: Course_Review[]
+  user: User;
+  reviews: Course_Review[];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions)
+  const session = await getServerSession(context.req, context.res, authOptions);
 
   if (!session || !session.user?.email) {
     return {
@@ -23,22 +23,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         destination: "/api/auth/signin",
         permanent: false,
       },
-    }
+    };
   }
 
-  const user = await getUserByEmail(session.user.email)
-  const reviews = (await getReviewsbyUser(session.user.email)) || []
+  const user = await getUserByEmail(session.user.email);
+  const reviews = (await getReviewsbyUser(session.user.email)) || [];
 
   return {
     props: {
       user,
       reviews,
     },
-  }
-}
+  };
+};
 
 function Profile({ reviews, user }: ProfileProps) {
-  const theme = useTheme()
+  const theme = useTheme();
 
   return (
     <>
@@ -52,16 +52,8 @@ function Profile({ reviews, user }: ProfileProps) {
           direction={{ xs: "column", s: "column", md: "row", lg: "row" }}
         >
           <Grid item xs={2}>
-            <Card
-              id="userInfo"
-              sx={{ padding: "15px", display: "inline-block" }}
-            >
-              <Image
-                src={user.image ?? ""}
-                alt={user.name ?? ""}
-                width={96}
-                height={96}
-              />
+            <Card id="userInfo" sx={{ padding: "15px", display: "inline-block" }}>
+              <Image src={user.image ?? ""} alt={user.name ?? ""} width={96} height={96} />
               <Typography>{user.email}</Typography>
             </Card>
           </Grid>
@@ -72,7 +64,7 @@ function Profile({ reviews, user }: ProfileProps) {
         </Grid>
       </Box>
     </>
-  )
+  );
 }
 
-export default Profile
+export default Profile;

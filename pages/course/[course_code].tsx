@@ -1,17 +1,10 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  useTheme,
-} from "@mui/material"
-import { Course, Course_Review } from "@prisma/client"
-import { GetServerSideProps } from "next"
-import Navbar from "../../components/Navbar"
-import ReviewList from "../../components/ReviewList"
-import { getCourse } from "../../services/course"
-import { getReviewsbyCourse } from "../../services/review"
+import { Box, Card, CardContent, Grid, Typography, useTheme } from "@mui/material";
+import { Course, Course_Review } from "@prisma/client";
+import { GetServerSideProps } from "next";
+import Navbar from "../../components/Navbar";
+import ReviewList from "../../components/ReviewList";
+import { getCourse } from "../../services/course";
+import { getReviewsbyCourse } from "../../services/review";
 
 /**
  * Course review page for the given course_code
@@ -49,36 +42,36 @@ const testReviews: Course_Review[] = [
     term_taken: "Winter",
     date_taken: new Date(),
   },
-]
+];
 
 interface CourseProps {
-  reviews: Course_Review[] // all course reviews for this course
-  course: Course // the course information for the course displayed on this page
+  reviews: Course_Review[]; // all course reviews for this course
+  course: Course; // the course information for the course displayed on this page
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // provided by the dynamic route, e.g. /course/CALC1000
-  const { course_code } = context.params as { course_code: string }
+  const { course_code } = context.params as { course_code: string };
 
-  const course = await getCourse(course_code)
+  const course = await getCourse(course_code);
   if (!course)
     return {
       notFound: true,
-    }
+    };
 
   // TODO consider lazy loading reviews on client side with react query
-  const reviews = (await getReviewsbyCourse(course_code)) || []
+  const reviews = (await getReviewsbyCourse(course_code)) || [];
 
   return {
     props: {
       reviews,
       course,
     } satisfies Partial<CourseProps>,
-  }
-}
+  };
+};
 
 const Course = ({ reviews, course }: CourseProps) => {
-  const theme = useTheme()
+  const theme = useTheme();
 
   return (
     <>
@@ -123,15 +116,13 @@ const Course = ({ reviews, course }: CourseProps) => {
               <Typography variant="h5">Extra Info</Typography>
               <Typography>{course?.extra_info || "None"}</Typography>
               <Typography variant="h5">Locations</Typography>
-              <Typography>
-                {course.location?.replace(",", ", ") || ""}
-              </Typography>
+              <Typography>{course.location?.replace(",", ", ") || ""}</Typography>
             </Card>
           </Grid>
         </Grid>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export default Course
+export default Course;

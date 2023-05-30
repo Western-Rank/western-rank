@@ -1,4 +1,4 @@
-import { prisma } from "../lib/db"
+import { prisma } from "../lib/db";
 
 /**
  * Search for courses stored in the database.
@@ -8,12 +8,9 @@ import { prisma } from "../lib/db"
 export function searchCourses(query: string) {
   return prisma.course.findMany({
     where: {
-      OR: [
-        { course_code: { contains: query } },
-        { course_name: { contains: query } },
-      ],
+      OR: [{ course_code: { contains: query } }, { course_name: { contains: query } }],
     },
-  })
+  });
 }
 
 /**
@@ -21,7 +18,7 @@ export function searchCourses(query: string) {
  * @returns List of all courses stored in the database
  */
 export function getAllCourses() {
-  return prisma.course.findMany()
+  return prisma.course.findMany();
 }
 
 /**
@@ -34,5 +31,5 @@ export function getCourse(courseCode: string) {
     where: {
       course_code: courseCode,
     },
-  })
+  });
 }

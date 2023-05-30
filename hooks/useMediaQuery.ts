@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 /**
  *
@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
  */
 function useMediaQuery(...queries: string[]): boolean {
   const supportMatchMedia =
-    typeof window !== 'undefined' && typeof window.matchMedia !== 'undefined';
+    typeof window !== "undefined" && typeof window.matchMedia !== "undefined";
 
   const [match, setMatch] = useState(false);
 

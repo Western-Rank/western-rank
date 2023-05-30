@@ -1,5 +1,5 @@
-import { Course_Review } from "@prisma/client"
-import { prisma } from "../lib/db"
+import { Course_Review } from "@prisma/client";
+import { prisma } from "../lib/db";
 
 /**
  * Create a review for a course.
@@ -9,7 +9,7 @@ import { prisma } from "../lib/db"
 export function createReview(review: Course_Review) {
   return prisma.course_Review.create({
     data: review,
-  })
+  });
 }
 
 /**
@@ -22,7 +22,7 @@ export function getReviewsbyCourse(courseCode: string) {
     where: {
       course_code: courseCode,
     },
-  })
+  });
 }
 
 /**
@@ -35,7 +35,7 @@ export function getReviewsbyUser(email: string) {
     where: {
       email: email,
     },
-  })
+  });
 }
 
 export function updateReview(review: Course_Review) {
@@ -44,7 +44,7 @@ export function updateReview(review: Course_Review) {
       review_id: review.review_id,
     },
     data: review,
-  })
+  });
 }
 
 export function upsertReview(review: Course_Review) {
@@ -54,7 +54,7 @@ export function upsertReview(review: Course_Review) {
     },
     create: review,
     update: review,
-  })
+  });
 }
 
 /**
@@ -70,5 +70,5 @@ export function deleteReview(email: string, courseCode: string) {
       email: email,
       course_code: courseCode,
     },
-  })
+  });
 }

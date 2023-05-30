@@ -1,33 +1,33 @@
-import { Box, Card, Grid, Slider, TextField, Typography } from "@mui/material"
-import { Course } from "@prisma/client"
-import { useSession } from "next-auth/react"
-import { FormEvent, useEffect, useState } from "react"
+import { Box, Card, Grid, Slider, TextField, Typography } from "@mui/material";
+import { Course } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { FormEvent, useEffect, useState } from "react";
 
 /**
  * Generate tick labels for a MUI material slider's 'marks' prop from min to max, inclusive
  * TODO move to utils
  */
 function generateSliderTicks(min: number, max: number, step = 1) {
-  const numTicks = Math.floor((max - min) / step) + 1
-  const arr = Array(numTicks).fill(0)
+  const numTicks = Math.floor((max - min) / step) + 1;
+  const arr = Array(numTicks).fill(0);
   return arr.map((_, idx) => {
-    const tickNum = min + idx * step
+    const tickNum = min + idx * step;
     return {
       value: tickNum,
       label: tickNum.toString(),
-    }
-  })
+    };
+  });
 }
 
 interface ReviewPromptProps {
-  courseCode: Course["course_code"]
+  courseCode: Course["course_code"];
 }
 
 /**
  * The component for submitting a review and its related information.
  */
 const ReviewPrompt = ({ courseCode }: ReviewPromptProps) => {
-  const { data: auth } = useSession()
+  const { data: auth } = useSession();
 
   const [formValues, setFormValues] = useState({
     course_code: courseCode,
@@ -40,25 +40,24 @@ const ReviewPrompt = ({ courseCode }: ReviewPromptProps) => {
     attendance: 0,
     professor: "",
     anon: false,
-  })
+  });
 
   const updateForm = (name: string, value: any) =>
     setFormValues((prev) => ({
       ...prev,
       [name]: value,
-    }))
+    }));
 
-  useEffect(() => updateForm("email", auth?.user?.email ?? ""), [auth])
+  useEffect(() => updateForm("email", auth?.user?.email ?? ""), [auth]);
 
   const handleInputChange = (event: any) => {
-    const { name, value } = event.target
-    updateForm(name, value)
-  }
+    const { name, value } = event.target;
+    updateForm(name, value);
+  };
 
-  const handleSliderChange = (name: string) => (_event: any, value: any) =>
-    updateForm(name, value)
+  const handleSliderChange = (name: string) => (_event: any, value: any) => updateForm(name, value);
 
-  const handleSubmit = (event: FormEvent) => event.preventDefault()
+  const handleSubmit = (event: FormEvent) => event.preventDefault();
 
   return (
     <>
@@ -142,7 +141,7 @@ const ReviewPrompt = ({ courseCode }: ReviewPromptProps) => {
         </form>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default ReviewPrompt
+export default ReviewPrompt;

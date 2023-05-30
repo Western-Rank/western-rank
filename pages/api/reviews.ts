@@ -1,9 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import {
-  createReview,
-  deleteReview,
-  upsertReview,
-} from "../../services/review";
+import { createReview, deleteReview, upsertReview } from "../../services/review";
 import { Course_Review } from "@prisma/client";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {

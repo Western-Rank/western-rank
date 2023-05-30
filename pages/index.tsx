@@ -1,9 +1,9 @@
-import { Container, Typography } from "@mui/material"
-import Head from "next/head"
-import styles from "../styles/Home.module.scss"
+import { Container, Typography } from "@mui/material";
+import Head from "next/head";
+import styles from "../styles/Home.module.scss";
 
-import Navbar from "../components/Navbar"
-import Searchbar from "../components/Searchbar"
+import Navbar from "../components/Navbar";
+import Searchbar from "../components/Searchbar";
 
 const Home = () => {
   return (
@@ -26,7 +26,7 @@ const Home = () => {
 
       <footer className={styles.footer}></footer>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

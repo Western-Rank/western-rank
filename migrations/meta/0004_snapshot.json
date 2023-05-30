@@ -93,12 +93,8 @@
           "name": "course_reviews_course_code_courses_course_code_fk",
           "tableFrom": "course_reviews",
           "tableTo": "courses",
-          "columnsFrom": [
-            "course_code"
-          ],
-          "columnsTo": [
-            "course_code"
-          ],
+          "columnsFrom": ["course_code"],
+          "columnsTo": ["course_code"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

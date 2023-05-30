@@ -1,4 +1,4 @@
-import { prisma } from "../lib/db"
+import { prisma } from "../lib/db";
 
 /**
  * Get a user by their email
@@ -10,5 +10,5 @@ export async function getUserByEmail(email: string) {
     where: {
       email,
     },
-  })
+  });
 }

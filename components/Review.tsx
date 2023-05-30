@@ -7,32 +7,32 @@ import {
   CardContent,
   Stack,
   Typography,
-} from "@mui/material"
-import { Course_Review } from "@prisma/client"
-import { useSession } from "next-auth/react"
-import StatMeter, { MeterType } from "./StatMeter"
+} from "@mui/material";
+import { Course_Review } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import StatMeter, { MeterType } from "./StatMeter";
 
 // profile pic, review text,
 interface ReviewProps {
-  review: Course_Review
-  onDelete?: () => void
+  review: Course_Review;
+  onDelete?: () => void;
 }
 
 const Review = ({ review, onDelete }: ReviewProps) => {
-  const { data: auth } = useSession()
+  const { data: auth } = useSession();
 
   const onDeleteReview = async () => {
-    if (!auth) return // if user is not logged in, do nothing
+    if (!auth) return; // if user is not logged in, do nothing
 
     const searchParams = new URLSearchParams({
       email: auth.user!.email!,
       course_code: review.course_code,
-    })
+    });
 
-    await fetch(`api/reviews?${searchParams}`, { method: "DELETE" })
+    await fetch(`api/reviews?${searchParams}`, { method: "DELETE" });
 
-    if (onDelete) onDelete()
-  }
+    if (onDelete) onDelete();
+  };
 
   return (
     <>
@@ -57,12 +57,8 @@ const Review = ({ review, onDelete }: ReviewProps) => {
                   </Typography>
                   <Typography>
                     {review.date_created < review.last_edited
-                      ? `Last Edited: ${new Date(
-                          review.last_edited,
-                        ).toDateString()}`
-                      : `Posted: ${new Date(
-                          review.date_created,
-                        ).toDateString()}`}
+                      ? `Last Edited: ${new Date(review.last_edited).toDateString()}`
+                      : `Posted: ${new Date(review.date_created).toDateString()}`}
                   </Typography>
                 </Box>
                 <CardActions>
@@ -75,10 +71,7 @@ const Review = ({ review, onDelete }: ReviewProps) => {
               </Stack>
               <Typography variant="body1">{review.review}</Typography>
             </Box>
-            <Box
-              className="statBlock"
-              sx={{ flexBasis: "25%", maxWidth: "200px" }}
-            >
+            <Box className="statBlock" sx={{ flexBasis: "25%", maxWidth: "200px" }}>
               <StatMeter
                 title="Difficulty"
                 value={review.difficulty}
@@ -94,17 +87,13 @@ const Review = ({ review, onDelete }: ReviewProps) => {
                 value={review.attendance}
                 type={MeterType.Percentage}
               ></StatMeter>
-              <StatMeter
-                title="Liked"
-                value={review.liked}
-                type={MeterType.Flag}
-              ></StatMeter>
+              <StatMeter title="Liked" value={review.liked} type={MeterType.Flag}></StatMeter>
             </Box>
           </Stack>
         </CardContent>
       </Card>
     </>
-  )
-}
+  );
+};
 
-export default Review
+export default Review;
