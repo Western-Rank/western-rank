@@ -18,7 +18,11 @@ export function searchCourses(query: string) {
  * @returns List of all courses stored in the database
  */
 export function getAllCourses() {
-  return prisma.course.findMany();
+  return prisma.course.findMany({
+    orderBy: {
+      course_code: "asc",
+    },
+  });
 }
 
 /**

@@ -19,9 +19,6 @@ const Searchbar = () => {
       return response.json() as Promise<FullCourseName[]>;
     },
     refetchOnWindowFocus: false,
-    onSuccess(data) {
-      data.sort();
-    },
   });
 
   const onCourseSelect = (e: React.SyntheticEvent, value: unknown) => {
