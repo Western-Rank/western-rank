@@ -1,18 +1,16 @@
-import type { NextApiRequest, NextApiResponse } from "next"
-import { getAllCourses } from "../../services/course"
-import { formatFullCourseName } from "../../lib/courses"
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getAllCourses } from "../../services/course";
+import { formatFullCourseName } from "../../lib/courses";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   switch (req.method) {
     case "GET":
-      await handleGetCourses(req, res)
-      break
+      return await handleGetCourses(req, res);
     default:
-      res.send("Invalid API route")
-      break
+      return res.send("Invalid API route");
   }
 }
 
@@ -23,20 +21,22 @@ export default async function handler(
  */
 async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const format = req.query.format as string
+    const format = req.query.format as string;
 
-    const courses = await getAllCourses()
-      .then((courses) =>
-        format === "names"
-          ? courses.map((course) =>
-              formatFullCourseName(course.course_code, course.course_name),
-            )
-          : courses,
-      )
-      .catch((err) => res.status(500).json({ error: "Something went wrong" }))
+    const courses = await getAllCourses();
 
-    res.status(200).json(courses)
+    if (format === "names") {
+      return res
+        .status(200)
+        .json(
+          courses.map((course) =>
+            formatFullCourseName(course.course_code, course.course_name)
+          )
+        );
+    } else {
+      return res.status(200).json(courses);
+    }
   } catch (err: any) {
-    res.send(`Error: ${err.message}\nDetails: ${err.details}`)
+    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }

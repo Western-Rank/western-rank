@@ -1,20 +1,21 @@
-import type { NextApiRequest, NextApiResponse } from "next"
-import { createReview, deleteReview, upsertReview } from "../../services/review"
-import { Course_Review } from "@prisma/client"
+import type { NextApiRequest, NextApiResponse } from "next";
+import {
+  createReview,
+  deleteReview,
+  upsertReview,
+} from "../../services/review";
+import { Course_Review } from "@prisma/client";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case "PUT":
-      handlePutReview(req, res)
+      return handlePutReview(req, res);
     case "POST":
-      handlePostReview(req, res)
-      break
+      return handlePostReview(req, res);
     case "DELETE":
-      handleDeleteReview(req, res)
-      break
+      return handleDeleteReview(req, res);
     default:
-      res.send("Invalid API route")
-      break
+      return res.send("Invalid API route");
   }
 }
 
@@ -27,13 +28,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { email, course_code } = req.query as {
-      email: string
-      course_code: string
-    }
-    await deleteReview(email, course_code)
-    res.status(200).end()
+      email: string;
+      course_code: string;
+    };
+    await deleteReview(email, course_code);
+    return res.status(200).json({ message: "Review deleted" });
   } catch (err: any) {
-    res.send(`Error: ${err.message}\nDetails: ${err.details}`)
+    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
 
@@ -44,11 +45,11 @@ async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
  */
 async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const review = req.body as Course_Review
-    await createReview(review)
-    res.status(200).json({ message: "Review updated" })
+    const review = req.body as Course_Review;
+    await createReview(review);
+    return res.status(200).json({ message: "Review updated" });
   } catch (err: any) {
-    res.send(`Error: ${err.message}\nDetails: ${err.details}`)
+    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
 
@@ -59,10 +60,10 @@ async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
  */
 async function handlePutReview(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const review = req.body as Course_Review
-    await upsertReview(review)
-    res.status(200).json({ message: "Review updated" })
+    const review = req.body as Course_Review;
+    await upsertReview(review);
+    return res.status(200).json({ message: "Review updated" });
   } catch (err: any) {
-    res.send(`Error: ${err.message}\nDetails: ${err.details}`)
+    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
