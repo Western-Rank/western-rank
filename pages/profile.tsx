@@ -1,69 +1,70 @@
-import React from 'react';
-import { GetServerSideProps } from 'next';
-import { getSession, useUser, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { Box, Card, Grid, Typography, useTheme } from "@mui/material";
+import { Course_Review, User } from "@prisma/client";
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
+import Image from "next/image";
 import Navbar from "../components/Navbar";
-import {
-  useTheme,
-  Box,
-  Grid,
-  Card,
-  Typography
-} from '@mui/material';
-import { CourseReview, getUserReviews } from '../lib/reviews';
-import ReviewList from '../components/ReviewList';
+import ReviewList from "../components/ReviewList";
+import { getReviewsbyUser } from "../services/review";
+import { getUserByEmail } from "../services/user";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 interface ProfileProps {
-  reviews: CourseReview[]
+  user: User;
+  reviews: Course_Review[];
 }
 
-export const getServerSideProps: GetServerSideProps = withPageAuthRequired({
-  async getServerSideProps(context) {
-    const authUser = getSession(context.req, context.res);
-    return {
-      props: {
-        reviews: JSON.parse(JSON.stringify(await getUserReviews(authUser?.user.email)))
-      }
-    }
-  }
-});
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
 
-function Profile({ reviews }: ProfileProps) {
+  if (!session || !session.user?.email) {
+    return {
+      redirect: {
+        destination: "/api/auth/signin",
+        permanent: false,
+      },
+    };
+  }
+
+  const user = await getUserByEmail(session.user.email);
+  const reviews = (await getReviewsbyUser(session.user.email)) || [];
+
+  return {
+    props: {
+      user,
+      reviews,
+    },
+  };
+};
+
+function Profile({ reviews, user }: ProfileProps) {
   const theme = useTheme();
-  const { user, error, isLoading } = useUser();
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
-  if (!user) return (
-  <div>
-      <h1>You must be logged in to view your profile.</h1>
-  </div>
-  );
 
   return (
     <>
       <Navbar searchBar></Navbar>
       <br></br>
-      <Box id="main" width="90%" maxWidth="1100px" margin="auto" >
-        <Grid 
-            container 
-            columns={{ xs: 4, s: 4, md: 12, lg: 12 }} 
-            spacing={2}
-            direction={{ xs: "column", s: "column", md: "row", lg: "row" }}>
-            
-            <Grid item xs={2}>
-              <Card id="userInfo" sx={{ padding: "15px", display: "inline-block" }}>
-                <img src={user.picture ?? ""} alt={user.name ?? ""} />
-                <Typography>{user.email}</Typography>
-              </Card>
-            </Grid>
+      <Box id="main" width="90%" maxWidth="1100px" margin="auto">
+        <Grid
+          container
+          columns={{ xs: 4, s: 4, md: 12, lg: 12 }}
+          spacing={2}
+          direction={{ xs: "column", s: "column", md: "row", lg: "row" }}
+        >
+          <Grid item xs={2}>
+            <Card id="userInfo" sx={{ padding: "15px", display: "inline-block" }}>
+              <Image src={user.image ?? ""} alt={user.name ?? ""} width={96} height={96} />
+              <Typography>{user.email}</Typography>
+            </Card>
+          </Grid>
 
-            <Grid item xs={10}>
-              <ReviewList isProfile={true} courseCode={""} reviews={reviews}></ReviewList>
-            </Grid>
+          <Grid item xs={10}>
+            <ReviewList reviews={reviews}></ReviewList>
+          </Grid>
         </Grid>
       </Box>
-
     </>
   );
 }
 
-export default Profile
+export default Profile;

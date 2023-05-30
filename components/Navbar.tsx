@@ -1,19 +1,17 @@
-import { AppBar, Toolbar, Typography, Stack, Box, Container, IconButton, Button } from '@mui/material';
-import { Logout as LogoutIcon, Person as PersonIcon } from '@mui/icons-material';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import MuiLink from '@mui/material/Link';
-import styles from '../styles/Navbar.module.scss';
-import Searchbar from './Searchbar';
-import { useUser } from '@auth0/nextjs-auth0';
+import { AppBar, Box, Button, Stack, Toolbar } from "@mui/material";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import styles from "../styles/Navbar.module.scss";
+import Searchbar from "./Searchbar";
 
 type NavbarProps = {
-    shadow?: boolean,
-    searchBar?: boolean,
-}
+  searchBar?: boolean;
+};
 
-const Navbar = ({ shadow, searchBar }: NavbarProps) => {
-  const { user } = useUser();
+const Navbar = ({ searchBar }: NavbarProps) => {
+  const { data: auth } = useSession();
+
   const router = useRouter();
 
   return (
@@ -21,31 +19,40 @@ const Navbar = ({ shadow, searchBar }: NavbarProps) => {
       <Toolbar>
         <Stack direction="row" width="1100px" justifyContent="space-between" margin="auto">
           <Box display="flex" justifyContent="center" flexBasis="10%">
-            <Button onClick={() => router.push('/')}>
-              <img src="/logo.svg" alt="logo" className={styles.logo} style={{ width: "40px" }}/>
+            <Button onClick={() => router.push("/")}>
+              <Image src="/logo.svg" alt="logo" className={styles.logo} width={40} height={40} />
             </Button>
           </Box>
           <Box mb={-16} sx={{ flexBasis: "75%" }}>
             {searchBar && <Searchbar />}
           </Box>
-          <Stack 
+          <Stack
             direction="row"
             justifyContent="space-around"
             alignItems="center"
             sx={{ flexBasis: "15%", flexShrink: 0 }}
           >
-            {user
-              ? <>
-                <Button href="/profile" color="secondary">Profile</Button>
-                <Button href="/api/auth/logout" color="secondary" sx={{ whiteSpace: 'nowrap' }} >Log out</Button>
+            {auth?.user ? (
+              <>
+                <Button href="/profile" color="secondary">
+                  Profile
+                </Button>
+                <Button color="secondary" href="/api/auth/signout" sx={{ whiteSpace: "nowrap" }}>
+                  {/* TODO change to onclick with signout() */}
+                  Log out
+                </Button>
               </>
-              : <Button href="/api/auth/login" color="secondary">Log in</Button>
-            }
+            ) : (
+              <Button href="/api/auth/signin" color="secondary">
+                {/* TODO change to onclick with signin() */}
+                Log in
+              </Button>
+            )}
           </Stack>
         </Stack>
       </Toolbar>
     </AppBar>
   );
-}
+};
 
-export default Navbar
+export default Navbar;
