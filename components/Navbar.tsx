@@ -24,7 +24,7 @@ const Navbar = ({ searchBar }: NavbarProps) => {
             </Button>
           </Box>
           <Box mb={-16} sx={{ flexBasis: "75%" }}>
-            {searchBar && <Searchbar />}
+            {/* {searchBar && <Searchbar />} */}
           </Box>
           <Stack
             direction="row"
