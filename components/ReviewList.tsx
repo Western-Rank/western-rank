@@ -1,10 +1,20 @@
-import { Button, Stack, Typography } from "@mui/material";
 import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Review from "./Review";
 import ReviewPrompt from "./ReviewPrompt";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface ReviewListProps {
   courseCode?: string;
@@ -20,9 +30,6 @@ const ReviewList = ({ courseCode = "", reviews }: ReviewListProps) => {
 
   const [showReviewPrompt, setShowReviewPrompt] = useState(false);
   const userHasReview = reviews.some(({ email }) => auth?.user!.email === email);
-  const isProfile = !courseCode;
-
-  if (status === "loading") return <p>Loading...</p>;
 
   const reviewButtonText = !auth
     ? "Log in to write a review"
@@ -40,34 +47,39 @@ const ReviewList = ({ courseCode = "", reviews }: ReviewListProps) => {
   const onDeleteReview = () => router.replace(router.asPath);
 
   return (
-    <>
-      <Stack>
-        <Stack direction="row" justifyContent="space-between">
-          <Typography>Course Reviews ({reviews.length})</Typography>
-          {!isProfile && (
-            <Button color="secondary" onClick={onShowReview} disabled={!auth}>
-              {reviewButtonText}
-            </Button>
-          )}
-        </Stack>
-      </Stack>
-      <label htmlFor="sort">Sort By</label>
+    <div className="flex flex-col gap-1">
+      <div className="flex justify-between">
+        <h5>Course Reviews ({reviews.length})</h5>
+        {status == "authenticated" && (
+          <Button onClick={onShowReview} disabled={!auth}>
+            {reviewButtonText}
+          </Button>
+        )}
+      </div>
 
-      <select name="sort">
-        <option value="recent">Recent</option>
-        <option value="top">Top</option>
-      </select>
+      <div className="flex gap-2 items-center">
+        <label>Sort By</label>
+        <Select defaultValue="recent">
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="recent">Most Recent</SelectItem>
+            <SelectItem value="top">Top</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
       <br></br>
 
-      {!isProfile && showReviewPrompt && <ReviewPrompt courseCode={courseCode} />}
+      {showReviewPrompt && <ReviewPrompt courseCode={courseCode} />}
 
-      <Stack spacing={2}>
+      <div className="flex flex-col gap-2">
         {reviews.map((review) => (
           <Review key={review.email} review={review} onDelete={onDeleteReview} />
         ))}
-      </Stack>
-    </>
+      </div>
+    </div>
   );
 };
 

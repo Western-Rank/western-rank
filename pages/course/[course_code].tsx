@@ -15,7 +15,7 @@ const testReviews: Course_Review[] = [
     review_id: 1,
     course_code: "AAAA 1000",
     professor: "Professor A",
-    review: "An amazing adult awesomely aggregrating additive assignments",
+    review: "An amazing adult awesomely aggregrating addictive assignments",
     email: "a@awwscar.ca",
     difficulty: 1,
     liked: true,
@@ -88,14 +88,14 @@ const Course = ({ reviews, course }: CourseProps) => {
 
           <Separator />
 
-          <div className="flex-grow flex flex-col-reverse gap-4 lg:flex-row py-6">
+          <div className="flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
             <div className="flex-grow">
-              <ReviewList courseCode={course.course_code} reviews={reviews} />
+              <ReviewList courseCode={course.course_code} reviews={testReviews} />
             </div>
 
             <Separator orientation="vertical" className="w-[1px] h-200" />
 
-            <div className="lg:w-96 flex flex-col gap-2">
+            <div className="lg:w-96 flex flex-col gap-4">
               <div>
                 <h5 className="text-lg font-semibold">Prerequisites</h5>
                 <p>{course?.prerequisites || "None"}</p>
