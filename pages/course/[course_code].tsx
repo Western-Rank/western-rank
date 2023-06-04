@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar";
 import ReviewList from "../../components/ReviewList";
 import { getCourse } from "../../services/course";
 import { getReviewsbyCourse } from "../../services/review";
+import { Separator } from "@/components/ui/separator";
 
 /**
  * Course review page for the given course_code
@@ -71,56 +72,50 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Course = ({ reviews, course }: CourseProps) => {
-  const theme = useTheme();
-
   return (
     <>
-      <header>
+      <main>
         <Navbar searchBar />
-      </header>
+        <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex flex-col">
+          <div className="py-4 pt-16">
+            <h4 className="text-3xl font-bold py-1">{course.course_code}</h4>
+            <h5 className="text-xl text-foreground">{course.course_name}</h5>
+          </div>
 
-      <br />
+          <div className="py-8">
+            <p>{course?.description}</p>
+          </div>
 
-      <Box id="main" width="90%" maxWidth="1100px" margin="auto">
-        <Card>
-          <CardContent>
-            <Typography variant="h4">{course.course_code}</Typography>
-            <Typography variant="h5">{course.course_name}</Typography>
-            <Typography>{course?.description}</Typography>
-          </CardContent>
-        </Card>
+          <Separator />
 
-        <br />
+          <div className="flex-grow flex flex-col-reverse gap-4 lg:flex-row py-6">
+            <div className="flex-grow">
+              <ReviewList courseCode={course.course_code} reviews={reviews} />
+            </div>
 
-        <Grid
-          container
-          columns={{ xs: 4, s: 4, md: 12, lg: 12 }}
-          spacing={2}
-          direction={{
-            xs: "column-reverse",
-            s: "column-reverse",
-            md: "row",
-            lg: "row",
-          }}
-        >
-          <Grid item xs={8}>
-            <ReviewList courseCode={course.course_code} reviews={reviews} />
-          </Grid>
+            <Separator orientation="vertical" className="w-[1px] h-200" />
 
-          <Grid item xs={4}>
-            <Card id="infoPanel" sx={{ padding: "15px" }}>
-              <Typography variant="h5">Prerequisites</Typography>
-              <Typography>{course?.prerequisites || "None"}</Typography>
-              <Typography variant="h5">Antirequisites</Typography>
-              <Typography>{course?.antirequisites || "None"}</Typography>
-              <Typography variant="h5">Extra Info</Typography>
-              <Typography>{course?.extra_info || "None"}</Typography>
-              <Typography variant="h5">Locations</Typography>
-              <Typography>{course.location?.replace(",", ", ") || ""}</Typography>
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
+            <div className="lg:w-96 flex flex-col gap-2">
+              <div>
+                <h5 className="text-lg font-semibold">Prerequisites</h5>
+                <p>{course?.prerequisites || "None"}</p>
+              </div>
+              <div>
+                <h5 className="text-lg font-semibold">Antirequisites</h5>
+                <p>{course?.antirequisites || "None"}</p>
+              </div>
+              <div>
+                <h5 className="text-lg font-semibold">Extra Info</h5>
+                <p>{course?.extra_info || "None"}</p>
+              </div>
+              <div>
+                <h5 className="text-lg font-semibold">Locations</h5>
+                <p>{course.location?.replace(",", ", ") || ""}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </>
   );
 };

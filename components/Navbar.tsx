@@ -12,7 +12,7 @@ const Navbar = ({ searchBar }: NavbarProps) => {
   const { data: auth } = useSession();
 
   return (
-    <nav className="flex items-center justify-between w-screen px-4 md:px-10 lg:px-20 xl:px-60">
+    <nav className="flex items-center justify-between w-screen px-4 md:px-8 lg:px-15 xl:px-40">
       <Link href="/" className="p-2 flex flex-col items-center">
         <Image src="/logo.svg" alt="logo" width={42} height={30} />
         <span className="text-primary font-extrabold text-sm">Rank</span>
