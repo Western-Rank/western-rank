@@ -1,9 +1,8 @@
-import { AppBar, Box, Button, Stack, Toolbar } from "@mui/material";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import styles from "../styles/Navbar.module.scss";
 import Searchbar from "./Searchbar";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 type NavbarProps = {
   searchBar?: boolean;
@@ -12,46 +11,30 @@ type NavbarProps = {
 const Navbar = ({ searchBar }: NavbarProps) => {
   const { data: auth } = useSession();
 
-  const router = useRouter();
-
   return (
-    <AppBar component="nav" position="static">
-      <Toolbar>
-        <Stack direction="row" width="1100px" justifyContent="space-between" margin="auto">
-          <Box display="flex" justifyContent="center" flexBasis="10%">
-            <Button onClick={() => router.push("/")}>
-              <Image src="/logo.svg" alt="logo" className={styles.logo} width={40} height={40} />
+    <nav className="flex items-center justify-between w-screen px-4 md:px-10 lg:px-20 xl:px-60">
+      <Link href="/" className="p-2 flex flex-col items-center">
+        <Image src="/logo.svg" alt="logo" width={42} height={30} />
+        <span className="text-primary font-extrabold text-sm">Rank</span>
+      </Link>
+      <div>
+        {auth?.user ? (
+          <>
+            <Button asChild variant="link">
+              <Link href="/profile">Profile</Link>
             </Button>
-          </Box>
-          <Box mb={-16} sx={{ flexBasis: "75%" }}>
-            {/* {searchBar && <Searchbar />} */}
-          </Box>
-          <Stack
-            direction="row"
-            justifyContent="space-around"
-            alignItems="center"
-            sx={{ flexBasis: "15%", flexShrink: 0 }}
-          >
-            {auth?.user ? (
-              <>
-                <Button href="/profile" color="secondary">
-                  Profile
-                </Button>
-                <Button color="secondary" href="/api/auth/signout" sx={{ whiteSpace: "nowrap" }}>
-                  {/* TODO change to onclick with signout() */}
-                  Log out
-                </Button>
-              </>
-            ) : (
-              <Button href="/api/auth/signin" color="secondary">
-                {/* TODO change to onclick with signin() */}
-                Log in
-              </Button>
-            )}
-          </Stack>
-        </Stack>
-      </Toolbar>
-    </AppBar>
+            <Button asChild variant="link">
+              {/* TODO change to onclick with signout() */}
+              <Link href="/api/auth/signout">Log out</Link>
+            </Button>
+          </>
+        ) : (
+          <Button asChild variant="link">
+            <Link href="/api/auth/signin">Log in</Link>
+          </Button>
+        )}
+      </div>
+    </nav>
   );
 };
 

@@ -1,4 +1,3 @@
-import { Container, Typography } from "@mui/material";
 import Head from "next/head";
 
 import Navbar from "../components/Navbar";
@@ -16,7 +15,7 @@ const Home = () => {
       <main className="flex flex-col min-h-screen items-center">
         <Navbar />
         <div className="flex flex-col gap-8 flex-grow w-screen max-w-[100vw] px-4 md:px-10 lg:px-20 xl:px-72 py-32 lg:py-52">
-          <h1 className=" font-bold text-3xl md:text-4xl">
+          <h1 className="font-bold text-3xl md:text-4xl">
             Explore course reviews from <br /> Western University students
           </h1>
           <Searchbar />
