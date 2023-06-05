@@ -4,6 +4,7 @@ import StatMeter, { MeterType } from "./StatMeter";
 
 import { Button } from "./ui/button";
 import { formatTimeAgo } from "@/lib/utils";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 
 // profile pic, review text,
 interface ReviewProps {
@@ -33,7 +34,7 @@ const Review = ({ review, onDelete }: ReviewProps) => {
         <div className="flex justify-between">
           <div>
             <h5>
-              {`~ ${review.anon ? "Anonymous" : review.email.split("@")[0]}}, taught by `}
+              {`~ ${review.anon ? "Anonymous" : review.email.split("@")[0]}, taught by `}
               <a
                 href={`https://www.ratemyprofessors.com/search/professors/1491?q=${encodeURIComponent(
                   review?.professor || "",
@@ -59,15 +60,20 @@ const Review = ({ review, onDelete }: ReviewProps) => {
           </div>
         </div>
       </div>
-      <div className="w-36 text-right">
-        <h6 className="font-semibold">Difficulty</h6>
-        <p>{review.difficulty}%</p>
-        <h6 className="font-semibold">Enthusiasm</h6>
-        <p>{review.enthusiasm}%</p>
-        <h6 className="font-semibold">Attendance</h6>
-        <p>{review.attendance}%</p>
-        <h6 className="font-semibold">Liked</h6>
-        <p>{review.liked.toString()}</p>
+      <div className="w-36 flex flex-col items-end gap-2">
+        <div className="flex flex-col items-end">
+          <h6 className="font-semibold">Difficulty</h6>
+          <p>{review.difficulty}%</p>
+        </div>
+        <div className="flex flex-col items-end">
+          <h6 className="font-semibold">Enthusiasm</h6>
+          <p>{review.enthusiasm}%</p>
+        </div>
+        <div className="flex flex-col items-end">
+          <h6 className="font-semibold">Attendance</h6>
+          <p>{review.attendance}%</p>
+        </div>
+        {review.liked ? <ThumbsUp /> : <ThumbsDown />}
       </div>
     </div>
   );
