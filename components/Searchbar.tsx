@@ -17,35 +17,44 @@ import {
 } from "@/components/ui/command";
 import { useState } from "react";
 
+type Course = {
+  course_code: string;
+  course_name: string;
+};
+
+type ScoreItem = {
+  course: Course;
+  score: number;
+};
+
 type SearchItemProps = {
+  courseCode: string;
   courseName: string;
   onSelect: (value: string) => void;
 };
 
-function SearchItem({ courseName, onSelect }: SearchItemProps) {
+function SearchItem({ courseCode, courseName, onSelect }: SearchItemProps) {
   return (
-    <CommandItem value={courseName} onSelect={onSelect}>
+    <CommandItem value={courseCode} onSelect={onSelect}>
       <GraduationCap className="mr-2 h-4 w-4" />
-      <span>{courseName}</span>
+      <h4>
+        <span className="font-medium text-xs md:text-sm pr-1">{courseCode}</span>
+        <span className="text-muted-foreground text-xs md:text-sm">{courseName}</span>
+      </h4>
     </CommandItem>
   );
 }
 
-type ScoreItem = {
-  score: number;
-  courseName: string;
-};
-
 export function Searchbar() {
   const router = useRouter();
 
-  const [results, setResults] = useState<string[] | null>(null);
+  const [results, setResults] = useState<Course[] | null>(null);
 
   const { data, isLoading, isError } = useQuery(["courseNames"], {
     queryFn: async () => {
-      const response = await fetch("/api/courses?format=names");
+      const response = await fetch("/api/courses");
       if (!response.ok) throw new Error("Courses were not found");
-      return response.json() as Promise<FullCourseName[]>;
+      return response.json() as Promise<Course[]>;
     },
     refetchOnWindowFocus: false,
   });
@@ -54,17 +63,17 @@ export function Searchbar() {
     if (searchTerm.length > 0) {
       const scoredData: ScoreItem[] = [];
 
-      data?.forEach((courseName: string) => {
+      data?.forEach((course: Course) => {
         const score: number = commandScore(
-          courseName?.trim().toLowerCase(),
+          course.course_code?.trim().toLowerCase() + course.course_name?.trim().toLowerCase(),
           searchTerm?.trim().toLowerCase(),
         );
         if (score > 0) {
-          scoredData.push({ score: score, courseName: courseName });
+          scoredData.push({ score, course });
         }
       });
 
-      setResults(scoredData.sort((a, b) => b.score - a.score).map((item) => item.courseName));
+      setResults(scoredData.sort((a, b) => b.score - a.score).map((item) => item.course));
     } else {
       setResults(null);
     }
@@ -87,7 +96,12 @@ export function Searchbar() {
         {!isLoading && !isError && results != null && results?.length > 0 && (
           <CommandGroup heading="Courses">
             {results?.slice(0, 7)?.map((item, id) => (
-              <SearchItem key={id} courseName={item} onSelect={onCourseSelect} />
+              <SearchItem
+                key={id}
+                courseCode={item.course_code}
+                courseName={item.course_name}
+                onSelect={onCourseSelect}
+              />
             ))}
           </CommandGroup>
         )}

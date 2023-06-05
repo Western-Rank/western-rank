@@ -1,4 +1,3 @@
-import { Box, Card, CardContent, Grid, Typography, useTheme } from "@mui/material";
 import { Course, Course_Review } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Navbar from "../../components/Navbar";
@@ -22,8 +21,8 @@ const testReviews: Course_Review[] = [
     attendance: 11,
     enthusiasm: 24,
     anon: false,
-    date_created: new Date(),
-    last_edited: new Date(),
+    date_created: new Date("2020-06-19"),
+    last_edited: new Date("2021-06-19"),
     term_taken: "Fall",
     date_taken: new Date(),
   },
@@ -38,8 +37,8 @@ const testReviews: Course_Review[] = [
     attendance: 22,
     enthusiasm: 30,
     anon: true,
-    date_created: new Date(),
-    last_edited: new Date(),
+    date_created: new Date("2022-09-19"),
+    last_edited: new Date("2022-10-19"),
     term_taken: "Winter",
     date_taken: new Date(),
   },
@@ -67,7 +66,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       reviews,
       course,
-    } satisfies Partial<CourseProps>,
+    } as Partial<CourseProps>,
   };
 };
 
@@ -79,7 +78,7 @@ const Course = ({ reviews, course }: CourseProps) => {
         <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex flex-col">
           <div className="py-4 pt-16">
             <h4 className="text-3xl font-bold py-1">{course.course_code}</h4>
-            <h5 className="text-xl text-foreground">{course.course_name}</h5>
+            <h5 className="text-xl">{course.course_name}</h5>
           </div>
 
           <div className="py-8">

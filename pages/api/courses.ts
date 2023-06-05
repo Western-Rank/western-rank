@@ -29,7 +29,14 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
           courses.map((course) => formatFullCourseName(course.course_code, course.course_name)),
         );
     } else {
-      return res.status(200).json(courses);
+      return res.status(200).json(
+        courses.map((course) => {
+          return {
+            course_code: course.course_code,
+            course_name: course.course_name,
+          };
+        }),
+      );
     }
   } catch (err: any) {
     return res.send(`Error: ${err.message}\nDetails: ${err.details}`);

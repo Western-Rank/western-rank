@@ -28,7 +28,7 @@ const Review = ({ review, onDelete }: ReviewProps) => {
     if (onDelete) onDelete();
   };
   return (
-    <div className="p-6 border-border border-[1.5px] rounded-md flex gap-2 flex-col md:flex-row md:justify-between">
+    <div className="p-6 border-border border-[1px] rounded-md flex gap-2 flex-col md:flex-row md:justify-between">
       <div className="flex flex-col flex-1">
         <p className="flex-grow break-all pb-6">{review.review}</p>
         <div className="flex justify-between">
