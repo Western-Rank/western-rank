@@ -14,9 +14,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from "@/components/ui/command";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 type SearchItemProps = {
   courseName: string;

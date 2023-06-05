@@ -1,16 +1,14 @@
 import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Review from "./Review";
 import ReviewPrompt from "./ReviewPrompt";
 
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -21,6 +19,8 @@ interface ReviewListProps {
   reviews: Course_Review[];
 }
 
+const SortOrders = ["recent", "top"] as const;
+
 /**
  * The modal displaying all reviews on the course page.
  */
@@ -30,6 +30,7 @@ const ReviewList = ({ courseCode = "", reviews }: ReviewListProps) => {
 
   const [showReviewPrompt, setShowReviewPrompt] = useState(false);
   const userHasReview = reviews.some(({ email }) => auth?.user!.email === email);
+  const [sortOrder, setSortOrder] = useState<(typeof SortOrders)[number]>("recent");
 
   const reviewButtonText = !auth
     ? "Log in to write a review"
@@ -46,41 +47,57 @@ const ReviewList = ({ courseCode = "", reviews }: ReviewListProps) => {
   // TODO revalidate using react query
   const onDeleteReview = () => router.replace(router.asPath);
 
-  return (
-    <div className="flex flex-col gap-1">
-      <div className="flex justify-between">
-        <h5>Course Reviews ({reviews.length})</h5>
-        {status == "authenticated" && (
-          <Button onClick={onShowReview} disabled={!auth}>
-            {reviewButtonText}
-          </Button>
-        )}
+  if (sortOrder == "recent") {
+    reviews;
+  }
+
+  if (sortOrder == "recent")
+    return (
+      <div className="flex flex-col">
+        <div className="flex justify-between">
+          <h5 className="font-bold text-lg">Course Reviews ({reviews.length})</h5>
+          {status == "authenticated" && (
+            <Button onClick={onShowReview} disabled={!auth}>
+              {reviewButtonText}
+            </Button>
+          )}
+        </div>
+
+        <div className="flex gap-2 items-center">
+          <label>Sort By</label>
+          <Select
+            defaultValue="recent"
+            onValueChange={(value) => {
+              if (value in SortOrders) setSortOrder(value as (typeof SortOrders)[number]);
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={SortOrders[0]}>Most Recent</SelectItem>
+              <SelectItem value={SortOrders[1]}>Top</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <br></br>
+
+        {showReviewPrompt && <ReviewPrompt courseCode={courseCode} />}
+
+        <div className="flex flex-col gap-4">
+          {sortOrder == "recent"
+            ? reviews
+                .sort((a, b) => b.date_created.valueOf() - a.date_created.valueOf())
+                .map((review) => (
+                  <Review key={review.email} review={review} onDelete={onDeleteReview} />
+                ))
+            : reviews.map((review) => (
+                <Review key={review.email} review={review} onDelete={onDeleteReview} />
+              ))}
+        </div>
       </div>
-
-      <div className="flex gap-2 items-center">
-        <label>Sort By</label>
-        <Select defaultValue="recent">
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="recent">Most Recent</SelectItem>
-            <SelectItem value="top">Top</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <br></br>
-
-      {showReviewPrompt && <ReviewPrompt courseCode={courseCode} />}
-
-      <div className="flex flex-col gap-2">
-        {reviews.map((review) => (
-          <Review key={review.email} review={review} onDelete={onDeleteReview} />
-        ))}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ReviewList;

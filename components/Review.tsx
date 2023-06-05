@@ -1,16 +1,9 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Stack,
-  Typography,
-} from "@mui/material";
 import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import StatMeter, { MeterType } from "./StatMeter";
+
+import { Button } from "./ui/button";
+import { formatTimeAgo } from "@/lib/utils";
 
 // profile pic, review text,
 interface ReviewProps {
@@ -33,66 +26,50 @@ const Review = ({ review, onDelete }: ReviewProps) => {
 
     if (onDelete) onDelete();
   };
-
   return (
-    <>
-      <Card sx={{ maxWidth: "1000px" }}>
-        <CardContent>
-          <Stack
-            display="flex"
-            direction={{ xs: "column", sm: "column", md: "row" }}
-            justifyContent="space-between"
-          >
-            <Box className="reviewBody" sx={{ flexBasis: "75%" }}>
-              <Stack width={"50px"} sx={{ float: "left" }}>
-                <Avatar
-                  src="https://titles.trackercdn.com/valorant-api/agents/9f0d8ba9-4140-b941-57d3-a7ad57c6b417/displayicon.png"
-                  className="reviewPic"
-                />
-              </Stack>
-              <Stack direction="row" justifyContent="space-between">
-                <Box>
-                  <Typography variant="h6">
-                    {review.anon ? "Anonymous" : review.email.split("@")[0]}
-                  </Typography>
-                  <Typography>
-                    {review.date_created < review.last_edited
-                      ? `Last Edited: ${new Date(review.last_edited).toDateString()}`
-                      : `Posted: ${new Date(review.date_created).toDateString()}`}
-                  </Typography>
-                </Box>
-                <CardActions>
-                  {review.email === auth?.user?.email && (
-                    <Button color="secondary" onClick={onDeleteReview}>
-                      Delete
-                    </Button>
-                  )}
-                </CardActions>
-              </Stack>
-              <Typography variant="body1">{review.review}</Typography>
-            </Box>
-            <Box className="statBlock" sx={{ flexBasis: "25%", maxWidth: "200px" }}>
-              <StatMeter
-                title="Difficulty"
-                value={review.difficulty}
-                type={MeterType.Star}
-              ></StatMeter>
-              <StatMeter
-                title="Enthusiasm"
-                value={review.enthusiasm}
-                type={MeterType.Star}
-              ></StatMeter>
-              <StatMeter
-                title="Attended"
-                value={review.attendance}
-                type={MeterType.Percentage}
-              ></StatMeter>
-              <StatMeter title="Liked" value={review.liked} type={MeterType.Flag}></StatMeter>
-            </Box>
-          </Stack>
-        </CardContent>
-      </Card>
-    </>
+    <div className="p-6 border-border border-[1.5px] rounded-md flex gap-2 flex-col md:flex-row md:justify-between">
+      <div className="flex flex-col flex-1">
+        <p className="flex-grow break-all pb-6">{review.review}</p>
+        <div className="flex justify-between">
+          <div>
+            <h5>
+              {`~ ${review.anon ? "Anonymous" : review.email.split("@")[0]}}, taught by `}
+              <a
+                href={`https://www.ratemyprofessors.com/search/professors/1491?q=${encodeURIComponent(
+                  review?.professor || "",
+                )}`}
+                className="hover:underline"
+              >
+                {review.professor}
+              </a>
+              {` in ${review.term_taken} ${review.date_taken?.getFullYear()}`}
+            </h5>
+            <h6 className="italic">
+              {review.date_created < review.last_edited
+                ? formatTimeAgo(review.last_edited)
+                : formatTimeAgo(review.date_created)}
+            </h6>
+          </div>
+          <div>
+            {review.email === auth?.user?.email && (
+              <Button color="secondary" onClick={onDeleteReview}>
+                Delete
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="w-36 text-right">
+        <h6 className="font-semibold">Difficulty</h6>
+        <p>{review.difficulty}%</p>
+        <h6 className="font-semibold">Enthusiasm</h6>
+        <p>{review.enthusiasm}%</p>
+        <h6 className="font-semibold">Attendance</h6>
+        <p>{review.attendance}%</p>
+        <h6 className="font-semibold">Liked</h6>
+        <p>{review.liked.toString()}</p>
+      </div>
+    </div>
   );
 };
 

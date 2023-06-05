@@ -89,7 +89,7 @@ const Course = ({ reviews, course }: CourseProps) => {
           <Separator />
 
           <div className="flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
-            <div className="flex-grow">
+            <div className="flex-grow lg:max-w-[75vw]">
               <ReviewList courseCode={course.course_code} reviews={testReviews} />
             </div>
 
