@@ -14,8 +14,20 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+
 interface ReviewListProps {
-  courseCode?: string;
+  courseCode: string;
   reviews: Course_Review[];
 }
 
@@ -24,7 +36,7 @@ const SortOrderOptions = ["recent", "difficulty", "enthusiasm", "attendance"] as
 /**
  * The modal displaying all reviews on the course page.
  */
-const ReviewList = ({ courseCode = "", reviews }: ReviewListProps) => {
+const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
   const router = useRouter();
   const { data: auth, status } = useSession();
 
@@ -51,9 +63,36 @@ const ReviewList = ({ courseCode = "", reviews }: ReviewListProps) => {
     <div className="flex flex-col">
       <div className="flex justify-between">
         <h5 className="font-bold text-lg">Course Reviews ({reviews.length})</h5>
-        <Button onClick={onShowReview} disabled={!auth}>
-          {reviewButtonText}
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button disabled={!auth}>{reviewButtonText}</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit profile</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile here. Click save when you&pos;re done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input id="name" value="Pedro Duarte" className="col-span-3" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  Username
+                </Label>
+                <Input id="username" value="@peduarte" className="col-span-3" />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit">Save changes</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="flex gap-2 items-center">

@@ -65,8 +65,9 @@ export function Searchbar() {
 
       data?.forEach((course: Course) => {
         const score: number = commandScore(
-          course.course_code?.trim().toLowerCase() + course.course_name?.trim().toLowerCase(),
+          `${course.course_code?.trim().toLowerCase()} ${course.course_name?.trim().toLowerCase()}`,
           searchTerm?.trim().toLowerCase(),
+          {},
         );
         if (score > 0) {
           scoredData.push({ score, course });
