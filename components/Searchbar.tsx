@@ -41,9 +41,9 @@ type SearchbarProps = {
 
 function SearchItem({ courseCode, courseName, onSelect }: SearchItemProps) {
   return (
-    <CommandItem value={courseCode} onSelect={onSelect} className="">
-      <GraduationCap className="mr-2 h-4 w-4 hidden sm:inline-flex" />
-      <h4>
+    <CommandItem value={courseCode} onSelect={onSelect}>
+      <GraduationCap className="mr-1.5 min-w-4 min-h-4 w-fit flex-shrink-0" />
+      <h4 className="overflow-hidden whitespace-nowrap overflow-ellipsis">
         <span className="font-semibold text-xs md:text-sm pr-1">{courseCode}</span>
         <span className="text-muted-foreground text-xs md:text-sm">{courseName}</span>
       </h4>

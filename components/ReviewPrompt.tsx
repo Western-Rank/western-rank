@@ -98,7 +98,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)} className="w-full sm:w-fit">
+        <Button disabled={!auth} onClick={() => setOpen(true)} className="w-full sm:w-fit">
           {reviewButtonText}
         </Button>
       </DialogTrigger>
@@ -345,7 +345,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                           className="data-[state=checked]:bg-destructive border-destructive"
                         />
                       </FormControl>
-                      <FormLabel>Remain Anonymous</FormLabel>
+                      <FormLabel>Stay Anonymous</FormLabel>
                     </div>
                     <FormMessage />
                   </FormItem>

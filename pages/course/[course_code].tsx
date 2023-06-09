@@ -5,6 +5,8 @@ import ReviewList from "../../components/ReviewList";
 import { getCourse } from "../../services/course";
 import { getReviewsbyCourse } from "../../services/review";
 import { Separator } from "@/components/ui/separator";
+import useReadMore from "@/hooks/useReadMore";
+import { Button } from "@/components/ui/button";
 
 /**
  * Course review page for the given course_code
@@ -71,6 +73,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Course = ({ reviews, course }: CourseProps) => {
+  const [course_description, isExpanded, toggleExpand] = useReadMore({
+    text: course?.description ?? "",
+    maxLength: 200,
+  });
+
   return (
     <>
       <main>
@@ -84,7 +91,13 @@ const Course = ({ reviews, course }: CourseProps) => {
           </div>
 
           <div className="py-8">
-            <p>{course?.description}</p>
+            <p className="flex flex-col">
+              {course_description}
+              {!isExpanded && "..."}
+              <Button variant="link" className="px-1 pt-4 my-0 h-2 self-end" onClick={toggleExpand}>
+                Show {!isExpanded ? "More" : "Less"}
+              </Button>
+            </p>
           </div>
 
           <Separator />
