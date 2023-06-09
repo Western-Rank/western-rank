@@ -77,7 +77,9 @@ const Course = ({ reviews, course }: CourseProps) => {
         <Navbar searchBar />
         <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex flex-col">
           <div className="py-4 pt-16">
-            <h4 className="text-3xl font-bold py-1">{course.course_code}</h4>
+            <h4 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-blue-400 py-1">
+              {course.course_code}
+            </h4>
             <h5 className="text-xl">{course.course_name}</h5>
           </div>
 
