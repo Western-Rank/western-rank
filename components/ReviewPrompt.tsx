@@ -126,9 +126,9 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                   Review (Optional)
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="ratings" className="">
+              <TabsContent value="ratings">
                 <ScrollArea
-                  className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-4 py-4"
+                  className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-2 py-4"
                   type="always"
                 >
                   <div className="flex flex-col gap-4 md:gap-8">
@@ -314,10 +314,10 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                   control={reviewForm.control}
                   name="review"
                   render={({ field }) => (
-                    <FormItem className="py-4 pt-3">
+                    <FormItem className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-2 py-2 md:py-4 md:pt-7">
                       <FormLabel>Written Review</FormLabel>
                       <FormControl>
-                        <Textarea {...field} rows={10} />
+                        <Textarea {...field} rows={9} />
                       </FormControl>
                       <FormDescription>
                         What else would you like to share about the course (15-300 words )?

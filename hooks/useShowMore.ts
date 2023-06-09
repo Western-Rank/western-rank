@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-interface ReadMoreHook {
+interface ShowMoreHook {
   text: string;
   maxLength: number;
 }
 
-const useReadMore: (props: ReadMoreHook) => [string, boolean, () => void] = ({
+const useShowMore: (props: ShowMoreHook) => [string, boolean, () => void] | [string] = ({
   text,
   maxLength,
 }) => {
@@ -17,9 +17,12 @@ const useReadMore: (props: ReadMoreHook) => [string, boolean, () => void] = ({
     }
   };
 
-  const displayText = isExpanded ? text : text.slice(0, maxLength);
+  const displayText =
+    isExpanded || text.length < maxLength + 5 ? text : text.slice(0, maxLength) + "...";
+
+  if (text.length <= maxLength + 5) return [displayText];
 
   return [displayText, isExpanded, toggleExpand];
 };
 
-export default useReadMore;
+export default useShowMore;
