@@ -98,7 +98,9 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>{reviewButtonText}</Button>
+        <Button onClick={() => setOpen(true)} className="w-full sm:w-fit">
+          {reviewButtonText}
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[900px] max-h-[100vh]">
         <Form {...reviewForm}>
@@ -118,15 +120,15 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
             <Tabs defaultValue="ratings" className="w-full">
               <TabsList className="w-full flex">
                 <TabsTrigger value="ratings" className="flex-1">
-                  Basic Review *
+                  Ratings *
                 </TabsTrigger>
                 <TabsTrigger value="review" className="flex-1">
-                  Written Review (Optional)
+                  Review (Optional)
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="ratings" className="">
                 <ScrollArea
-                  className="h-[300px] sm:h-[325px] md:h-[350px] lg:h-[400px] px-4 py-4"
+                  className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-4 py-4"
                   type="always"
                 >
                   <div className="flex flex-col gap-4 md:gap-8">
@@ -195,10 +197,10 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                               <div className="flex-1 flex-grow w-full px-1 md:px-0">
                                 <Combobox
                                   id="program"
-                                  placeholder="Select a program..."
+                                  placeholder="Select a term..."
                                   options={Object.keys(Terms).map((term) => ({
-                                    label: term,
-                                    value: term,
+                                    label: term[0].toUpperCase() + term.slice(1),
+                                    value: term[0].toUpperCase() + term.slice(1),
                                   }))}
                                   value={field.value}
                                   onChangeValue={(value) => {

@@ -66,6 +66,7 @@ export function Combobox({
                     currentValue === value ? onChangeValue("") : "";
                   }
                 }}
+                value={option.value}
               >
                 <Check
                   className={cn(

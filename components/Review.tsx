@@ -40,6 +40,7 @@ const Review = ({ review, onDelete }: ReviewProps) => {
                   review?.professor || "",
                 )}`}
                 className="hover:underline"
+                target="_blank"
               >
                 {review.professor}
               </a>

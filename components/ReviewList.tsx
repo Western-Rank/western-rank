@@ -30,7 +30,7 @@ const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
   const router = useRouter();
   const { data: auth } = useSession();
 
-  const userHasReviewed = reviews.some(({ email }) => auth?.user!.email === email);
+  const hasReviewed = reviews.some(({ email }) => auth?.user!.email === email);
   const [sortOrder, setSortOrder] = useState<(typeof SortOrderOptions)[number]>("recent");
 
   // called after the review deletes itself to update the review list
@@ -39,35 +39,34 @@ const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-between">
-        <h5 className="font-bold text-lg">Course Reviews ({reviews.length})</h5>
-        <ReviewPrompt courseCode={courseCode} userHasReviewed />
+      <h5 className="font-bold text-lg">Course Reviews ({reviews.length})</h5>
+
+      <div className="flex flex-col sm:flex-row gap-2 items-center sm:justify-between py-2">
+        <div className="flex items-center w-full sm:w-auto gap-1">
+          <label className="w-24">Sort By</label>
+          <Select
+            defaultValue="recent"
+            onValueChange={(value) => {
+              if (value in SortOrderOptions)
+                setSortOrder(value as (typeof SortOrderOptions)[number]);
+            }}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              {SortOrderOptions.map((option, index) => (
+                <SelectItem key={index} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <ReviewPrompt courseCode={courseCode} hasReviewed={hasReviewed} />
       </div>
 
-      <div className="flex gap-2 items-center">
-        <label>Sort By</label>
-        <Select
-          defaultValue="recent"
-          onValueChange={(value) => {
-            if (value in SortOrderOptions) setSortOrder(value as (typeof SortOrderOptions)[number]);
-          }}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            {SortOrderOptions.map((option, index) => (
-              <SelectItem key={index} value={option}>
-                {option}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <br></br>
-
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 py-2">
         {sortOrder == "recent"
           ? reviews
               .sort((a, b) => b.date_created.valueOf() - a.date_created.valueOf())
