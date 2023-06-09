@@ -1,146 +1,261 @@
-import { Box, Card, Grid, Slider, TextField, Typography } from "@mui/material";
-import { Course } from "@prisma/client";
+import { Course, Course_Review, Term } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { FormEvent, useEffect, useState } from "react";
+import { useState } from "react";
 
-/**
- * Generate tick labels for a MUI material slider's 'marks' prop from min to max, inclusive
- * TODO move to utils
- */
-function generateSliderTicks(min: number, max: number, step = 1) {
-  const numTicks = Math.floor((max - min) / step) + 1;
-  const arr = Array(numTicks).fill(0);
-  return arr.map((_, idx) => {
-    const tickNum = min + idx * step;
-    return {
-      value: tickNum,
-      label: tickNum.toString(),
-    };
-  });
-}
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Slider } from "@/components/ui/slider";
+import { Toggle } from "@/components/ui/toggle";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { Close } from "@radix-ui/react-dialog";
+import { Checkbox } from "@/components//ui/checkbox";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ReviewPromptProps {
   courseCode: Course["course_code"];
+  hasReviewed?: boolean;
 }
+
+const reviewFormSchema = z.object({
+  professor: z.string(),
+  review: z.string().min(15).optional(),
+  liked: z.boolean(),
+  difficulty: z.array(z.number().min(0).max(5)),
+  enthusiasm: z.array(z.number().min(0).max(5)),
+  attendance: z.array(z.number().min(0).max(100)),
+  anon: z.boolean(),
+  date_taken: z.coerce.date({ coerce: true }),
+  term_taken: z.nativeEnum(Term),
+  date_created: z.coerce.date(),
+  last_edited: z.coerce.date(),
+});
 
 /**
  * The component for submitting a review and its related information.
  */
-const ReviewPrompt = ({ courseCode }: ReviewPromptProps) => {
+const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
   const { data: auth } = useSession();
 
-  const [formValues, setFormValues] = useState({
-    course_code: courseCode,
-    email: "",
-    date_created: new Date().toDateString(),
-    last_edited: new Date().toDateString(),
-    liked: true,
-    difficulty: 0,
-    enthusiasm: 0,
-    attendance: 0,
-    professor: "",
-    anon: false,
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
+
+  const reviewButtonText = !auth ? "Log in to Review" : hasReviewed ? "Edit your Review" : "Review";
+
+  const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
+    resolver: zodResolver(reviewFormSchema),
+    defaultValues: {
+      professor: "",
+      review: "",
+      liked: true,
+      difficulty: [2.5],
+      enthusiasm: [2.5],
+      attendance: [50],
+      anon: false,
+      date_taken: new Date(),
+      term_taken: "Fall",
+      date_created: new Date(),
+      last_edited: new Date(),
+    },
   });
 
-  const updateForm = (name: string, value: any) =>
-    setFormValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-  useEffect(() => updateForm("email", auth?.user?.email ?? ""), [auth]);
-
-  const handleInputChange = (event: any) => {
-    const { name, value } = event.target;
-    updateForm(name, value);
-  };
-
-  const handleSliderChange = (name: string) => (_event: any, value: any) => updateForm(name, value);
-
-  const handleSubmit = (event: FormEvent) => event.preventDefault();
+  function onSubmit(values: z.infer<typeof reviewFormSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values);
+    setOpen(false);
+    // TODO: replace with React query mutation w post request
+    setTimeout(() => {
+      toast({
+        title: `Your ${hasReviewed} ${courseCode} Review was submitted!`,
+        description: "You can edit it at any time after signing in.",
+      });
+    }, 50);
+  }
 
   return (
-    <>
-      {/* i know we shouldn't use <br /> like this but this is just a mockup :) */}
-      <Card sx={{ padding: "15px" }}>
-        <Typography variant="h5">Review</Typography>
-        <form onSubmit={handleSubmit}>
-          <Grid
-            container
-            spacing={2}
-            direction={{ xs: "column", s: "column", md: "row", lg: "row" }}
-          >
-            <Grid item xs={8}>
-              <TextField id="professor" label="Professor" variant="filled" />
-            </Grid>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button disabled={!auth} onClick={() => setOpen(true)}>
+          {reviewButtonText}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[900px]">
+        <Form {...reviewForm}>
+          <form onSubmit={reviewForm.handleSubmit(onSubmit)} className="space-y-4">
+            <DialogHeader>
+              <DialogTitle>
+                Review <span className="font-bold">{courseCode}</span>
+              </DialogTitle>
+              <DialogDescription>
+                You&apos;re rating and an (optional) written review for the course. You can even
+                edit the review later!
+              </DialogDescription>
+            </DialogHeader>
+            <FormField
+              control={reviewForm.control}
+              name="liked"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-start">
+                  <FormLabel>Liked</FormLabel>
+                  <FormDescription>Overall, did you like the course?</FormDescription>
 
-            <Grid item xs={4}>
-              <TextField id="professor" label="Professor" variant="filled" />
-            </Grid>
+                  <FormControl>
+                    <div className="flex gap-1">
+                      <Toggle pressed={field.value} onPressedChange={field.onChange}>
+                        <ThumbsUp />
+                      </Toggle>
+                      <Toggle
+                        pressed={!field.value}
+                        onPressedChange={(value) => field.onChange(!value)}
+                      >
+                        <ThumbsDown />
+                      </Toggle>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                multiline
-                minRows={6}
-                id="review"
-                label="Review"
-                variant="filled"
-                placeholder="Write your review here..."
-              />
-            </Grid>
+            <div></div>
+            <FormField
+              control={reviewForm.control}
+              name="professor"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-start">
+                  <FormLabel>Professor</FormLabel>
+                  <FormDescription>
+                    What&apos;s the name of the course instructor you had?
+                  </FormDescription>
+                  <FormControl>
+                    <Input placeholder="Name" value={field.value} onChange={field.onChange} />
+                  </FormControl>
 
-            <Grid item xs={4} justifyContent="center">
-              <Typography variant="h6" gutterBottom>
-                Difficulty
-              </Typography>
-              <Box sx={{ maxWidth: "600px", width: "95%", margin: "auto" }}>
-                <Slider
-                  color="secondary"
-                  aria-label="difficulty"
-                  valueLabelDisplay="auto"
-                  marks={generateSliderTicks(1, 5)}
-                  min={1}
-                  max={5}
-                />
-              </Box>
-            </Grid>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <Grid item xs={4} justifyContent="center">
-              <Typography variant="h6" gutterBottom>
-                Enthusiasm
-              </Typography>
-              <Box sx={{ maxWidth: "600px", width: "95%", margin: "auto" }}>
-                <Slider
-                  color="secondary"
-                  aria-label="enthusiasm"
-                  valueLabelDisplay="auto"
-                  marks={generateSliderTicks(1, 5)}
-                  min={1}
-                  max={5}
-                />
-              </Box>
-            </Grid>
+            <FormField
+              control={reviewForm.control}
+              name="difficulty"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Difficulty</FormLabel>
+                  <FormDescription>How difficult did you find the course (0-5)?</FormDescription>
+                  <FormControl>
+                    <Slider
+                      min={0}
+                      max={5}
+                      step={0.5}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <Grid item xs={4} justifyContent="center">
-              <Typography variant="h6" gutterBottom>
-                Attendance
-              </Typography>
-              <Box sx={{ maxWidth: "600px", width: "95%", margin: "auto" }}>
-                <Slider
-                  color="secondary"
-                  aria-label="attendance"
-                  valueLabelDisplay="auto"
-                  marks={generateSliderTicks(1, 5)}
-                  min={1}
-                  max={5}
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </form>
-      </Card>
-    </>
+            <FormField
+              control={reviewForm.control}
+              name="enthusiasm"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Enthusiasm</FormLabel>
+                  <FormDescription>
+                    How excited were you about the course and the course content? (0-5)?
+                  </FormDescription>
+                  <FormControl>
+                    <Slider
+                      min={0}
+                      max={5}
+                      step={0.5}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={reviewForm.control}
+              name="attendance"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Attendance</FormLabel>
+                  <FormControl>
+                    <Slider
+                      min={0}
+                      max={100}
+                      step={10}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    What percent of lectures did you attend/watch (0-100%)?
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={reviewForm.control}
+              name="anon"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-start">
+                  <div className="flex gap-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="data-[state=checked]:bg-destructive border-destructive"
+                      />
+                    </FormControl>
+                    <FormLabel>Remain Anonymous</FormLabel>
+                  </div>
+                  <FormDescription>
+                    Would you like your review to remain anonymous (no uwo username)?
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter>
+              <Button type="submit">Submit Review</Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

@@ -19,6 +19,11 @@ const DIVISIONS = [
   { amount: Number.POSITIVE_INFINITY, name: "years" },
 ];
 
+/**
+ * Format date as text in "_num_ _time period(s)_ ago" format
+ * @param date
+ * @returns
+ */
 export function formatTimeAgo(date: Date) {
   let duration = (date.getTime() - new Date().getTime()) / 1000;
 
@@ -29,4 +34,20 @@ export function formatTimeAgo(date: Date) {
     }
     duration /= division.amount;
   }
+}
+
+/**
+ * Generate tick labels for a MUI material slider's 'marks' prop from min to max, inclusive
+ * TODO move to utils
+ */
+function generateSliderTicks(min: number, max: number, step = 1) {
+  const numTicks = Math.floor((max - min) / step) + 1;
+  const arr = Array(numTicks).fill(0);
+  return arr.map((_, idx) => {
+    const tickNum = min + idx * step;
+    return {
+      value: tickNum,
+      label: tickNum.toString(),
+    };
+  });
 }

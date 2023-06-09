@@ -2,6 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 
+import { Toaster } from "@/components/ui/toaster";
+
 import "@fontsource/lexend";
 import "@fontsource/open-sans";
 import "@fontsource/poppins";
@@ -14,6 +16,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />
+        <Toaster />
       </QueryClientProvider>
     </SessionProvider>
   );

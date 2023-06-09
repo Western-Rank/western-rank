@@ -1,7 +1,7 @@
 import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Review from "./Review";
 import ReviewPrompt from "./ReviewPrompt";
 
@@ -14,17 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 interface ReviewListProps {
   courseCode: string;
@@ -38,22 +28,10 @@ const SortOrderOptions = ["recent", "difficulty", "enthusiasm", "attendance"] as
  */
 const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
   const router = useRouter();
-  const { data: auth, status } = useSession();
+  const { data: auth } = useSession();
 
-  const [showReviewPrompt, setShowReviewPrompt] = useState(false);
-  const userHasReview = reviews.some(({ email }) => auth?.user!.email === email);
+  const userHasReviewed = reviews.some(({ email }) => auth?.user!.email === email);
   const [sortOrder, setSortOrder] = useState<(typeof SortOrderOptions)[number]>("recent");
-
-  const reviewButtonText = !auth
-    ? "Log in to Review"
-    : userHasReview
-    ? "Edit your Review"
-    : "Review";
-
-  const onShowReview = () => {
-    if (!auth) alert("You must be logged in to post a review");
-    else setShowReviewPrompt((prev) => !prev);
-  };
 
   // called after the review deletes itself to update the review list
   // TODO revalidate using react query
@@ -63,36 +41,7 @@ const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
     <div className="flex flex-col">
       <div className="flex justify-between">
         <h5 className="font-bold text-lg">Course Reviews ({reviews.length})</h5>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button disabled={!auth}>{reviewButtonText}</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
-              <DialogDescription>
-                Make changes to your profile here. Click save when you&pos;re done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input id="name" value="Pedro Duarte" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Username
-                </Label>
-                <Input id="username" value="@peduarte" className="col-span-3" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Save changes</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <ReviewPrompt courseCode={courseCode} userHasReviewed />
       </div>
 
       <div className="flex gap-2 items-center">
@@ -117,8 +66,6 @@ const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
       </div>
 
       <br></br>
-
-      {showReviewPrompt && <ReviewPrompt courseCode={courseCode} />}
 
       <div className="flex flex-col gap-4">
         {sortOrder == "recent"
