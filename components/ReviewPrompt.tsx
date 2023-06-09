@@ -98,15 +98,13 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button disabled={!auth} onClick={() => setOpen(true)}>
-          {reviewButtonText}
-        </Button>
+        <Button onClick={() => setOpen(true)}>{reviewButtonText}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[900px] max-h-[100vh]">
         <Form {...reviewForm}>
           <form onSubmit={reviewForm.handleSubmit(onSubmit)} className="space-y-4 flex flex-col">
             <DialogHeader>
-              <DialogTitle className="text-2xl">
+              <DialogTitle className="md:text-2xl">
                 Review{" "}
                 <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-blue-400">
                   {courseCode}
@@ -127,9 +125,12 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="ratings" className="">
-                <ScrollArea className="h-[500px] md:h-[400px] px-4 py-4 md:pr-0" type="always">
+                <ScrollArea
+                  className="h-[300px] sm:h-[325px] md:h-[350px] lg:h-[400px] px-4 py-4"
+                  type="always"
+                >
                   <div className="flex flex-col gap-4 md:gap-8">
-                    <div className="flex flex-col md:flex-row gap-4 justify-between pt-1 md:pt-4">
+                    <div className="flex flex-col md:flex-row gap-4 justify-between pt-1 md:pt-4 px-1">
                       <FormField
                         control={reviewForm.control}
                         name="liked"
@@ -217,13 +218,13 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                       control={reviewForm.control}
                       name="professor"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col items-start">
+                        <FormItem className="flex flex-col items-start px-1">
                           <FormLabel>Professor</FormLabel>
                           <FormDescription>
                             What&apos;s the name of the course instructor you had?
                           </FormDescription>
                           <FormControl className="place-items-center">
-                            <div className="flex-1 flex-grow w-full px-1 md:px-0">
+                            <div className="flex-1 flex-grow w-full">
                               <Input
                                 placeholder="Name"
                                 value={field.value}
@@ -236,7 +237,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                       )}
                     />
 
-                    <div className="flex-1 flex-grow flex flex-col md:flex-row gap-4 md:items-start">
+                    <div className="flex-1 flex-grow flex flex-col md:flex-row gap-4 md:items-start px-1">
                       <FormField
                         control={reviewForm.control}
                         name="difficulty"
