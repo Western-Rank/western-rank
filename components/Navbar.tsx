@@ -1,6 +1,6 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import Searchbar from "./Searchbar";
+import Searchbar, { SearchbarDialog } from "./Searchbar";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
@@ -17,20 +17,27 @@ const Navbar = ({ searchBar }: NavbarProps) => {
         <Image src="/logo.svg" alt="logo" width={42} height={30} />
         <span className="text-primary font-extrabold text-sm">Rank</span>
       </Link>
-      <div>
+      <div className="flex">
+        {searchBar ? <SearchbarDialog /> : ""}
         {auth?.user ? (
           <>
-            <Button asChild variant="link">
-              <Link href="/profile">Profile</Link>
+            <Button asChild variant="link" className="px-1 md:px-2">
+              <Link href="/profile" className="text-sm">
+                Profile
+              </Link>
             </Button>
-            <Button asChild variant="link">
+            <Button asChild variant="link" className="px-1 md:px-2s">
               {/* TODO change to onclick with signout() */}
-              <Link href="/api/auth/signout">Log out</Link>
+              <Link href="/api/auth/signout" className="text-sm">
+                Log out
+              </Link>
             </Button>
           </>
         ) : (
-          <Button asChild variant="link">
-            <Link href="/api/auth/signin">Log in</Link>
+          <Button asChild variant="link" className="px-1">
+            <Link href="/api/auth/signin" className="text-sm">
+              Log in
+            </Link>
           </Button>
         )}
       </div>
