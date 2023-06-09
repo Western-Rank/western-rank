@@ -237,7 +237,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                       )}
                     />
 
-                    <div className="flex-1 flex-grow flex flex-col md:flex-row gap-4 md:items-start px-1">
+                    <div className="flex-1 flex-grow flex flex-col md:flex-row gap-4 md:items-start px-1 pb-3">
                       <FormField
                         control={reviewForm.control}
                         name="difficulty"
