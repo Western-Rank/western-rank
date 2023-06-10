@@ -10,14 +10,14 @@ datasource db {
 model Course {
   course_code          String          @id @default(cuid()) @db.VarChar(255)
   course_name          String
-  antireqs             Course[]        @relation("CourseAntirequisite")
-  antireqOf            Course[]        @relation("CourseAntirequisite")
-  prereqs              Course[]        @relation("CoursePrerequisite")
-  prereqOf             Course[]        @relation("CoursePrerequisite")
-  coreqs               Course[]        @relation("CourseCorequisite")
-  coreqOf              Course[]        @relation("CourseCorequisite")
-  precoreqs            Course[]        @relation("CoursePrecorequisite")
-  precoreqOf           Course[]        @relation("CoursePrecorequisite")
+  antirequisites       Course[]        @relation("CourseAntirequisite")
+  antirequisiteOf      Course[]        @relation("CourseAntirequisite")
+  prerequisites        Course[]        @relation("CoursePrerequisite")
+  prerequisiteOf       Course[]        @relation("CoursePrerequisite")
+  corequisites         Course[]        @relation("CourseCorequisite")
+  corequisiteOf        Course[]        @relation("CourseCorequisite")
+  precorequisites      Course[]        @relation("CoursePrecorequisite")
+  precorequisiteOf     Course[]        @relation("CoursePrecorequisite")
   antirequisites_text  Json?
   prerequisites_text   Json?
   corequisites_text    Json?
