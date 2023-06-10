@@ -97,7 +97,12 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button disabled={!auth} onClick={() => setOpen(true)} className="w-full sm:w-fit">
+        <Button
+          disabled={!auth}
+          onClick={() => setOpen(true)}
+          variant="gradient"
+          className="w-full sm:w-fit"
+        >
           {reviewButtonText}
         </Button>
       </DialogTrigger>
@@ -350,7 +355,9 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit Review</Button>
+              <Button type="submit" variant="gradient">
+                Submit Review
+              </Button>
             </DialogFooter>
           </form>
         </Form>

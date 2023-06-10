@@ -2,6 +2,7 @@ import Head from "next/head";
 
 import Navbar from "../components/Navbar";
 import Searchbar from "../components/Searchbar";
+import { cn } from "@/lib/utils";
 
 const Home = () => {
   return (
@@ -13,23 +14,23 @@ const Home = () => {
       </Head>
 
       <main
-        className="min-h-screen items-center"
-        style={{
-          backgroundImage: "url(/College.svg), url(/College2.svg)",
-          backgroundPosition: "0% 0%, 0% -320%",
-          backgroundRepeat: "no-repeat",
-        }}
+        className={
+          "min-h-screen items-center bg-[url('../public/College.svg'),_url('../public/College2.svg')] bg-[bottom_center,_bottom_right]"
+        }
       >
         <Navbar className="z-10 bg-transparent" />
         <div className="flex flex-col gap-8 flex-grow w-screen max-w-[100vw] px-4 md:px-10 lg:px-20 xl:px-72 py-32 lg:py-42">
-          <h1 className="text-primary font-bold text-2xl md:text-3xl">
+          <h1 className="text-primary font-bold text-2xl md:text-3xl lg:text-4xl">
             Explore course reviews from <br />{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-br from-purple-500 to-blue-500">
+            <span className="text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400">
               Western University
             </span>{" "}
             students
           </h1>
-          <Searchbar />
+          <div className="relative group">
+            <div className="absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-70 group-focus-within:opacity-70 animate-tilt"></div>
+            <Searchbar />
+          </div>
         </div>
       </main>
 

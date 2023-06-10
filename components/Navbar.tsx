@@ -24,7 +24,7 @@ const Navbar = ({ className, searchBar }: NavbarProps) => {
         <Image src="/logo.svg" alt="logo" width={42} height={30} />
         <span className="text-primary font-extrabold text-sm">Rank</span>
       </Link>
-      <div className="flex">
+      <div className="flex items-center">
         {searchBar ? <SearchbarDialog /> : ""}
         {auth?.user ? (
           <>

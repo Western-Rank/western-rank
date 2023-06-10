@@ -93,7 +93,7 @@ export function Searchbar({ onSelect }: SearchbarProps) {
   };
 
   return (
-    <Command shouldFilter={false} className="border light">
+    <Command shouldFilter={false} className="border light relative">
       <CommandInput placeholder="Search for a Course..." onValueChange={onSearchTermChange} />
       <CommandList inputMode="search">
         {!isLoading && !isError && results != null && results?.length > 0 && (
@@ -136,6 +136,7 @@ export function SearchbarDialog() {
       <Button
         onClick={() => setOpen(true)}
         variant="secondary"
+        size="sm"
         className="light flex justify-between gap-[0.4rem] sm:w-72 md:w-80 mr-2 px-3"
         role="search"
       >
