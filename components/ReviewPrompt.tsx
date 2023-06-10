@@ -2,7 +2,6 @@ import { Course, Course_Review, Term as Terms, type Term } from "@prisma/client"
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -102,13 +101,13 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
           {reviewButtonText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[900px] max-h-[100vh]">
+      <DialogContent className="light text-primary sm:max-w-[900px] max-h-[100vh]">
         <Form {...reviewForm}>
           <form onSubmit={reviewForm.handleSubmit(onSubmit)} className="space-y-4 flex flex-col">
             <DialogHeader>
               <DialogTitle className="md:text-2xl">
                 Review{" "}
-                <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-blue-400">
+                <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400 py-1">
                   {courseCode}
                 </span>
               </DialogTitle>
@@ -142,7 +141,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                             <FormDescription>Overall, did you like the course?</FormDescription>
 
                             <FormControl>
-                              <div className="flex gap-1">
+                              <div className="flex gap-2">
                                 <Toggle pressed={field.value} onPressedChange={field.onChange}>
                                   <ThumbsUp />
                                 </Toggle>

@@ -80,18 +80,20 @@ const Course = ({ reviews, course }: CourseProps) => {
 
   return (
     <>
-      <main>
-        <Navbar searchBar />
-        <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex flex-col">
-          <div className="py-4 pt-16">
-            <h4 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-blue-400 py-1">
+      <main className="light bg-background text-primary">
+        <Navbar searchBar className="dark" />
+        <div className="flex flex-col light">
+          <div className="py-4 pt-16 bg-background dark">
+            <h4 className="px-4 md:px-8 lg:px-15 xl:px-40 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-blue-800 py-1">
               {course.course_code}
             </h4>
-            <h5 className="text-xl">{course.course_name}</h5>
+            <h5 className="px-4 md:px-8 lg:px-15 xl:px-40 text-xl text-primary">
+              {course.course_name}
+            </h5>
           </div>
 
-          <div className="py-8">
-            <p className="flex flex-col">
+          <div className="py-8 px-4 md:px-8 lg:px-15 xl:px-40 ">
+            <p className="text-primary flex flex-col">
               {course_description}
               {isExpanded != undefined && (
                 <Button
@@ -105,9 +107,11 @@ const Course = ({ reviews, course }: CourseProps) => {
             </p>
           </div>
 
-          <Separator />
+          <div className="px-4 md:px-8 lg:px-15 xl:px-40">
+            <Separator className="border-primary" />
+          </div>
 
-          <div className="flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
+          <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
             <div className="flex-grow lg:max-w-[75vw]">
               <ReviewList courseCode={course.course_code} reviews={testReviews} />
             </div>

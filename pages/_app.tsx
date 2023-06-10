@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import "@fontsource/lexend";
 import "@fontsource/open-sans";
 import "@fontsource/poppins";
-import "../styles/globals.css";
+import "@/styles/globals.css";
 
 const queryClient = new QueryClient();
 

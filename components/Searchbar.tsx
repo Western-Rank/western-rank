@@ -93,7 +93,7 @@ export function Searchbar({ onSelect }: SearchbarProps) {
   };
 
   return (
-    <Command shouldFilter={false} className="border">
+    <Command shouldFilter={false} className="border light">
       <CommandInput placeholder="Search for a Course..." onValueChange={onSearchTermChange} />
       <CommandList inputMode="search">
         {!isLoading && !isError && results != null && results?.length > 0 && (
@@ -135,12 +135,12 @@ export function SearchbarDialog() {
     <>
       <Button
         onClick={() => setOpen(true)}
-        variant="outline"
-        className="flex justify-between gap-[0.4rem] sm:w-72 md:w-80 mr-2 px-3"
+        variant="secondary"
+        className="light flex justify-between gap-[0.4rem] sm:w-72 md:w-80 mr-2 px-3"
         role="search"
       >
         <div className="flex items-center gap-2 text-ellipsis">
-          <Search className="h-4 w-4 shrink-0 opacity-50" />
+          <Search className="light text-primary h-4 w-4 shrink-0 opacity-90 text-purple-900" />
         </div>
         <kbd className="pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
           <span className="text-xs">⌘</span>K
