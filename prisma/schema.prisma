@@ -8,17 +8,24 @@ datasource db {
 }
 
 model Course {
-  course_code   String          @id @default(cuid()) @db.VarChar(255)
-  course_name   String
-  antireqs      Course[]        @relation("CourseAntirequisite")
-  antireqOf     Course[]        @relation("CourseAntirequisite")
-  prereqs       Course[]        @relation("CoursePrerequisite")
-  prereqOf      Course[]        @relation("CoursePrerequisite")
-  coreqs        Course[]        @relation("CourseCorequisite")
-  coreqOf       Course[]        @relation("CourseCorequisite")
-  precoreqs     Course[]        @relation("CoursePrecorequisite")
-  precoreqOf    Course[]        @relation("CoursePrecorequisite")
-  Course_Review Course_Review[]
+  course_code          String          @id @default(cuid()) @db.VarChar(255)
+  course_name          String
+  antireqs             Course[]        @relation("CourseAntirequisite")
+  antireqOf            Course[]        @relation("CourseAntirequisite")
+  prereqs              Course[]        @relation("CoursePrerequisite")
+  prereqOf             Course[]        @relation("CoursePrerequisite")
+  coreqs               Course[]        @relation("CourseCorequisite")
+  coreqOf              Course[]        @relation("CourseCorequisite")
+  precoreqs            Course[]        @relation("CoursePrecorequisite")
+  precoreqOf           Course[]        @relation("CoursePrecorequisite")
+  antirequisites_text  Json?
+  prerequisites_text   Json?
+  corequisites_text    Json?
+  precorequisites_text Json?
+  description          String?
+  location             String?
+  extra_info           String?
+  course_reviews       Course_Review[]
 }
 
 model Course_Review {
