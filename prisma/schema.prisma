@@ -10,11 +10,17 @@ datasource db {
 model Course {
   course_code          String          @id @default(cuid()) @db.VarChar(255)
   course_name          String
-  antirequisites       String?
-  prerequisites        String?
+  antirequisites       Course[]        @relation("CourseAntirequisite")
+  antirequisiteOf      Course[]        @relation("CourseAntirequisite")
+  prerequisites        Course[]        @relation("CoursePrerequisite")
+  prerequisiteOf       Course[]        @relation("CoursePrerequisite")
+  corequisites         Course[]        @relation("CourseCorequisite")
+  corequisiteOf        Course[]        @relation("CourseCorequisite")
+  precorequisites      Course[]        @relation("CoursePrecorequisite")
+  precorequisiteOf     Course[]        @relation("CoursePrecorequisite")
   antirequisites_text  Json?
   prerequisites_text   Json?
-  corequisiutes_text   Json?
+  corequisites_text    Json?
   precorequisites_text Json?
   description          String?
   location             String?
@@ -23,22 +29,22 @@ model Course {
 }
 
 model Course_Review {
-  review_id    Int       @id @default(autoincrement())
-  professor    String?
-  review       String
+  review_id    Int      @id @default(autoincrement())
+  professor    String
+  review       String?
   difficulty   Int
   liked        Boolean
   attendance   Int
-  enthusiasm   Int
+  useful       Int
   anon         Boolean
   term_taken   Term
-  date_taken   DateTime? @db.Date
-  date_created DateTime  @default(now()) @db.Timestamptz(6)
-  last_edited  DateTime  @default(now()) @db.Timestamptz(6)
-  course       Course    @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
-  course_code  String    @db.VarChar(255)
+  date_taken   DateTime @db.Date
+  date_created DateTime @default(now()) @db.Timestamptz(6)
+  last_edited  DateTime @default(now()) @db.Timestamptz(6)
+  course       Course   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
+  course_code  String   @db.VarChar(255)
   email        String
-  user         User      @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
+  user         User     @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum Term {

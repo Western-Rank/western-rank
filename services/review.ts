@@ -1,14 +1,24 @@
 import { Course_Review } from "@prisma/client";
 import { prisma } from "../lib/db";
 
+export type Course_Review_Create = Omit<
+  Course_Review,
+  "review_id" | "date_created" | "last_edited"
+>;
+
 /**
  * Create a review for a course.
  * @param review review to be created
  * @returns the review created
  */
-export function createReview(review: Course_Review) {
+export function createReview(review: Course_Review_Create) {
+  const new_review = {
+    ...review,
+    date_created: new Date(),
+    last_edited: new Date(),
+  } as Course_Review;
   return prisma.course_Review.create({
-    data: review,
+    data: new_review,
   });
 }
 
