@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { FullCourseName } from "../lib/courses";
 import { debounce } from "@/lib/debounce";
 //@ts-ignore
 import commandScore from "command-score";
@@ -19,13 +17,13 @@ import {
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
-type Course = {
+export type CourseSearchItem = {
   course_code: string;
   course_name: string;
 };
 
 type ScoreItem = {
-  course: Course;
+  course: CourseSearchItem;
   score: number;
 };
 
@@ -36,6 +34,7 @@ type SearchItemProps = {
 };
 
 type SearchbarProps = {
+  courses: CourseSearchItem[];
   onSelect?: (value: string) => void;
 };
 
@@ -51,25 +50,16 @@ function SearchItem({ courseCode, courseName, onSelect }: SearchItemProps) {
   );
 }
 
-export function Searchbar({ onSelect }: SearchbarProps) {
+export function Searchbar({ courses, onSelect }: SearchbarProps) {
   const router = useRouter();
 
-  const [results, setResults] = useState<Course[] | null>(null);
-
-  const { data, isLoading, isError } = useQuery(["courseNames"], {
-    queryFn: async () => {
-      const response = await fetch("/api/courses");
-      if (!response.ok) throw new Error("Courses were not found");
-      return response.json() as Promise<Course[]>;
-    },
-    refetchOnWindowFocus: false,
-  });
+  const [results, setResults] = useState<CourseSearchItem[] | null>(null);
 
   const onSearchTermChange = debounce((searchTerm: string) => {
     if (searchTerm.length > 0) {
       const scoredData: ScoreItem[] = [];
 
-      data?.forEach((course: Course) => {
+      courses.forEach((course: CourseSearchItem) => {
         const score: number = commandScore(
           `${course.course_code?.trim().toLowerCase()} ${course.course_name?.trim().toLowerCase()}`,
           searchTerm?.trim().toLowerCase(),
@@ -88,7 +78,6 @@ export function Searchbar({ onSelect }: SearchbarProps) {
   const onCourseSelect = (value: string) => {
     // e.g. CALC 1000: Calculus I -> CALC%201000
     const courseCodeURI = encodeURIComponent(value.toUpperCase().split(":")[0]);
-
     router.push(`/course/${courseCodeURI}`);
   };
 
@@ -96,7 +85,7 @@ export function Searchbar({ onSelect }: SearchbarProps) {
     <Command shouldFilter={false} className="border light relative">
       <CommandInput placeholder="Search for a Course..." onValueChange={onSearchTermChange} />
       <CommandList inputMode="search">
-        {!isLoading && !isError && results != null && results?.length > 0 && (
+        {results != null && results?.length > 0 && (
           <CommandGroup heading="Courses">
             {results?.slice(0, 7)?.map((item, id) => (
               <SearchItem
@@ -117,7 +106,7 @@ export function Searchbar({ onSelect }: SearchbarProps) {
   );
 }
 
-export function SearchbarDialog() {
+export function SearchbarDialog({ courses, onSelect }: SearchbarProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -148,7 +137,7 @@ export function SearchbarDialog() {
         </kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <Searchbar onSelect={() => setOpen(false)} />
+        <Searchbar courses={courses} onSelect={() => setOpen(false)} />
       </CommandDialog>
     </>
   );

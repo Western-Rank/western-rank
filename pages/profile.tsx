@@ -8,10 +8,13 @@ import ReviewList from "../components/ReviewList";
 import { getReviewsbyUser } from "../services/review";
 import { getUserByEmail } from "../services/user";
 import { authOptions } from "./api/auth/[...nextauth]";
+import { getAllCourses } from "@/services/course";
+import { CourseSearchItem } from "@/components/Searchbar";
 
 interface ProfileProps {
   user: User;
   reviews: Course_Review[];
+  courses: CourseSearchItem[];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -28,21 +31,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const user = await getUserByEmail(session.user.email);
   const reviews = (await getReviewsbyUser(session.user.email)) || [];
+  const courses = await getAllCourses();
 
   return {
     props: {
       user,
       reviews,
+      courses: courses.map((course) => {
+        return {
+          course_code: course.course_code,
+          course_name: course.course_name,
+        };
+      }),
     },
   };
 };
 
-function Profile({ reviews, user }: ProfileProps) {
+function Profile({ courses, reviews, user }: ProfileProps) {
   const theme = useTheme();
 
   return (
     <>
-      <Navbar searchBar></Navbar>
+      <Navbar courses={courses} searchBar></Navbar>
       <br></br>
       <Box id="main" width="90%" maxWidth="1100px" margin="auto">
         <Grid
