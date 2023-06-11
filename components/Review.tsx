@@ -67,8 +67,8 @@ const Review = ({ review, onDelete }: ReviewProps) => {
           <p>{review.difficulty}%</p>
         </div>
         <div className="flex flex-col md:items-end">
-          <h6 className="font-semibold">Enthusiasm</h6>
-          <p>{review.enthusiasm}%</p>
+          <h6 className="font-semibold">Useful</h6>
+          <p>{review.useful}%</p>
         </div>
         <div className="flex flex-col md:items-end">
           <h6 className="font-semibold">Attendance</h6>

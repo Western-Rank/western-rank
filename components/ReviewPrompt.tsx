@@ -147,7 +147,10 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
 
                             <FormControl>
                               <div className="flex gap-2">
-                                <Toggle pressed={field.value} onPressedChange={field.onChange}>
+                                <Toggle
+                                  pressed={field.value as boolean}
+                                  onPressedChange={field.onChange}
+                                >
                                   <ThumbsUp />
                                 </Toggle>
                                 <Toggle

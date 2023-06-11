@@ -21,7 +21,7 @@ interface ReviewListProps {
   reviews: Course_Review[];
 }
 
-const SortOrderOptions = ["recent", "difficulty", "enthusiasm", "attendance"] as const;
+const SortOrderOptions = ["recent", "difficulty", "useful", "attendance"] as const;
 
 /**
  * The modal displaying all reviews on the course page.
