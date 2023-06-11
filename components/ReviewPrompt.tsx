@@ -181,7 +181,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                                   min={2010}
                                   max={new Date().getFullYear()}
                                   step={1}
-                                  value={+field?.value}
+                                  value={field?.value}
                                   onChange={(e) => {
                                     if (e.target.value) field.onChange(+e.target.value);
                                   }}

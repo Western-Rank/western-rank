@@ -12,23 +12,59 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 interface ReviewListProps {
   courseCode: string;
-  reviews: Course_Review[];
 }
 
 const SortOrderOptions = ["recent", "difficulty", "useful", "attendance"] as const;
 
 /**
+ * Course review page for the given course_code
+ */
+const testReviews: Course_Review[] = [
+  {
+    review_id: 1,
+    course_code: "AAAA 1000",
+    professor: "Professor A",
+    review: "An amazing adult awesomely aggregrating addictive assignments",
+    email: "a@awwscar.ca",
+    difficulty: 1,
+    liked: true,
+    attendance: 11,
+    useful: 24,
+    anon: false,
+    date_created: new Date("2020-06-19"),
+    last_edited: new Date("2021-06-19"),
+    term_taken: "Fall",
+    date_taken: new Date(),
+  },
+  {
+    review_id: 2,
+    course_code: "BBBB 2222",
+    professor: "Professor B",
+    review: "Bad, barely beautiful, boring. BAD!",
+    email: "b@bing.com",
+    difficulty: 10,
+    liked: false,
+    attendance: 22,
+    useful: 30,
+    anon: true,
+    date_created: new Date("2022-09-19"),
+    last_edited: new Date("2022-10-19"),
+    term_taken: "Winter",
+    date_taken: new Date(),
+  },
+];
+
+/**
  * The modal displaying all reviews on the course page.
  */
-const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
+const ReviewList = ({ courseCode }: ReviewListProps) => {
   const router = useRouter();
   const { data: auth } = useSession();
+
+  const reviews = testReviews;
 
   const hasReviewed = reviews.some(({ email }) => auth?.user!.email === email);
   const [sortOrder, setSortOrder] = useState<(typeof SortOrderOptions)[number]>("recent");
