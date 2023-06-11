@@ -1,5 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { createReview, deleteReview, upsertReview } from "../../services/review";
+import {
+  Course_Review_Create,
+  createReview,
+  deleteReview,
+  upsertReview,
+} from "../../services/review";
 import { Course_Review } from "@prisma/client";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -41,7 +46,7 @@ async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
  */
 async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const review = req.body as Course_Review;
+    const review = req.body as Course_Review_Create;
     await createReview(review);
     return res.status(200).json({ message: "Review updated" });
   } catch (err: any) {

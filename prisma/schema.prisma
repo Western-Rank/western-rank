@@ -19,22 +19,22 @@ model Course {
 }
 
 model Course_Review {
-  review_id    Int       @id @default(autoincrement())
-  professor    String?
-  review       String
+  review_id    Int      @id @default(autoincrement())
+  professor    String
+  review       String?
   difficulty   Int
   liked        Boolean
   attendance   Int
-  enthusiasm   Int
+  useful       Int
   anon         Boolean
   term_taken   Term
-  date_taken   DateTime? @db.Date
-  date_created DateTime  @default(now()) @db.Timestamptz(6)
-  last_edited  DateTime  @default(now()) @db.Timestamptz(6)
-  course       Course    @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
-  course_code  String    @db.VarChar(255)
+  date_taken   DateTime @db.Date
+  date_created DateTime @default(now()) @db.Timestamptz(6)
+  last_edited  DateTime @default(now()) @db.Timestamptz(6)
+  course       Course   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
+  course_code  String   @db.VarChar(255)
   email        String
-  user         User      @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
+  user         User     @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum Term {
