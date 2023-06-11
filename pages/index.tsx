@@ -19,7 +19,7 @@ const Home = () => {
         }
       >
         <Navbar className="z-10 bg-transparent" />
-        <div className="flex flex-col gap-8 flex-grow w-screen max-w-[100vw] px-4 md:px-10 lg:px-20 xl:px-72 py-32 lg:py-42">
+        <div className="flex flex-col gap-8 flex-grow w-screen max-w-[100vw] px-4 md:px-10 lg:px-20 xl:px-72 py-32 lg:py-42 relative">
           <h1 className="text-primary font-bold text-2xl md:text-3xl lg:text-4xl">
             Explore course reviews from <br />{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400">
@@ -28,10 +28,11 @@ const Home = () => {
             students
           </h1>
           <div className="relative group">
-            <div className="absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-70 group-focus-within:opacity-70 animate-tilt"></div>
             <Searchbar />
+            <div className="z-[-1] absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-70 group-focus-within:opacity-70 animate-tilt"></div>
           </div>
         </div>
+        <div className="h-[40vh] w-[50vw] absolute bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-1 left-1 blur-3xl opacity-20 animate-tilt"></div>
       </main>
 
       <footer></footer>

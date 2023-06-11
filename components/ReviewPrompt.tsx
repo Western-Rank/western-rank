@@ -130,9 +130,9 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                   Review (Optional)
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="ratings">
+              <TabsContent value="ratings" className="relative">
                 <ScrollArea
-                  className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-2 py-4"
+                  className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-2 shadow-inner"
                   type="always"
                 >
                   <div className="flex flex-col gap-4 md:gap-8">
@@ -333,7 +333,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
               </TabsContent>
             </Tabs>
 
-            <Separator />
+            <Separator className="m-0 my-0" />
 
             <DialogFooter className="flex flex-row items-center py-0">
               <FormField

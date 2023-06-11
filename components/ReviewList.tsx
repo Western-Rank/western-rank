@@ -54,7 +54,7 @@ const ReviewList = ({ courseCode, reviews }: ReviewListProps) => {
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="light">
               {SortOrderOptions.map((option, index) => (
                 <SelectItem key={index} value={option}>
                   {option}

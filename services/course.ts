@@ -3,7 +3,7 @@ import { prisma } from "../lib/db";
 /**
  * Search for courses stored in the database.
  * @param query Substring to match course names/codes with
- * @returns List of courses that match the given query
+ * @returns List of courses that match  the given query
  */
 export function searchCourses(query: string) {
   return prisma.course.findMany({
