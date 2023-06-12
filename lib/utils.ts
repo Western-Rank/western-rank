@@ -38,9 +38,8 @@ export function formatTimeAgo(date: Date) {
 
 /**
  * Generate tick labels for a MUI material slider's 'marks' prop from min to max, inclusive
- * TODO move to utils
  */
-function generateSliderTicks(min: number, max: number, step = 1) {
+export function generateSliderTicks(min: number, max: number, step = 1) {
   const numTicks = Math.floor((max - min) / step) + 1;
   const arr = Array(numTicks).fill(0);
   return arr.map((_, idx) => {
@@ -50,4 +49,8 @@ function generateSliderTicks(min: number, max: number, step = 1) {
       label: tickNum.toString(),
     };
   });
+}
+
+export function roundToNearest(num: number, digits: number) {
+  return Math.round(num * Math.pow(10, digits)) / Math.pow(10, digits);
 }
