@@ -1,10 +1,10 @@
 import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import StatMeter, { MeterType } from "./StatMeter";
 
 import { Button } from "./ui/button";
 import { formatTimeAgo } from "@/lib/utils";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
+import Stars from "./Stars";
 
 // profile pic, review text,
 interface ReviewProps {
@@ -52,29 +52,29 @@ const Review = ({ review, onDelete }: ReviewProps) => {
                 : formatTimeAgo(review.date_created)}
             </h6>
           </div>
-          <div>
-            {review.email === auth?.user?.email && (
-              <Button color="secondary" onClick={onDeleteReview}>
-                Delete
-              </Button>
-            )}
-          </div>
         </div>
       </div>
       <div className="w-36 flex flex-col md:items-end gap-2">
         <div className="flex flex-col md:items-end">
           <h6 className="font-semibold">Difficulty</h6>
-          <p>{review.difficulty / 2.0}/5</p>
+          <Stars value={review.difficulty / 2.0} size={30} theme="purple" />
         </div>
         <div className="flex flex-col md:items-end">
           <h6 className="font-semibold">Useful</h6>
-          <p>{review.useful / 2.0}/5</p>
+          <Stars value={review.useful / 2.0} size={30} theme="blue" />
         </div>
         <div className="flex flex-col md:items-end">
           <h6 className="font-semibold">Attendance</h6>
           <p>{review.attendance}%</p>
         </div>
-        {review.liked ? <ThumbsUp /> : <ThumbsDown />}
+        {review.liked ? <ThumbsUp className="stroke-purple-600" /> : <ThumbsDown />}
+        <div className="pt-3">
+          {review.email === auth?.user?.email && (
+            <Button color="secondary" onClick={onDeleteReview}>
+              Delete
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
