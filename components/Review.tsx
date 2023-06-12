@@ -64,11 +64,11 @@ const Review = ({ review, onDelete }: ReviewProps) => {
       <div className="w-36 flex flex-col md:items-end gap-2">
         <div className="flex flex-col md:items-end">
           <h6 className="font-semibold">Difficulty</h6>
-          <p>{review.difficulty}%</p>
+          <p>{review.difficulty / 2.0}/5</p>
         </div>
         <div className="flex flex-col md:items-end">
           <h6 className="font-semibold">Useful</h6>
-          <p>{review.useful}%</p>
+          <p>{review.useful / 2.0}/5</p>
         </div>
         <div className="flex flex-col md:items-end">
           <h6 className="font-semibold">Attendance</h6>

@@ -13,6 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "./ui/use-toast";
+import Spinner from "./ui/spinner";
 
 interface ReviewListProps {
   courseCode: string;
@@ -66,18 +68,27 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
   const { data: auth } = useSession();
   const [sortOrder, setSortOrder] = useState<(typeof SortOrderOptions)[number]>("recent");
 
-  const reviews = testReviews; // change to react query
+  const {
+    data: reviews,
+    isLoading,
+    isError,
+  } = useQuery([`${courseCode}-reviews`], {
+    queryFn: async () => {
+      const response = await fetch(`/api/reviews?course_code=${courseCode}`);
+      if (!response.ok) throw new Error("Courses were not found");
+      return response.json() as Promise<Course_Review[]>;
+    },
+    refetchOnWindowFocus: false,
+    onError(err: Error) {
+      toast({
+        title: `Error loading reviews for ${courseCode}`,
+        description: `${err.message.slice(0, 100) + "..." ?? ""}`,
+        variant: "destructive",
+      });
+    },
+  });
 
-  // const { data, isLoading, isError } = useQuery([`${courseCode}-reviews`], {
-  //   queryFn: async () => {
-  //     const response = await fetch("/api/courses");
-  //     if (!response.ok) throw new Error("Courses were not found");
-  //     return response.json() as Promise<Course[]>;
-  //   },
-  //   refetchOnWindowFocus: false,
-  // });
-
-  const hasReviewed = reviews.some(({ email }) => auth?.user!.email === email);
+  const hasReviewed = reviews?.some(({ email }) => auth?.user!.email === email);
 
   if (hasReviewed) {
   }
@@ -86,10 +97,9 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
   // TODO revalidate using react query
   const onDeleteReview = () => router.replace(router.asPath);
 
-  return (
-    <div className="flex flex-col">
-      <h5 className="font-bold text-lg">Course Reviews ({reviews.length})</h5>
-
+  return !isLoading && !isError ? (
+    <div className="break-words">
+      <h5 className="font-bold text-lg">Course Reviews ({reviews?.length ?? 0})</h5>
       <div className="flex flex-col sm:flex-row gap-2 items-center sm:justify-between py-2">
         <div className="flex items-center w-full sm:w-auto gap-1">
           <label className="w-24">Sort By</label>
@@ -114,21 +124,23 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
         </div>
         <ReviewPrompt courseCode={courseCode} hasReviewed={hasReviewed} />
       </div>
-
       <div className="flex flex-col gap-4 py-2">
-        {sortOrder == "recent"
-          ? reviews
-              .sort((a, b) => b.date_created.valueOf() - a.date_created.valueOf())
-              .map((review) => (
-                <Review key={review.email} review={review} onDelete={onDeleteReview} />
-              ))
-          : reviews
-              .sort((a, b) => (b[sortOrder] as number) - (a[sortOrder] as number))
-              .map((review) => (
-                <Review key={review.email} review={review} onDelete={onDeleteReview} />
-              ))}
+        {reviews?.map((review) => (
+          <Review
+            key={review.email}
+            review={{
+              ...review,
+              date_created: new Date(review.date_created),
+              last_edited: new Date(review.last_edited),
+              date_taken: new Date(review.date_taken),
+            }}
+            onDelete={onDeleteReview}
+          />
+        ))}
       </div>
     </div>
+  ) : (
+    <Spinner className="flex items-center justify-center" text="Loading..." />
   );
 };
 

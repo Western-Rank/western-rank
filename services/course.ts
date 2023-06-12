@@ -1,4 +1,7 @@
+import { Course } from "@prisma/client";
 import { prisma } from "../lib/db";
+
+export type FullCourse = Awaited<ReturnType<typeof getCourse>>;
 
 /**
  * Search for courses stored in the database.
@@ -30,10 +33,37 @@ export function getAllCourses() {
  * @param courseCode the course code of the course to fetch
  * @returns the course information stored in the database
  */
-export function getCourse(courseCode: string) {
-  return prisma.course.findUnique({
+export async function getCourse(courseCode: string) {
+  const course = await prisma.course.findUnique({
     where: {
       course_code: courseCode,
     },
   });
+
+  const aggregate = await prisma.course_Review.aggregate({
+    _avg: {
+      difficulty: true,
+      useful: true,
+      attendance: true,
+    },
+    _count: {
+      review_id: true,
+    },
+    where: {
+      course_code: courseCode,
+    },
+  });
+
+  const count_liked = await prisma.course_Review.count({
+    where: {
+      course_code: courseCode,
+      liked: true,
+    },
+  });
+
+  return {
+    ...(course as Course),
+    ...aggregate,
+    count_liked,
+  };
 }

@@ -63,7 +63,11 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
-  const reviewButtonText = !auth ? "Log in to Review" : hasReviewed ? "Edit your Review" : "Review";
+  const reviewButtonText = !auth?.user
+    ? "Log in to Review"
+    : hasReviewed
+    ? "Edit your Review"
+    : "Review";
 
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
@@ -132,7 +136,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
               </TabsList>
               <TabsContent value="ratings" className="relative">
                 <ScrollArea
-                  className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-2 shadow-inner"
+                  className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-2"
                   type="always"
                 >
                   <div className="flex flex-col gap-4 md:gap-8">

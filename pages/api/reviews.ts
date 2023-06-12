@@ -39,7 +39,7 @@ async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
     };
     if (course_code && !email) {
       const reviews = await getReviewsbyCourse(course_code);
-      return res.status(200).json(reviews);
+      return res.status(200).json(reviews.filter((review) => review.review));
     } else if (email && !course_code) {
       const reviews = await getReviewsbyUser(email);
       return res.status(200).json(reviews);

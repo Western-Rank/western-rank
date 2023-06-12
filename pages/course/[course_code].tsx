@@ -1,14 +1,14 @@
-import { Course } from "@prisma/client";
+import { type Course } from "@prisma/client";
 import { GetServerSideProps, GetStaticPaths } from "next";
 import Navbar from "../../components/Navbar";
 import ReviewList from "../../components/ReviewList";
-import { getAllCourses, getCourse } from "../../services/course";
+import { type FullCourse, getAllCourses, getCourse } from "../../services/course";
 import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
 import { Button } from "@/components/ui/button";
 import { CourseSearchItem } from "@/components/Searchbar";
 interface CourseProps {
-  course: Course; // the course information for the course displayed on this page
+  course: FullCourse; // the course information for the course displayed on this page
   courses: CourseSearchItem[];
 }
 
@@ -43,11 +43,16 @@ export const getStaticProps: GetServerSideProps<CourseProps> = async ({ params }
           course_name: course.course_name,
         };
       }),
-    } as CourseProps,
+    },
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every _ seconds
+    revalidate: 10,
   };
 };
 
 const Course = ({ courses, course }: CourseProps) => {
+  console.log(course);
   const [course_description, isExpanded, toggleExpand] = useShowMore({
     text: course?.description ?? "",
     maxLength: 200,
@@ -55,7 +60,7 @@ const Course = ({ courses, course }: CourseProps) => {
 
   return (
     <>
-      <main className="light bg-background text-primary">
+      <main className="light bg-background text-primary min-h-screen">
         <Navbar courses={courses} searchBar className="dark z-1" />
         <div className="flex flex-col light">
           <div className="py-4 pt-16 bg-background dark relative">
@@ -88,13 +93,13 @@ const Course = ({ courses, course }: CourseProps) => {
           </div>
 
           <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
-            <div className="flex-grow lg:max-w-[75vw]">
+            <div className="flex-grow lg:min-w-[45vw]">
               <ReviewList courseCode={course?.course_code} />
             </div>
 
             <Separator orientation="vertical" className="w-[1px] h-200" />
 
-            <div className="lg:w-96 flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <div>
                 <h5 className="text-lg font-semibold">Prerequisites</h5>
                 <p>{course?.prerequisites_text || "None"}</p>
