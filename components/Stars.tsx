@@ -42,7 +42,7 @@ const Stars = ({ value, size, theme }: StarsProps) => {
                 />
                 <Star
                   size={size}
-                  style={{ width: remainder * size }}
+                  style={{ width: (1 - remainder) * size }}
                   color=""
                   preserveAspectRatio="xMaxYMax slice"
                   className={cn("px-0", deactivatedFill[theme])}

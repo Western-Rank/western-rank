@@ -7,6 +7,11 @@ import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
 import { Button } from "@/components/ui/button";
 import { CourseSearchItem } from "@/components/Searchbar";
+import Stars from "@/components/Stars";
+import { Progress } from "@/components/ui/progress";
+import PercentCircle from "@/components/PercentCircle";
+import { roundToNearest } from "@/lib/utils";
+
 interface CourseProps {
   course: FullCourse; // the course information for the course displayed on this page
   courses: CourseSearchItem[];
@@ -58,6 +63,13 @@ const Course = ({ courses, course }: CourseProps) => {
     maxLength: 200,
   });
 
+  const percent = Math.round(
+    ((course?.count_liked ?? 0) / course._count.review_id == 0 ? 0 : course._count.review_id) * 100,
+  );
+
+  const difficulty = roundToNearest((course?._avg?.difficulty ?? 0) / 2.0, 1);
+  const useful = roundToNearest((course?._avg?.useful ?? 0) / 2.0, 1);
+
   return (
     <>
       <main className="light bg-background text-primary min-h-screen">
@@ -73,8 +85,8 @@ const Course = ({ courses, course }: CourseProps) => {
             </h5>
           </div>
 
-          <div className="py-8 px-4 md:px-8 lg:px-15 xl:px-40 ">
-            <p className="text-primary flex flex-col">
+          <div className="py-8 px-4 md:px-8 lg:px-15 xl:px-40 flex flex-col-reverse lg:flex-row lg:gap-10">
+            <p className="flex-1 text-primary flex flex-col">
               {course_description}
               {isExpanded != undefined && (
                 <Button
@@ -86,6 +98,20 @@ const Course = ({ courses, course }: CourseProps) => {
                 </Button>
               )}
             </p>
+            <div className="flex items-center justify-center space-x-4 pb-2">
+              <PercentCircle percent={percent} size={180} strokeWidth={12} />
+              <div className="space-y-2">
+                <div>
+                  <h6 className="font-semibold">Difficulty</h6>
+                  <Stars value={difficulty} size={30} theme="purple" />
+                </div>
+                <div>
+                  <h6 className="font-semibold">Useful</h6>
+                  <Stars value={useful} size={30} theme="blue" />
+                </div>
+                <p>{course?._count.review_id} rating(s)</p>
+              </div>
+            </div>
           </div>
 
           <div className="px-4 md:px-8 lg:px-15 xl:px-40">

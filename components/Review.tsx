@@ -67,7 +67,11 @@ const Review = ({ review, onDelete }: ReviewProps) => {
           <h6 className="font-semibold">Attendance</h6>
           <p>{review.attendance}%</p>
         </div>
-        {review.liked ? <ThumbsUp className="stroke-purple-600" /> : <ThumbsDown />}
+        {review.liked ? (
+          <ThumbsUp className="stroke-purple-600" />
+        ) : (
+          <ThumbsDown className="stroke-blue-400" />
+        )}
         <div className="pt-3">
           {review.email === auth?.user?.email && (
             <Button color="secondary" onClick={onDeleteReview}>
