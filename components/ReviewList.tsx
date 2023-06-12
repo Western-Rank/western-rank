@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
 
 interface ReviewListProps {
   courseCode: string;
@@ -63,11 +64,23 @@ const testReviews: Course_Review[] = [
 const ReviewList = ({ courseCode }: ReviewListProps) => {
   const router = useRouter();
   const { data: auth } = useSession();
+  const [sortOrder, setSortOrder] = useState<(typeof SortOrderOptions)[number]>("recent");
 
-  const reviews = testReviews;
+  const reviews = testReviews; // change to react query
+
+  // const { data, isLoading, isError } = useQuery([`${courseCode}-reviews`], {
+  //   queryFn: async () => {
+  //     const response = await fetch("/api/courses");
+  //     if (!response.ok) throw new Error("Courses were not found");
+  //     return response.json() as Promise<Course[]>;
+  //   },
+  //   refetchOnWindowFocus: false,
+  // });
 
   const hasReviewed = reviews.some(({ email }) => auth?.user!.email === email);
-  const [sortOrder, setSortOrder] = useState<(typeof SortOrderOptions)[number]>("recent");
+
+  if (hasReviewed) {
+  }
 
   // called after the review deletes itself to update the review list
   // TODO revalidate using react query

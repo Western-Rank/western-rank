@@ -53,7 +53,7 @@ const Home = ({ courses }: HomeProps) => {
             <div className="z-[-1] absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-70 group-focus-within:opacity-70 animate-tilt"></div>
           </div>
         </div>
-        <div className="h-[40vh] w-[50vw] absolute bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-1 left-1 blur-3xl opacity-20 animate-tilt"></div>
+        <div className="h-[40vh] w-[20vw] absolute bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-1 left-1 blur-3xl opacity-20 animate-tilt"></div>
       </main>
 
       <footer></footer>
