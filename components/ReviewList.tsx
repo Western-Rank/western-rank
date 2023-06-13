@@ -19,6 +19,11 @@ import Spinner from "./ui/spinner";
 import { useMousePosition } from "@/hooks/useMousePosition";
 import { Toggle } from "./ui/toggle";
 import { ArrowDownNarrowWide, ArrowUp, ArrowUpNarrowWide } from "lucide-react";
+import { z } from "zod";
+import { Course_ReviewsData } from "@/pages/api/reviews";
+import { Button } from "./ui/button";
+
+const TAKE_DEFAULT = 5;
 
 interface ReviewListProps {
   courseCode: string;
@@ -76,19 +81,31 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
   const { data: auth } = useSession();
   const [sortKey, setSortKey] = useState<SortKey>("date_created");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [take, setTake] = useState<number | undefined>(TAKE_DEFAULT);
+
+  const resetTake = () => {
+    setTake(TAKE_DEFAULT);
+  };
 
   const {
-    data: reviews,
+    data: reviewsData,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["reviews", courseCode, sortKey, sortOrder],
+    queryKey: ["reviews", courseCode, sortKey, sortOrder, take],
     queryFn: async () => {
-      const response = await fetch(
-        `/api/reviews?course_code=${courseCode}&sortKey=${sortKey}&sortOrder=${sortOrder}`,
-      );
+      const searchParams = new URLSearchParams({
+        course_code: courseCode,
+        sortKey: sortKey,
+        sortOrder: sortOrder,
+      });
+
+      if (take) {
+        searchParams.append("take", take.toString());
+      }
+      const response = await fetch(`/api/reviews?${searchParams.toString()}`);
       if (!response.ok) throw new Error("Courses were not found");
-      return response.json() as Promise<Course_Review[]>;
+      return response.json() as Promise<Course_ReviewsData>;
     },
     refetchOnWindowFocus: false,
     onError(err: Error) {
@@ -100,7 +117,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
     },
   });
 
-  const hasReviewed = reviews?.some(({ email }) => auth?.user!.email === email);
+  const hasReviewed = reviewsData?.reviews?.some(({ email }) => auth?.user!.email === email);
 
   if (hasReviewed) {
   }
@@ -111,13 +128,14 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
 
   return (
     <div className="break-words" id="reviews">
-      <h5 className="font-bold text-lg">Course Reviews ({reviews?.length ?? 0})</h5>
+      <h5 className="font-bold text-lg">Course Reviews ({reviewsData?._count?.review_id ?? 0})</h5>
       <div className="flex flex-col sm:flex-row gap-2 items-center sm:justify-between py-2">
         <div className="flex items-center w-full gap-2">
           <label className="min-w-fit">Sort By</label>
           <Select
             value={sortKey}
             onValueChange={(value) => {
+              resetTake();
               setSortKey(value as (typeof SortKeys)[number]);
             }}
           >
@@ -135,14 +153,20 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
           <div className="flex space-x-1">
             <Toggle
               pressed={sortOrder === "asc"}
-              onPressedChange={() => setSortOrder("asc")}
+              onPressedChange={() => {
+                resetTake();
+                setSortOrder("asc");
+              }}
               value="asc"
             >
               <ArrowUpNarrowWide />
             </Toggle>
             <Toggle
               pressed={sortOrder === "desc"}
-              onPressedChange={() => setSortOrder("desc")}
+              onPressedChange={() => {
+                resetTake();
+                setSortOrder("desc");
+              }}
               value="desc"
             >
               <ArrowDownNarrowWide />
@@ -153,19 +177,26 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
       </div>
       {!isLoading && !isError ? (
         <div className="flex flex-col gap-4 py-2">
-          {reviews.length > 0 ? (
-            reviews?.map((review) => (
-              <Review
-                key={review.review_id}
-                review={{
-                  ...review,
-                  date_created: new Date(review.date_created),
-                  last_edited: new Date(review.last_edited),
-                  date_taken: new Date(review.date_taken),
-                }}
-                onDelete={onDeleteReview}
-              />
-            ))
+          {reviewsData?.reviews?.length > 0 ? (
+            <>
+              {reviewsData?.reviews?.map((review) => (
+                <Review
+                  key={review.review_id}
+                  review={{
+                    ...review,
+                    date_created: new Date(review.date_created),
+                    last_edited: new Date(review.last_edited),
+                    date_taken: new Date(review.date_taken),
+                  }}
+                  onDelete={onDeleteReview}
+                />
+              ))}
+              {take && reviewsData._count.review_id > take && (
+                <Button variant="outline" onClick={() => setTake(undefined)}>
+                  Show all {reviewsData?._count.review_id} Reviews
+                </Button>
+              )}
+            </>
           ) : (
             <div className="text-center flex flex-col items-center">
               <svg

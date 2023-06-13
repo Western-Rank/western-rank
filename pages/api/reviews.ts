@@ -7,8 +7,15 @@ import {
   getReviewsbyUser,
   upsertReview,
 } from "../../services/review";
-import { Course_Review } from "@prisma/client";
-import { SortKey, SortKeys, SortOrder, SortOrderOptions } from "@/components/ReviewList";
+import type { Course_Review } from "@prisma/client";
+import type { SortKey, SortOrder } from "@/components/ReviewList";
+
+export type Course_ReviewsData = {
+  reviews: Course_Review[];
+  _count: {
+    review_id: number;
+  };
+};
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -34,15 +41,24 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
  */
 async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { course_code, email, sortKey, sortOrder } = req.query as {
+    const { course_code, email, sortKey, sortOrder, take } = req.query as {
       course_code?: string;
       email?: string;
       sortKey: SortKey;
       sortOrder: SortOrder;
+      take?: string;
     };
     if (course_code && !email) {
-      const reviews = await getReviewsbyCourse(course_code, sortKey, sortOrder);
-      return res.status(200).json(reviews.filter((review) => review.review));
+      const [reviews, count] = await getReviewsbyCourse({
+        courseCode: course_code,
+        sortKey: sortKey,
+        sortOrder: sortOrder,
+        take: take ? parseInt(take) : undefined,
+      });
+      return res.status(200).json({
+        reviews: reviews,
+        _count: count._count,
+      } as Course_ReviewsData);
     } else if (email && !course_code) {
       const reviews = await getReviewsbyUser(email);
       return res.status(200).json(reviews);

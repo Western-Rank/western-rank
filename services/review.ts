@@ -28,15 +28,49 @@ export function createReview(review: Course_Review_Create) {
  * @param courseCode Course code of the course
  * @returns List of reviews for the course
  */
-export function getReviewsbyCourse(courseCode: string, sortKey: SortKey, sortOrder: SortOrder) {
-  return prisma.course_Review.findMany({
+export function getReviewsbyCourse({
+  courseCode,
+  sortKey,
+  sortOrder,
+  take,
+}: {
+  courseCode: string;
+  sortKey: SortKey;
+  sortOrder: SortOrder;
+  take?: number;
+  email?: string;
+}) {
+  const reviewsQuery = prisma.course_Review.findMany({
     where: {
       course_code: courseCode,
+      review: {
+        not: null,
+      },
+    },
+    orderBy: {
+      [sortKey]: sortOrder,
+    },
+    take: take,
+  });
+
+  const countQuery = prisma.course_Review.aggregate({
+    _count: {
+      review_id: true,
+    },
+    where: {
+      course_code: courseCode,
+      review: {
+        not: null,
+      },
     },
     orderBy: {
       [sortKey]: sortOrder,
     },
   });
+
+  const reviewsData = prisma.$transaction([reviewsQuery, countQuery]);
+
+  return reviewsData;
 }
 
 /**
