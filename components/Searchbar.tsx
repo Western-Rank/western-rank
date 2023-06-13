@@ -126,7 +126,7 @@ export function SearchbarDialog({ courses, onSelect }: SearchbarProps) {
         onClick={() => setOpen(true)}
         variant="secondary"
         size="sm"
-        className="light flex justify-between gap-[0.4rem] sm:w-72 md:w-80 mr-2 px-3"
+        className="light bg-secondary hover:bg-background flex justify-between gap-[0.4rem] sm:w-72 md:w-80 mr-2 px-3"
         role="search"
       >
         <div className="flex items-center gap-2 text-ellipsis">

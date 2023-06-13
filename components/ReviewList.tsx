@@ -198,7 +198,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
               )}
             </>
           ) : (
-            <div className="text-center flex flex-col items-center">
+            <div className="py-6 text-center flex flex-col items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="100"

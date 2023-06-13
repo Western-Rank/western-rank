@@ -73,7 +73,7 @@ const Course = ({ courses, course }: CourseProps) => {
 
   return (
     <>
-      <main className="light bg-background text-primary min-h-screen">
+      <main className="light bg-background text-primary min-h-[110vh]">
         <Navbar courses={courses} searchBar className="dark z-1" />
         <div className="flex flex-col light">
           <div className="py-4 pt-16 bg-background dark relative">
