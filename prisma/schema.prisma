@@ -35,22 +35,16 @@ model Course_Review {
   difficulty   Int
   liked        Boolean
   attendance   Int
-  useful       Int
   anon         Boolean
   term_taken   Term
   date_taken   DateTime @db.Date
   date_created DateTime @default(now()) @db.Timestamptz(6)
   last_edited  DateTime @default(now()) @db.Timestamptz(6)
-  course       Course   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
   course_code  String   @db.VarChar(255)
   email        String
+  useful       Int
+  course       Course   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
   user         User     @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
-}
-
-enum Term {
-  Fall
-  Winter
-  Summer
 }
 
 model Account {
@@ -59,15 +53,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -87,8 +80,8 @@ model User {
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  sessions      Session[]
   Course_Review Course_Review[]
+  sessions      Session[]
 }
 
 model VerificationToken {
@@ -97,4 +90,10 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum Term {
+  Fall
+  Winter
+  Summer
 }

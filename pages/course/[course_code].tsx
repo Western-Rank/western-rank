@@ -42,7 +42,6 @@ const Requisite = ({ type, requisiteText, requisites }: RequisiteProps) => {
     return <></>;
   }
 
-  console.log(type, requisites);
   let currRequisiteIndex = 0;
 
   return (

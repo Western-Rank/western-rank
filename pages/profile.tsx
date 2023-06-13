@@ -69,7 +69,7 @@ function Profile({ courses, reviews, user }: ProfileProps) {
           </Grid>
 
           <Grid item xs={10}>
-            <ReviewList></ReviewList>
+            {/* <ReviewList></ReviewList> */}
           </Grid>
         </Grid>
       </Box>
