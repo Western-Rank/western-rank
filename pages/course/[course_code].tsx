@@ -64,7 +64,8 @@ const Course = ({ courses, course }: CourseProps) => {
   });
 
   const percent = Math.round(
-    ((course?.count_liked ?? 0) / course._count.review_id == 0 ? 0 : course._count.review_id) * 100,
+    ((course?.count_liked ?? 0) / (course._count.review_id == 0 ? 1 : course._count.review_id)) *
+      100,
   );
 
   const difficulty = roundToNearest((course?._avg?.difficulty ?? 0) / 2.0, 1);
@@ -91,7 +92,7 @@ const Course = ({ courses, course }: CourseProps) => {
               {isExpanded != undefined && (
                 <Button
                   variant="link"
-                  className="px-1 pt-4 my-0 h-2 self-end"
+                  className="px-0 pt-4 my-0 h-2 self-start"
                   onClick={toggleExpand}
                 >
                   Show {!isExpanded ? "More" : "Less"}

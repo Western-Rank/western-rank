@@ -1,5 +1,6 @@
-import { Course_Review } from "@prisma/client";
+import { Course_Review, Prisma } from "@prisma/client";
 import { prisma } from "../lib/db";
+import { SortKey, SortOrder } from "@/components/ReviewList";
 
 export type Course_Review_Create = Omit<
   Course_Review,
@@ -27,10 +28,13 @@ export function createReview(review: Course_Review_Create) {
  * @param courseCode Course code of the course
  * @returns List of reviews for the course
  */
-export function getReviewsbyCourse(courseCode: string) {
+export function getReviewsbyCourse(courseCode: string, sortKey: SortKey, sortOrder: SortOrder) {
   return prisma.course_Review.findMany({
     where: {
       course_code: courseCode,
+    },
+    orderBy: {
+      [sortKey]: sortOrder,
     },
   });
 }

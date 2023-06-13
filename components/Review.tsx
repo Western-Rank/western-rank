@@ -28,31 +28,37 @@ const Review = ({ review, onDelete }: ReviewProps) => {
     if (onDelete) onDelete();
   };
   return (
-    <div className="p-6 border-border border-[1px] rounded-md flex gap-2 flex-col md:flex-row md:justify-between">
+    <div className="p-6 border-border border-[1px] rounded-md flex gap-2 flex-col sm:flex-row sm:justify-between">
       <div className="flex flex-col flex-1">
+        <div className="flex items-center gap-1">
+          <h5 className="font-medium">{`${
+            review.anon ? "Anonymous" : review.email.split("@")[0]
+          }`}</h5>
+          <h6 className="text-sm text-muted-foreground">
+            {review.date_created < review.last_edited
+              ? formatTimeAgo(review.last_edited)
+              : formatTimeAgo(review.date_created)}
+          </h6>
+        </div>
         <p className="flex-grow break-all pb-6">{review.review}</p>
-        <div className="flex justify-between">
-          <div>
-            <h5>
-              {`~ ${review.anon ? "Anonymous" : review.email.split("@")[0]}, taught by `}
+        <h6>
+          {review?.professor && (
+            <>
+              {"taught by "}
               <a
                 href={`https://www.ratemyprofessors.com/search/professors/1491?q=${encodeURIComponent(
                   review?.professor || "",
                 )}`}
-                className="hover:underline"
+                className="hover:underline text-blue-400"
                 target="_blank"
               >
-                {review.professor}
+                El Sakka
               </a>
-              {` in ${review.term_taken} ${review.date_taken?.getFullYear()}`}
-            </h5>
-            <h6 className="italic">
-              {review.date_created < review.last_edited
-                ? formatTimeAgo(review.last_edited)
-                : formatTimeAgo(review.date_created)}
-            </h6>
-          </div>
-        </div>
+              {", "}
+            </>
+          )}
+          {`${review.term_taken} ${review.date_taken?.getFullYear()}`}
+        </h6>
       </div>
       <div className="w-36 flex flex-col md:items-end gap-2">
         <div className="flex flex-col md:items-end">

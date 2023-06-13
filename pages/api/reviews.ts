@@ -8,6 +8,7 @@ import {
   upsertReview,
 } from "../../services/review";
 import { Course_Review } from "@prisma/client";
+import { SortKey, SortKeys, SortOrder, SortOrderOptions } from "@/components/ReviewList";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -33,12 +34,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
  */
 async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { course_code, email } = req.query as {
+    const { course_code, email, sortKey, sortOrder } = req.query as {
       course_code?: string;
       email?: string;
+      sortKey: SortKey;
+      sortOrder: SortOrder;
     };
     if (course_code && !email) {
-      const reviews = await getReviewsbyCourse(course_code);
+      const reviews = await getReviewsbyCourse(course_code, sortKey, sortOrder);
       return res.status(200).json(reviews.filter((review) => review.review));
     } else if (email && !course_code) {
       const reviews = await getReviewsbyUser(email);

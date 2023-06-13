@@ -47,7 +47,7 @@ const reviewFormSchema = z.object({
   review: z.string().optional(),
   liked: z.boolean(),
   difficulty: z.array(z.number().min(0).max(5)),
-  enthusiasm: z.array(z.number().min(0).max(5)),
+  useful: z.array(z.number().min(0).max(5)),
   attendance: z.array(z.number().min(0).max(100)),
   anon: z.boolean(),
   date_taken: z.number().min(2010).max(new Date().getFullYear()),
@@ -76,7 +76,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
       review: "",
       liked: true,
       difficulty: [2.5],
-      enthusiasm: [2.5],
+      useful: [2.5],
       attendance: [50],
       anon: false,
       date_taken: new Date().getFullYear(),
@@ -105,7 +105,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
           disabled={!auth}
           onClick={() => setOpen(true)}
           variant="gradient"
-          className="w-full sm:w-fit"
+          className="w-full sm:min-w-fit sm:w-auto"
         >
           {reviewButtonText}
         </Button>
@@ -153,13 +153,13 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                               <div className="flex gap-2">
                                 <Toggle
                                   pressed={field.value as boolean}
-                                  onPressedChange={field.onChange}
+                                  onPressedChange={() => field.onChange(true)}
                                 >
                                   <ThumbsUp />
                                 </Toggle>
                                 <Toggle
                                   pressed={!field.value}
-                                  onPressedChange={(value) => field.onChange(!value)}
+                                  onPressedChange={() => field.onChange(false)}
                                 >
                                   <ThumbsDown />
                                 </Toggle>
@@ -277,11 +277,11 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
 
                       <FormField
                         control={reviewForm.control}
-                        name="enthusiasm"
+                        name="useful"
                         render={({ field }) => (
                           <FormItem className="flex-1 flex flex-col">
-                            <FormLabel>Enthusiasm (0-5)</FormLabel>
-                            <FormDescription>How exciting was the course?</FormDescription>
+                            <FormLabel>Useful (0-5)</FormLabel>
+                            <FormDescription>How useful was the course?</FormDescription>
                             <FormControl>
                               <Slider
                                 min={0}
