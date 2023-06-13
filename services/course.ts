@@ -67,6 +67,8 @@ export async function getCourse(courseCode: string) {
     },
   });
 
+  // TODO: change this to use a prisma transaction
+
   return {
     ...course,
     ...aggregate,

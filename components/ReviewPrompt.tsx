@@ -85,13 +85,24 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
   });
 
   const reviewMutation = useMutation({
-    mutationFn: (review: Course_Review_Create) => {
-      return fetch("/api/reviews", { method: "POST", body: JSON.stringify(review) });
+    mutationFn: async (review: Course_Review_Create) => {
+      const res = await fetch("/api/reviews", { method: "POST", body: JSON.stringify(review) });
+      if (!res.ok) {
+        throw new Error("yo");
+      }
+      return res;
     },
     onSuccess() {
       toast({
         title: `Your ${hasReviewed ? "Edited" : ""} ${courseCode} Review was submitted!`,
         description: "You can edit it at any time after signing in.",
+      });
+    },
+    onError(err: Error) {
+      toast({
+        title: err.message,
+        description: "You can edit it at any time after signing in.",
+        variant: "destructive",
       });
     },
   });

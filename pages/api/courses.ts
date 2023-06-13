@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case "GET":
       return await handleGetCourses(req, res);
     default:
-      return res.send("Invalid API route");
+      return res.status(405).send("Invalid API route");
   }
 }
 
@@ -39,6 +39,6 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
       );
     }
   } catch (err: any) {
-    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
+    return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }

@@ -43,6 +43,7 @@ const Requisite = ({ type, requisiteText, requisites }: RequisiteProps) => {
   }
 
   let currRequisiteIndex = 0;
+  console.log(type, requisites);
 
   return (
     <div>
@@ -57,10 +58,9 @@ const Requisite = ({ type, requisiteText, requisites }: RequisiteProps) => {
                   <>
                     <Button key={index} variant="link" className="p-0 h-3 text-blue-500" asChild>
                       <Link href={`/course/${encodeURIComponent(requisiteCourse?.course_code)}`}>
-                        {requisiteCourse?.course_code}
+                        {item.text}
                       </Link>
                     </Button>
-                    {index <= requisiteText.length - 3 && ", "}
                   </>
                 );
               } else {

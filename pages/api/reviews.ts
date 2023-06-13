@@ -85,7 +85,7 @@ async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
     await deleteReview(email, course_code);
     return res.status(200).json({ message: "Review deleted" });
   } catch (err: any) {
-    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
+    return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
 
@@ -96,13 +96,14 @@ async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
  */
 async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const review = req.body as Course_Review_Create;
-    console.log(review);
+    const review = JSON.parse(req.body);
     const result = await createReview(review);
-    console.log("created the review", result);
+
+    console.log(`Created the review: ${result.review_id}`);
+
     return res.status(200).json({ message: "Review created" });
   } catch (err: any) {
-    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
+    return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
 
@@ -117,6 +118,6 @@ async function handlePutReview(req: NextApiRequest, res: NextApiResponse) {
     await upsertReview(review);
     return res.status(200).json({ message: "Review updated" });
   } catch (err: any) {
-    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
+    return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }

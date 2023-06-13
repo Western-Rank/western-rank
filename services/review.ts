@@ -13,21 +13,8 @@ export type Course_Review_Create = Omit<
  * @returns the review created
  */
 export function createReview(review: Course_Review_Create) {
-  const new_review = {
-    ...review,
-    date_created: new Date(),
-    last_edited: new Date(),
-  } as Course_Review;
-
-  return prisma.course.update({
-    where: {
-      course_code: review.course_code,
-    },
-    data: {
-      course_reviews: {
-        create: new_review,
-      },
-    },
+  return prisma.course_Review.create({
+    data: review,
   });
 }
 
