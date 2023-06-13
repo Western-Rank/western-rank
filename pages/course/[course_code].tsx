@@ -11,11 +11,68 @@ import Stars from "@/components/Stars";
 import { Progress } from "@/components/ui/progress";
 import PercentCircle from "@/components/PercentCircle";
 import { roundToNearest } from "@/lib/utils";
+import Head from "next/head";
+import Link from "next/link";
 
 interface CourseProps {
   course: FullCourse; // the course information for the course displayed on this page
   courses: CourseSearchItem[];
 }
+
+const requisiteTypes = [
+  "Prerequisites",
+  "Corequisites",
+  "Antirequisites",
+  "Pre-or-Corequisites",
+] as const;
+
+type RequisiteTextItem = {
+  text: string;
+  isLink: boolean;
+};
+
+type RequisiteProps = {
+  type: (typeof requisiteTypes)[number];
+  requisiteText?: RequisiteTextItem[] | null;
+  requisites?: Course[];
+};
+
+const Requisite = ({ type, requisiteText, requisites }: RequisiteProps) => {
+  if (!requisiteText || requisiteText.length == 0) {
+    return <></>;
+  }
+
+  console.log(type, requisites);
+  let currRequisiteIndex = 0;
+
+  return (
+    <div>
+      <h5 className="text-lg font-semibold">{type}</h5>
+      <p className="whitespace-pre-wrap">
+        {requisiteText && requisiteText.length > 0
+          ? requisiteText.map((item, index) => {
+              if (item.isLink && requisites) {
+                const requisiteCourse = requisites[currRequisiteIndex++];
+                console.log(requisiteCourse, currRequisiteIndex);
+                return (
+                  <>
+                    <Button key={index} variant="link" className="p-0 h-3 text-blue-500" asChild>
+                      <Link href={`/course/${encodeURIComponent(requisiteCourse?.course_code)}`}>
+                        {requisiteCourse?.course_code}
+                      </Link>
+                    </Button>
+                    {index <= requisiteText.length - 3 && ", "}
+                  </>
+                );
+              } else {
+                return <span key={index}>{item.text + " "}</span>;
+              }
+            })
+          : "None"}
+      </p>
+    </div>
+  );
+};
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const courses = await getAllCourses();
@@ -57,32 +114,49 @@ export const getStaticProps: GetServerSideProps<CourseProps> = async ({ params }
 };
 
 const Course = ({ courses, course }: CourseProps) => {
-  console.log(course);
   const [course_description, isExpanded, toggleExpand] = useShowMore({
-    text: course?.description ?? "",
+    text: course.description ?? "",
     maxLength: 200,
   });
 
-  const percent = Math.round(
+  const likedPercent = Math.round(
     ((course?.count_liked ?? 0) / (course._count.review_id == 0 ? 1 : course._count.review_id)) *
       100,
   );
 
   const difficulty = roundToNearest((course?._avg?.difficulty ?? 0) / 2.0, 1);
   const useful = roundToNearest((course?._avg?.useful ?? 0) / 2.0, 1);
+  const attendance = roundToNearest(course?._avg?.attendance ?? 0, 1);
+
+  const prerequisites = JSON.parse(
+    JSON.stringify(course?.prerequisites_text),
+  ) as RequisiteTextItem[];
+  const antirequisites = JSON.parse(
+    JSON.stringify(course?.antirequisites_text),
+  ) as RequisiteTextItem[];
+  const corequisites = JSON.parse(JSON.stringify(course?.corequisites_text)) as RequisiteTextItem[];
+  const precorequisites = JSON.parse(
+    JSON.stringify(course?.precorequisites_text),
+  ) as RequisiteTextItem[];
 
   return (
     <>
+      <Head>
+        <title>{course.course_code} | Western Rank</title>
+        <meta name="description" content={`See reviews for ${course.course_code} from `} />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
       <main className="light bg-background text-primary min-h-[110vh]">
         <Navbar courses={courses} searchBar className="dark z-1" />
         <div className="flex flex-col light">
           <div className="py-4 pt-16 bg-background dark relative">
             <div className="h-40 w-[10vw] absolute bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-0 left-0 blur-2xl opacity-25"></div>
             <h4 className="px-4 md:px-8 lg:px-15 xl:px-40 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-blue-800 py-1">
-              {course?.course_code}
+              {course.course_code}
             </h4>
             <h5 className="px-4 md:px-8 lg:px-15 xl:px-40 text-xl text-primary">
-              {course?.course_name}
+              {course.course_name}
             </h5>
           </div>
 
@@ -92,7 +166,7 @@ const Course = ({ courses, course }: CourseProps) => {
               {isExpanded != undefined && (
                 <Button
                   variant="link"
-                  className="px-0 pt-4 my-0 h-2 self-start"
+                  className="text-muted-foreground px-0 pt-4 my-0 h-2 self-start"
                   onClick={toggleExpand}
                 >
                   Show {!isExpanded ? "More" : "Less"}
@@ -100,7 +174,7 @@ const Course = ({ courses, course }: CourseProps) => {
               )}
             </p>
             <div className="flex items-center justify-center space-x-4 pb-2">
-              <PercentCircle percent={percent} size={180} strokeWidth={12} />
+              <PercentCircle percent={likedPercent} size={180} strokeWidth={12} />
               <div className="space-y-2">
                 <div>
                   <h6 className="font-semibold">Difficulty</h6>
@@ -109,6 +183,12 @@ const Course = ({ courses, course }: CourseProps) => {
                 <div>
                   <h6 className="font-semibold">Useful</h6>
                   <Stars value={useful} size={30} theme="blue" />
+                </div>
+                <div>
+                  <h6 className="font-semibold">Attendance</h6>
+                  <Progress value={attendance}>
+                    {`Attended/watched ${attendance}% of lectures.`}
+                  </Progress>
                 </div>
                 <p>{course?._count.review_id} rating(s)</p>
               </div>
@@ -121,20 +201,32 @@ const Course = ({ courses, course }: CourseProps) => {
 
           <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
             <div className="flex-grow lg:min-w-[45vw]">
-              <ReviewList courseCode={course?.course_code} />
+              {course.course_code && <ReviewList courseCode={course.course_code} />}
             </div>
 
             <Separator orientation="vertical" className="w-[1px] h-200" />
 
             <div className="flex flex-col gap-4">
-              <div>
-                <h5 className="text-lg font-semibold">Prerequisites</h5>
-                <p>{course?.prerequisites_text || "None"}</p>
-              </div>
-              <div>
-                <h5 className="text-lg font-semibold">Antirequisites</h5>
-                <p>{course?.antirequisites_text || "None"}</p>
-              </div>
+              <Requisite
+                type="Prerequisites"
+                requisiteText={prerequisites}
+                requisites={course.prerequisites}
+              />
+              <Requisite
+                type="Antirequisites"
+                requisiteText={antirequisites}
+                requisites={course.antirequisites}
+              />
+              <Requisite
+                type="Corequisites"
+                requisiteText={corequisites}
+                requisites={course.corequisites}
+              />
+              <Requisite
+                type="Pre-or-Corequisites"
+                requisiteText={precorequisites}
+                requisites={course.precorequisites}
+              />
               <div>
                 <h5 className="text-lg font-semibold">Extra Info</h5>
                 <p>{course?.extra_info || "None"}</p>

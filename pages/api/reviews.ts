@@ -97,8 +97,10 @@ async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
 async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
   try {
     const review = req.body as Course_Review_Create;
-    await createReview(review);
-    return res.status(200).json({ message: "Review updated" });
+    console.log(review);
+    const result = await createReview(review);
+    console.log("created the review", result);
+    return res.status(200).json({ message: "Review created" });
   } catch (err: any) {
     return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
   }

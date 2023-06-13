@@ -18,8 +18,16 @@ export function createReview(review: Course_Review_Create) {
     date_created: new Date(),
     last_edited: new Date(),
   } as Course_Review;
-  return prisma.course_Review.create({
-    data: new_review,
+
+  return prisma.course.update({
+    where: {
+      course_code: review.course_code,
+    },
+    data: {
+      course_reviews: {
+        create: new_review,
+      },
+    },
   });
 }
 

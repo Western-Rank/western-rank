@@ -16,7 +16,7 @@ const buttonVariants = cva(
         gradient:
           "bg-gradient-to-br from-purple-600 to-blue-500 bg-[size:300%] text-primary-foreground hover:animate-gradient-pulse focus:animate-gradient-pulse",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "underline-offset-4 hover:underline text-primary",
+        link: "underline-offset-4 hover:underline text-primary p-0 h-2 text-md whitespace-normal break-all",
       },
       size: {
         default: "h-10 py-2 px-4",

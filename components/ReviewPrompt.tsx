@@ -36,14 +36,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
+import { Course_Review_Create } from "@/services/review";
+import { useMutation } from "@tanstack/react-query";
+import Spinner from "./ui/spinner";
 
 interface ReviewPromptProps {
   courseCode: Course["course_code"];
   hasReviewed?: boolean;
+  onSubmitReview?: () => void;
 }
 
 const reviewFormSchema = z.object({
-  professor: z.string(),
+  professor: z.string().nonempty(),
   review: z.string().optional(),
   liked: z.boolean(),
   difficulty: z.array(z.number().min(0).max(5)),
@@ -63,11 +67,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
-  const reviewButtonText = !auth?.user
-    ? "Log in to Review"
-    : hasReviewed
-    ? "Edit your Review"
-    : "Review";
+  const reviewButtonText = !auth?.user ? "Log in to Review" : "Review";
 
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
@@ -84,18 +84,35 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof reviewFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-    setOpen(false);
-    // TODO: replace with React query mutation w post request
-    setTimeout(() => {
+  const reviewMutation = useMutation({
+    mutationFn: (review: Course_Review_Create) => {
+      return fetch("/api/reviews", { method: "POST", body: JSON.stringify(review) });
+    },
+    onSuccess() {
       toast({
         title: `Your ${hasReviewed ? "Edited" : ""} ${courseCode} Review was submitted!`,
         description: "You can edit it at any time after signing in.",
       });
-    }, 50);
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof reviewFormSchema>) {
+    if (!auth || !auth.user?.email) {
+      throw new Error("You are not authorized to review a course. Please sign in.");
+    }
+
+    const review = {
+      course_code: courseCode,
+      email: auth.user?.email,
+      ...values,
+      difficulty: values.difficulty[0] * 2,
+      useful: values.useful[0] * 2,
+      attendance: values.attendance[0],
+      date_taken: new Date(values.date_taken.toString()),
+      review: values.review ?? null,
+    };
+
+    reviewMutation.mutate(review);
   }
 
   return (
@@ -363,6 +380,9 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
                 )}
               />
               <Button type="submit" variant="gradient">
+                {reviewMutation.isLoading && !reviewMutation.isSuccess && (
+                  <Spinner text="Loading submission..." />
+                )}
                 Submit Review
               </Button>
             </DialogFooter>

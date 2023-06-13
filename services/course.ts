@@ -38,6 +38,12 @@ export async function getCourse(courseCode: string) {
     where: {
       course_code: courseCode,
     },
+    include: {
+      prerequisites: true,
+      antirequisites: true,
+      corequisites: true,
+      precorequisites: true,
+    },
   });
 
   const aggregate = await prisma.course_Review.aggregate({
@@ -62,7 +68,7 @@ export async function getCourse(courseCode: string) {
   });
 
   return {
-    ...(course as Course),
+    ...course,
     ...aggregate,
     count_liked,
   };

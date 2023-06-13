@@ -175,9 +175,9 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
         </div>
         <ReviewPrompt courseCode={courseCode} hasReviewed={hasReviewed} />
       </div>
-      {!isLoading && !isError ? (
-        <div className="flex flex-col gap-4 py-2">
-          {reviewsData?.reviews?.length > 0 ? (
+      <div className="flex flex-col gap-4 py-2">
+        {!isLoading && !isError ? (
+          reviewsData?.reviews?.length > 0 ? (
             <>
               {reviewsData?.reviews?.map((review) => (
                 <Review
@@ -213,11 +213,11 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
                 <br /> (Translation: No written reviews yet)
               </p>
             </div>
-          )}
-        </div>
-      ) : (
-        <Spinner className="flex items-center justify-center" text="Loading..." />
-      )}
+          )
+        ) : (
+          <Spinner className="py-6 flex items-center justify-center" text="Loading..." />
+        )}
+      </div>
     </div>
   );
 };
