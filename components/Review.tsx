@@ -16,12 +16,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import ReviewPrompt from "./ReviewPrompt";
 
 // profile pic, review text,
 interface ReviewProps {
   review: Course_Review;
   onDelete?: () => void;
-  onEdit?: (review: Course_Review) => void;
+  onEdit?: () => void;
   isUser?: boolean;
 }
 
@@ -109,9 +110,7 @@ const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Button color="secondary" onClick={onEdit}>
-            Edit
-          </Button>
+          <ReviewPrompt courseCode={review.course_code} editReview={review} />
         </div>
       )}
     </div>

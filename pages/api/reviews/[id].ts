@@ -1,5 +1,36 @@
-import { deleteReview } from "@/services/review";
+import { Course_Review_Create, deleteReview, upsertReview } from "@/services/review";
+import { Course_Review } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  switch (req.method) {
+    case "PUT":
+      return handlePutReview(req, res);
+    case "DELETE":
+      return handleDeleteReview(req, res);
+    default:
+      return res.status(403).send("Invalid API route");
+  }
+}
+
+/**
+ * Update a review in the database.
+ * @param req A request containing the course review formatted as a JSON in the body.
+ * @param res
+ */
+async function handlePutReview(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const review = JSON.parse(req.body) as Course_Review_Create;
+    const { id } = req.query as {
+      id: string;
+    };
+    const upsert_res = await upsertReview(parseInt(id), review);
+    console.log(`Updated ${upsert_res.review_id} ${upsert_res?.course_code} ${upsert_res?.email}`);
+    return res.status(200).json({ message: "Review updated" });
+  } catch (err: any) {
+    return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
+  }
+}
 
 /**
  * Delete a review from the database.
@@ -7,7 +38,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
  *  - email: the email of the review to remove
  *  - course_code: the course_code for the review
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { id } = req.query as {
       id: string;

@@ -115,10 +115,10 @@ export function updateReview(review: Course_Review) {
   });
 }
 
-export function upsertReview(review: Course_Review) {
+export function upsertReview(review_id: number, review: Course_Review_Create) {
   return prisma.course_Review.upsert({
     where: {
-      review_id: review.review_id,
+      review_id: review_id,
     },
     create: review,
     update: review,
