@@ -5,6 +5,17 @@ import { Button } from "./ui/button";
 import { cn, formatTimeAgo } from "@/lib/utils";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import Stars from "./Stars";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 // profile pic, review text,
 interface ReviewProps {
@@ -17,18 +28,6 @@ interface ReviewProps {
 const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
   const { data: auth } = useSession();
 
-  const onDeleteReview = async () => {
-    if (!auth) return; // if user is not logged in, do nothing
-
-    const searchParams = new URLSearchParams({
-      email: auth.user!.email!,
-      course_code: review.course_code,
-    });
-
-    await fetch(`api/reviews?${searchParams}`, { method: "DELETE" });
-
-    if (onDelete) onDelete();
-  };
   return (
     <div
       className={cn(
@@ -40,7 +39,7 @@ const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
         <div className="flex flex-col flex-1">
           <div className="flex items-center gap-1">
             <h5 className="font-medium">{`${
-              review.anon ? "Anonymous" : review.email.split("@")[0]
+              isUser ? "you" : review.anon ? "Anonymous" : review.email.split("@")[0]
             }`}</h5>
             <h6 className="text-sm text-muted-foreground">
               {review.date_created < review.last_edited
@@ -90,10 +89,29 @@ const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
       </div>
       {review.email === auth?.user?.email && (
         <div className="pt-4 flex-grow flex gap-2 justify-between">
-          <Button variant="destructive" onClick={onDelete}>
-            Delete
+          <AlertDialog>
+            <Button variant="destructive" asChild>
+              <AlertDialogTrigger>Delete</AlertDialogTrigger>
+            </Button>
+            <AlertDialogContent className="light">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your account and remove
+                  your data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <Button variant="destructive" asChild>
+                  <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <Button color="secondary" onClick={onEdit}>
+            Edit
           </Button>
-          <Button color="secondary">Edit</Button>
         </div>
       )}
     </div>

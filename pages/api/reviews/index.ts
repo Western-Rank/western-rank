@@ -6,11 +6,11 @@ import {
   getReviewsbyCourse,
   getReviewsbyUser,
   upsertReview,
-} from "../../services/review";
+} from "../../../services/review";
 import type { Course_Review } from "@prisma/client";
 import type { SortKey, SortOrder } from "@/components/ReviewList";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./auth/[...nextauth]";
+import { authOptions } from "../auth/[...nextauth]";
 
 export type Course_ReviewsData = {
   reviews: Course_Review[];
@@ -28,10 +28,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       return handlePutReview(req, res);
     case "POST":
       return handlePostReview(req, res);
-    case "DELETE":
-      return handleDeleteReview(req, res);
     default:
-      return res.send("Invalid API route");
+      return res.status(403).send("Invalid API route");
   }
 }
 
@@ -69,25 +67,6 @@ async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
     } else {
       throw new Error("Must specify either a course code or email of reviews exclusively.");
     }
-  } catch (err: any) {
-    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
-  }
-}
-
-/**
- * Delete a review from the database.
- * @param req A request containing query parameters:
- *  - email: the email of the review to remove
- *  - course_code: the course_code for the review
- */
-async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const { email, course_code } = req.query as {
-      email: string;
-      course_code: string;
-    };
-    await deleteReview(email, course_code);
-    return res.status(200).json({ message: "Review deleted" });
   } catch (err: any) {
     return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }

@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "./ui/use-toast";
 import Spinner from "./ui/spinner";
 import { useMousePosition } from "@/hooks/useMousePosition";
@@ -77,12 +77,12 @@ const testReviews: Course_Review[] = [
  * The modal displaying all reviews on the course page.
  */
 const ReviewList = ({ courseCode }: ReviewListProps) => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: auth } = useSession();
+
   const [sortKey, setSortKey] = useState<SortKey>("date_created");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [take, setTake] = useState<number | undefined>(TAKE_DEFAULT);
-
   const resetTake = () => {
     setTake(TAKE_DEFAULT);
   };
@@ -117,14 +117,34 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
     },
   });
 
+  const deleteReviewMutation = useMutation({
+    mutationKey: ["delete-reviews", reviewsData?.userReview?.review_id],
+    mutationFn: async () => {
+      const res = await fetch(`/api/reviews/${reviewsData?.userReview?.review_id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error(`Error: Failed to delete your review!`);
+      }
+      return res;
+    },
+    onSuccess() {
+      toast({
+        title: `Your review was deleted!`,
+        description: "Feel free to send a new review.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+    },
+    onError(err: Error) {
+      toast({
+        title: err.message,
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const hasReviewed = reviewsData?.userReview;
-
-  if (hasReviewed) {
-  }
-
-  // called after the review deletes itself to update the review list
-  // TODO revalidate using react query
-  const onDeleteReview = () => router.replace(router.asPath);
 
   return (
     <div className="break-words" id="reviews">
@@ -184,7 +204,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
               last_edited: new Date(reviewsData?.userReview.last_edited),
               date_taken: new Date(reviewsData?.userReview.date_taken),
             }}
-            onDelete={onDeleteReview}
+            onDelete={deleteReviewMutation.mutate}
             isUser
           />
         )}
@@ -200,7 +220,6 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
                     last_edited: new Date(review.last_edited),
                     date_taken: new Date(review.date_taken),
                   }}
-                  onDelete={onDeleteReview}
                 />
               ))}
               {take && reviewsData._count.review_id > take && (

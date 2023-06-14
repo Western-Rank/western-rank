@@ -131,12 +131,10 @@ export function upsertReview(review: Course_Review) {
  * @param courseCode course code of the course
  * @returns list of reviews for the user and course
  */
-export function deleteReview(email: string, courseCode: string) {
-  // use deleteMany() since delete() can only use review id
-  return prisma.course_Review.deleteMany({
+export function deleteReview(review_id: number) {
+  return prisma.course_Review.delete({
     where: {
-      email: email,
-      course_code: courseCode,
+      review_id: review_id,
     },
   });
 }

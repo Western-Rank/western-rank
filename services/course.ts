@@ -34,7 +34,7 @@ export function getAllCourses() {
  * @returns the course information stored in the database
  */
 export async function getCourse(courseCode: string) {
-  const course = await prisma.course.findUnique({
+  const course_query = prisma.course.findUnique({
     where: {
       course_code: courseCode,
     },
@@ -46,7 +46,7 @@ export async function getCourse(courseCode: string) {
     },
   });
 
-  const aggregate = await prisma.course_Review.aggregate({
+  const aggregate_query = prisma.course_Review.aggregate({
     _avg: {
       difficulty: true,
       useful: true,
@@ -60,14 +60,20 @@ export async function getCourse(courseCode: string) {
     },
   });
 
-  const count_liked = await prisma.course_Review.count({
+  const count_liked_query = prisma.course_Review.count({
     where: {
       course_code: courseCode,
       liked: true,
     },
   });
 
-  // TODO: change this to use a prisma transaction
+  // change this to use
+
+  const [course, aggregate, count_liked] = await prisma.$transaction([
+    course_query,
+    aggregate_query,
+    count_liked_query,
+  ]);
 
   return {
     ...course,
