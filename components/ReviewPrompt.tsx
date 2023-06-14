@@ -39,6 +39,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Course_Review_Create } from "@/services/review";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Spinner from "./ui/spinner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 interface ReviewPromptProps {
   courseCode: Course["course_code"];
@@ -255,19 +256,24 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, editReview }: ReviewPromptPr
                             <FormDescription>Which semester/term?</FormDescription>
                             <FormControl className="place-items-center">
                               <div className="flex-1 flex-grow w-full px-1 md:px-0">
-                                <Combobox
-                                  id="program"
-                                  placeholder="Select a term..."
-                                  options={Object.keys(Terms).map((term) => ({
-                                    label: term[0].toUpperCase() + term.slice(1),
-                                    value: term[0].toUpperCase() + term.slice(1),
-                                  }))}
+                                <Select
                                   value={field.value}
-                                  onChangeValue={(value) => {
+                                  onValueChange={(value) => {
                                     field.onChange(value);
                                     console.log("combobox value:", value);
                                   }}
-                                />
+                                >
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Term" />
+                                  </SelectTrigger>
+                                  <SelectContent className="light">
+                                    {Object.values(Terms).map((option, index) => (
+                                      <SelectItem key={index} value={option}>
+                                        {option}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
                               </div>
                             </FormControl>
                             <FormMessage />
