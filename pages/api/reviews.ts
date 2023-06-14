@@ -9,9 +9,12 @@ import {
 } from "../../services/review";
 import type { Course_Review } from "@prisma/client";
 import type { SortKey, SortOrder } from "@/components/ReviewList";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
 
 export type Course_ReviewsData = {
   reviews: Course_Review[];
+  userReview?: Course_Review;
   _count: {
     review_id: number;
   };
@@ -41,27 +44,28 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
  */
 async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { course_code, email, sortKey, sortOrder, take } = req.query as {
+    const data = await getServerSession(req, res, authOptions);
+    const email = data?.user?.email;
+    const { course_code, sortKey, sortOrder, take } = req.query as {
       course_code?: string;
-      email?: string;
       sortKey: SortKey;
       sortOrder: SortOrder;
       take?: string;
     };
-    if (course_code && !email) {
-      const [reviews, count] = await getReviewsbyCourse({
+
+    if (course_code) {
+      const [reviews, count, userReview] = await getReviewsbyCourse({
         courseCode: course_code,
         sortKey: sortKey,
         sortOrder: sortOrder,
         take: take ? parseInt(take) : undefined,
+        email: email ?? undefined,
       });
       return res.status(200).json({
         reviews: reviews,
         _count: count._count,
+        userReview: userReview ?? undefined,
       } as Course_ReviewsData);
-    } else if (email && !course_code) {
-      const reviews = await getReviewsbyUser(email);
-      return res.status(200).json(reviews);
     } else {
       throw new Error("Must specify either a course code or email of reviews exclusively.");
     }
@@ -97,6 +101,7 @@ async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
 async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
   try {
     const review = JSON.parse(req.body);
+    console.log(review);
     const result = await createReview(review);
 
     console.log(`Created the review: ${result.review_id}`);

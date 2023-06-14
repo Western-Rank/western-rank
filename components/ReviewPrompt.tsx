@@ -37,12 +37,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import { Course_Review_Create } from "@/services/review";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Spinner from "./ui/spinner";
 
 interface ReviewPromptProps {
   courseCode: Course["course_code"];
-  hasReviewed?: boolean;
+  hasReviewed: boolean;
   onSubmitReview?: () => void;
 }
 
@@ -63,6 +63,7 @@ const reviewFormSchema = z.object({
  */
 const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
   const { data: auth } = useSession();
+  const queryClient = useQueryClient();
 
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
@@ -73,7 +74,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
     resolver: zodResolver(reviewFormSchema),
     defaultValues: {
       professor: "",
-      review: "",
+      review: undefined,
       liked: true,
       difficulty: [2.5],
       useful: [2.5],
@@ -88,7 +89,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
     mutationFn: async (review: Course_Review_Create) => {
       const res = await fetch("/api/reviews", { method: "POST", body: JSON.stringify(review) });
       if (!res.ok) {
-        throw new Error("yo");
+        throw new Error(`Error: Your ${hasReviewed ? "Edited" : ""} ${courseCode} Review failed!`);
       }
       return res;
     },
@@ -97,11 +98,13 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
         title: `Your ${hasReviewed ? "Edited" : ""} ${courseCode} Review was submitted!`,
         description: "You can edit it at any time after signing in.",
       });
+      setOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
     },
     onError(err: Error) {
       toast({
         title: err.message,
-        description: "You can edit it at any time after signing in.",
+        description: "Try again.",
         variant: "destructive",
       });
     },
@@ -120,7 +123,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
       useful: values.useful[0] * 2,
       attendance: values.attendance[0],
       date_taken: new Date(values.date_taken.toString()),
-      review: values.review ?? null,
+      review: values.review || null,
     };
 
     reviewMutation.mutate(review);
@@ -130,7 +133,7 @@ const ReviewPrompt = ({ courseCode, hasReviewed }: ReviewPromptProps) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          disabled={!auth}
+          disabled={!auth || hasReviewed}
           onClick={() => setOpen(true)}
           variant="gradient"
           className="w-full sm:min-w-fit sm:w-auto"

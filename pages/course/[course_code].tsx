@@ -56,7 +56,12 @@ const Requisite = ({ type, requisiteText, requisites }: RequisiteProps) => {
                 console.log(requisiteCourse, currRequisiteIndex);
                 return (
                   <>
-                    <Button key={index} variant="link" className="p-0 h-3 text-blue-500" asChild>
+                    <Button
+                      key={index}
+                      variant="link"
+                      className="p-0 h-3 pr-1 text-blue-500"
+                      asChild
+                    >
                       <Link href={`/course/${encodeURIComponent(requisiteCourse?.course_code)}`}>
                         {item.text}
                       </Link>

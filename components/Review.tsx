@@ -2,7 +2,7 @@ import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 import { Button } from "./ui/button";
-import { formatTimeAgo } from "@/lib/utils";
+import { cn, formatTimeAgo } from "@/lib/utils";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import Stars from "./Stars";
 
@@ -11,9 +11,10 @@ interface ReviewProps {
   review: Course_Review;
   onDelete?: () => void;
   onEdit?: (review: Course_Review) => void;
+  isUser?: boolean;
 }
 
-const Review = ({ review, onDelete, onEdit }: ReviewProps) => {
+const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
   const { data: auth } = useSession();
 
   const onDeleteReview = async () => {
@@ -29,7 +30,12 @@ const Review = ({ review, onDelete, onEdit }: ReviewProps) => {
     if (onDelete) onDelete();
   };
   return (
-    <div className="p-6 border-border border-[1px] rounded-md">
+    <div
+      className={cn(
+        "p-6 border-border border-[1px] rounded-md",
+        isUser ? "border-muted-foreground" : "",
+      )}
+    >
       <div className="flex gap-2 flex-col sm:flex-row sm:justify-between">
         <div className="flex flex-col flex-1">
           <div className="flex items-center gap-1">
@@ -54,7 +60,7 @@ const Review = ({ review, onDelete, onEdit }: ReviewProps) => {
                   className="hover:underline text-blue-400"
                   target="_blank"
                 >
-                  El Sakka
+                  {review?.professor}
                 </a>
                 {", "}
               </>

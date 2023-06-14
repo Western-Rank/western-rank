@@ -117,7 +117,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
     },
   });
 
-  const hasReviewed = reviewsData?.reviews?.some(({ email }) => auth?.user!.email === email);
+  const hasReviewed = reviewsData?.userReview;
 
   if (hasReviewed) {
   }
@@ -173,9 +173,21 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
             </Toggle>
           </div>
         </div>
-        <ReviewPrompt courseCode={courseCode} hasReviewed={hasReviewed} />
+        <ReviewPrompt courseCode={courseCode} hasReviewed={false} />
       </div>
       <div className="flex flex-col gap-4 py-2">
+        {!isLoading && !isError && auth && reviewsData?.userReview && (
+          <Review
+            review={{
+              ...reviewsData?.userReview,
+              date_created: new Date(reviewsData?.userReview.date_created),
+              last_edited: new Date(reviewsData?.userReview.last_edited),
+              date_taken: new Date(reviewsData?.userReview.date_taken),
+            }}
+            onDelete={onDeleteReview}
+            isUser
+          />
+        )}
         {!isLoading && !isError ? (
           reviewsData?.reviews?.length > 0 ? (
             <>
@@ -210,7 +222,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
               </svg>
               <p className="text-purple-200">
                 HONK!
-                <br /> (Translation: No written reviews yet)
+                <br /> {`(Translation: No ${hasReviewed && "other"} written reviews yet)`}
               </p>
             </div>
           )

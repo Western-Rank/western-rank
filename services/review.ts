@@ -1,6 +1,7 @@
 import { Course_Review, Prisma } from "@prisma/client";
 import { prisma } from "../lib/db";
 import { SortKey, SortOrder } from "@/components/ReviewList";
+import { count } from "console";
 
 export type Course_Review_Create = Omit<
   Course_Review,
@@ -12,7 +13,18 @@ export type Course_Review_Create = Omit<
  * @param review review to be created
  * @returns the review created
  */
-export function createReview(review: Course_Review_Create) {
+export async function createReview(review: Course_Review_Create) {
+  const userReview = await prisma.course_Review.findFirst({
+    where: {
+      course_code: review.course_code,
+      email: review.email,
+    },
+  });
+
+  if (userReview) {
+    throw new Error(`Review for ${review.course_code} from ${review.email} already exists`);
+  }
+
   return prisma.course_Review.create({
     data: review,
   });
@@ -28,6 +40,7 @@ export function getReviewsbyCourse({
   sortKey,
   sortOrder,
   take,
+  email,
 }: {
   courseCode: string;
   sortKey: SortKey;
@@ -41,11 +54,21 @@ export function getReviewsbyCourse({
       review: {
         not: null,
       },
+      email: {
+        not: email,
+      },
     },
     orderBy: {
       [sortKey]: sortOrder,
     },
     take: take,
+  });
+
+  const userReview = prisma.course_Review.findFirst({
+    where: {
+      course_code: courseCode,
+      email: email,
+    },
   });
 
   const countQuery = prisma.course_Review.aggregate({
@@ -63,9 +86,11 @@ export function getReviewsbyCourse({
     },
   });
 
-  const reviewsData = prisma.$transaction([reviewsQuery, countQuery]);
-
-  return reviewsData;
+  if (email) {
+    return prisma.$transaction([reviewsQuery, countQuery, userReview]);
+  } else {
+    return prisma.$transaction([reviewsQuery, countQuery]);
+  }
 }
 
 /**
