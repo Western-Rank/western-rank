@@ -1,4 +1,4 @@
-import { CourseSearchItem, SearchbarDialog } from "@/components/Searchbar";
+import { SearchbarDialog } from "@/components/Searchbar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
@@ -8,10 +8,9 @@ import Link from "next/link";
 type NavbarProps = {
   searchBar?: boolean;
   className?: string;
-  courses: CourseSearchItem[];
 };
 
-const Navbar = ({ courses, className, searchBar }: NavbarProps) => {
+const Navbar = ({ className, searchBar }: NavbarProps) => {
   const { data: auth } = useSession();
 
   return (
@@ -26,7 +25,7 @@ const Navbar = ({ courses, className, searchBar }: NavbarProps) => {
         <span className="text-primary font-extrabold text-sm">Rank</span>
       </Link>
       <div className="flex items-center">
-        {searchBar ? <SearchbarDialog courses={courses} /> : ""}
+        {searchBar ? <SearchbarDialog /> : ""}
         {auth?.user ? (
           <>
             <Button asChild variant="link" className="px-1 md:px-2">

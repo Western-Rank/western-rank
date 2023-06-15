@@ -48,10 +48,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 function Profile({ courses, reviews, user }: ProfileProps) {
   const theme = useTheme();
+  return null;
 
   return (
     <>
-      <Navbar courses={courses} searchBar></Navbar>
+      <Navbar searchBar></Navbar>
       <br></br>
       <Box id="main" width="90%" maxWidth="1100px" margin="auto">
         <Grid

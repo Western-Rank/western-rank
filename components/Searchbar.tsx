@@ -15,6 +15,8 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import Spinner from "@/components/ui/spinner";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 export type CourseSearchItem = {
@@ -34,7 +36,6 @@ type SearchItemProps = {
 };
 
 type SearchbarProps = {
-  courses: CourseSearchItem[];
   onSelect?: (value: string) => void;
 };
 
@@ -50,16 +51,32 @@ function SearchItem({ courseCode, courseName, onSelect }: SearchItemProps) {
   );
 }
 
-export function Searchbar({ courses, onSelect }: SearchbarProps) {
+export function Searchbar({ onSelect }: SearchbarProps) {
   const router = useRouter();
 
   const [results, setResults] = useState<CourseSearchItem[] | null>(null);
+
+  const {
+    data: courses,
+    isLoading,
+    isSuccess,
+  } = useQuery(["courseNames"], {
+    queryFn: async () => {
+      const response = await fetch("/api/courses?format=search");
+      if (!response.ok) throw new Error("Courses were not found");
+
+      return response.json() as Promise<CourseSearchItem[]>;
+    },
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
 
   const onSearchTermChange = debounce((searchTerm: string) => {
     if (searchTerm.length > 0) {
       const scoredData: ScoreItem[] = [];
 
-      courses.forEach((course: CourseSearchItem) => {
+      courses?.forEach((course: CourseSearchItem) => {
         const score: number = commandScore(
           `${course.course_code?.trim().toLowerCase()} ${course.course_name?.trim().toLowerCase()}`,
           searchTerm?.trim().toLowerCase(),
@@ -85,7 +102,7 @@ export function Searchbar({ courses, onSelect }: SearchbarProps) {
     <Command shouldFilter={false} className="border light relative">
       <CommandInput placeholder="Search for a Course..." onValueChange={onSearchTermChange} />
       <CommandList inputMode="search">
-        {results != null && results?.length > 0 && (
+        {isSuccess && results != null && results?.length > 0 && (
           <CommandGroup heading="Courses">
             {results?.slice(0, 7)?.map((item, id) => (
               <SearchItem
@@ -100,13 +117,18 @@ export function Searchbar({ courses, onSelect }: SearchbarProps) {
             ))}
           </CommandGroup>
         )}
-        {results != null && <CommandEmpty>No results found.</CommandEmpty>}
+        {isLoading && (
+          <CommandEmpty className="grid place-items-center">
+            <Spinner className="py-3" text="Loading courses..." />
+          </CommandEmpty>
+        )}
+        {!isLoading && results != null && <CommandEmpty>No results found.</CommandEmpty>}
       </CommandList>
     </Command>
   );
 }
 
-export function SearchbarDialog({ courses, onSelect }: SearchbarProps) {
+export function SearchbarDialog({ onSelect }: SearchbarProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -137,7 +159,7 @@ export function SearchbarDialog({ courses, onSelect }: SearchbarProps) {
         </kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <Searchbar courses={courses} onSelect={() => setOpen(false)} />
+        <Searchbar onSelect={() => setOpen(false)} />
       </CommandDialog>
     </>
   );

@@ -1,7 +1,6 @@
 import Navbar from "@/components/Navbar";
 import PercentCircle from "@/components/PercentCircle";
 import ReviewList from "@/components/ReviewList";
-import { CourseSearchItem } from "@/components/Searchbar";
 import Stars from "@/components/Stars";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -9,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
 import { requisiteTypes } from "@/lib/reviews";
 import { roundToNearest } from "@/lib/utils";
-import { getAllCourses, getCourse, type FullCourse } from "@/services/course";
+import { getAllCoursesSearch, getCourse, type FullCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
 import { GetServerSideProps, GetStaticPaths } from "next";
 import Head from "next/head";
@@ -17,7 +16,6 @@ import Link from "next/link";
 
 interface CourseProps {
   course: FullCourse; // the course information for the course displayed on this page
-  courses: CourseSearchItem[];
 }
 
 type RequisiteTextItem = {
@@ -72,7 +70,7 @@ const Requisite = ({ type, requisiteText, requisites }: RequisiteProps) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const courses = await getAllCourses();
+  const courses = await getAllCoursesSearch();
   const course_paths = courses.map((course) => {
     return {
       params: {
@@ -91,17 +89,9 @@ export const getStaticProps: GetServerSideProps<CourseProps> = async ({ params }
   const { course_code } = params as { course_code: string };
   const course = await getCourse(course_code);
 
-  const courses = await getAllCourses();
-
   return {
     props: {
       course,
-      courses: courses.map((course) => {
-        return {
-          course_code: course.course_code,
-          course_name: course.course_name,
-        };
-      }),
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
@@ -110,7 +100,7 @@ export const getStaticProps: GetServerSideProps<CourseProps> = async ({ params }
   };
 };
 
-const Course = ({ courses, course }: CourseProps) => {
+const Course = ({ course }: CourseProps) => {
   const [course_description, isExpanded, toggleExpand] = useShowMore({
     text: course.description ?? "",
     maxLength: 200,
@@ -145,7 +135,7 @@ const Course = ({ courses, course }: CourseProps) => {
       </Head>
 
       <main className="light bg-background text-primary min-h-[110vh]">
-        <Navbar courses={courses} searchBar className="dark z-1" />
+        <Navbar searchBar className="dark z-1" />
         <div className="flex flex-col light">
           <div className="py-4 pt-16 bg-background dark relative">
             <div className="h-40 w-[10vw] absolute bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-0 left-0 blur-2xl opacity-25"></div>

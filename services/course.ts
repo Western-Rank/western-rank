@@ -27,6 +27,18 @@ export function getAllCourses() {
   });
 }
 
+export function getAllCoursesSearch() {
+  return prisma.course.findMany({
+    select: {
+      course_code: true,
+      course_name: true,
+    },
+    orderBy: {
+      course_code: "asc",
+    },
+  });
+}
+
 /**
  * Get course by course code.
  * @param courseCode the course code of the course to fetch

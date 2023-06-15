@@ -1,30 +1,8 @@
-import { getAllCourses } from "@/services/course";
-
 import Navbar from "@/components/Navbar";
-import Searchbar, { CourseSearchItem } from "@/components/Searchbar";
-import { GetServerSideProps } from "next";
+import Searchbar from "@/components/Searchbar";
 import Head from "next/head";
 
-type HomeProps = {
-  courses: CourseSearchItem[];
-};
-
-export const getStaticProps: GetServerSideProps<HomeProps> = async ({ params }) => {
-  const courses = await getAllCourses();
-
-  return {
-    props: {
-      courses: courses.map((course) => {
-        return {
-          course_code: course.course_code,
-          course_name: course.course_name,
-        };
-      }),
-    },
-  };
-};
-
-const Home = ({ courses }: HomeProps) => {
+const Home = () => {
   return (
     <>
       <Head>
@@ -38,7 +16,7 @@ const Home = ({ courses }: HomeProps) => {
           "min-h-screen items-center bg-[url('../public/College.svg'),_url('../public/College2.svg')] bg-[bottom_center,_bottom_right]"
         }
       >
-        <Navbar courses={courses} className="z-10 bg-transparent" />
+        <Navbar className="z-10 bg-transparent" />
         <div className="flex flex-col gap-8 flex-grow w-screen max-w-[100vw] px-4 md:px-10 lg:px-20 xl:px-72 py-32 lg:py-42 relative">
           <h1 className="text-primary font-bold text-2xl md:text-3xl lg:text-4xl">
             Explore course reviews from <br />{" "}
@@ -48,7 +26,7 @@ const Home = ({ courses }: HomeProps) => {
             students
           </h1>
           <div className="relative group">
-            <Searchbar courses={courses} />
+            <Searchbar />
             <div className="z-[-1] absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-70 group-focus-within:opacity-70 animate-tilt"></div>
           </div>
         </div>
