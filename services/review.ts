@@ -1,11 +1,7 @@
 import { SortKey, SortOrder } from "@/components/ReviewList";
 import { prisma } from "@/lib/db";
+import { Course_Review_Create } from "@/lib/reviews";
 import { Course_Review } from "@prisma/client";
-
-export type Course_Review_Create = Omit<
-  Course_Review,
-  "review_id" | "date_created" | "last_edited"
->;
 
 /**
  * Create a review for a course.

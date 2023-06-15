@@ -4,7 +4,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getAllCourses } from "@/services/course";
 import { getReviewsbyUser } from "@/services/review";
 import { getUserByEmail } from "@/services/user";
-import { Box, Card, Grid, Typography, useTheme } from "@mui/material";
+import { Box, Card, Grid, Typography } from "@mui/material";
 import { Course_Review, User } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
@@ -47,7 +47,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 function Profile({ courses, reviews, user }: ProfileProps) {
-  const theme = useTheme();
   return null;
 
   return (
