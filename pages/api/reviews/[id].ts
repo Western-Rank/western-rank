@@ -1,4 +1,5 @@
-import { Course_Review_Create, deleteReview, upsertReview } from "@/services/review";
+import { Course_Review_Create } from "@/lib/reviews";
+import { deleteReview, upsertReview } from "@/services/review";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
