@@ -10,7 +10,7 @@ import useShowMore from "@/hooks/useShowMore";
 import { roundToNearest } from "@/lib/utils";
 import { getAllCoursesSearch, getCourse, type FullCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
-import { GetServerSideProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 
 interface CourseProps {
@@ -33,7 +33,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetServerSideProps<CourseProps> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<CourseProps> = async ({ params }) => {
   const { course_code } = params as { course_code: string };
   const course = await getCourse(course_code);
 
