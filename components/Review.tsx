@@ -2,6 +2,7 @@ import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 import { cn, formatTimeAgo } from "@/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import ReviewPrompt from "./ReviewPrompt";
 import Stars from "./Stars";
@@ -17,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
+import { toast } from "./ui/use-toast";
 
 // profile pic, review text,
 interface ReviewProps {
@@ -26,7 +28,51 @@ interface ReviewProps {
   isUser?: boolean;
 }
 
-const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
+export const UserReview = ({ review }: ReviewProps) => {
+  const queryClient = useQueryClient();
+
+  const deleteReviewMutation = useMutation({
+    mutationKey: ["delete-reviews", review.review_id],
+    mutationFn: async () => {
+      const res = await fetch(`/api/reviews/${review.review_id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error(`Error: Failed to delete your review!`);
+      }
+      return res;
+    },
+    onSuccess() {
+      toast({
+        title: `Your review was deleted!`,
+        description: "Feel free to send a new review.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+    },
+    onError(err: Error) {
+      toast({
+        title: err.message,
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  return (
+    <Review
+      review={{
+        ...review,
+        date_created: new Date(review.date_created),
+        last_edited: new Date(review.last_edited),
+        date_taken: new Date(review.date_taken),
+      }}
+      onDelete={deleteReviewMutation.mutate}
+      isUser
+    />
+  );
+};
+
+export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
   const { data: auth } = useSession();
 
   return (
