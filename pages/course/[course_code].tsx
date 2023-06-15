@@ -112,7 +112,7 @@ const Course = ({ course }: CourseProps) => {
                 </Button>
               )}
             </p>
-            <div className="flex items-center justify-center space-x-4 pb-2">
+            <div className="flex items-center justify-center lg:justify-start space-x-4 pb-2 lg:w-[30vw]">
               <PercentCircle percent={likedPercent} size={180} strokeWidth={12} />
               <div className="space-y-2">
                 <div>

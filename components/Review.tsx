@@ -84,23 +84,23 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
       )}
     >
       <div className="flex gap-3 flex-col sm:flex-row sm:justify-between">
-        <div className="flex flex-col flex-1 gap-1">
-          <div className="flex items-end px-0 gap-1.5">
+        <div className="flex flex-col flex-1">
+          <div className="flex items-end px-0 gap-1">
             <h5 className="text-sm font-medium">{`${
-              isUser ? "you" : review.anon ? "Anonymous" : review.email.split("@")[0]
+              review.anon ? "Anonymous" : review.email.split("@")[0]
             }`}</h5>
-            <h6 className="text-sm text-muted-foreground">
-              {review.date_created < review.last_edited
-                ? formatTimeAgo(review.last_edited)
-                : formatTimeAgo(review.date_created)}
-            </h6>
             {review.liked ? (
               <ThumbsUp className="stroke-purple-600 px-1" />
             ) : (
               <ThumbsDown className="stroke-blue-400 px-1" />
             )}
           </div>
-          <p className="text-sm flex-grow break-all pb-6">{review.review}</p>
+          <h6 className="text-xs text-muted-foreground">
+            {review.date_created < review.last_edited
+              ? formatTimeAgo(review.last_edited)
+              : formatTimeAgo(review.date_created)}
+          </h6>
+          <p className="text-sm flex-grow break-all py-2">{review.review}</p>
           <h6 className="text-sm">
             {review?.professor && (
               <>
@@ -137,7 +137,7 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
           </div>
         </div>
       </div>
-      {review.email === auth?.user?.email && (
+      {false && (
         <div className="pt-4 flex-grow flex gap-2 justify-between">
           <AlertDialog>
             <Button
