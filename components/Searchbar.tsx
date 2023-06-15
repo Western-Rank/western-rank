@@ -74,19 +74,21 @@ export function Searchbar({ onSelect }: SearchbarProps) {
 
   const onSearchTermChange = debounce((searchTerm: string) => {
     if (searchTerm.length > 0) {
-      const scoredData: ScoreItem[] = [];
+      const scoredCourses = courses
+        ?.map((course: CourseSearchItem) => {
+          const score: number = commandScore(
+            `${course.course_code?.trim().toLowerCase()} ${course.course_name
+              ?.trim()
+              .toLowerCase()}`,
+            searchTerm?.trim().toLowerCase(),
+          );
+          return { score, course };
+        })
+        .filter((item) => item.score > 0)
+        ?.sort((a, b) => b.score - a.score)
+        .map((item) => item.course);
 
-      courses?.forEach((course: CourseSearchItem) => {
-        const score: number = commandScore(
-          `${course.course_code?.trim().toLowerCase()} ${course.course_name?.trim().toLowerCase()}`,
-          searchTerm?.trim().toLowerCase(),
-        );
-        if (score > 0) {
-          scoredData.push({ score, course });
-        }
-      });
-
-      setResults(scoredData.sort((a, b) => b.score - a.score).map((item) => item.course));
+      setResults(scoredCourses ?? []);
     } else {
       setResults(null);
     }
