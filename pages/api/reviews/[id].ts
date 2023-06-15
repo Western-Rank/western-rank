@@ -34,8 +34,7 @@ async function handlePutReview(req: NextApiRequest, res: NextApiResponse) {
 /**
  * Delete a review from the database.
  * @param req A request containing query parameters:
- *  - email: the email of the review to remove
- *  - course_code: the course_code for the review
+ *  - id: the review_id of the review to be deleted.
  */
 async function handleDeleteReview(req: NextApiRequest, res: NextApiResponse) {
   try {
