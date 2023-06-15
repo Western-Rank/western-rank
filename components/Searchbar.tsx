@@ -135,13 +135,13 @@ export function SearchbarDialog({ onSelect }: SearchbarProps) {
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && e.metaKey) {
-        setOpen((open) => !open);
+      if (e.key === "/") {
+        setOpen(true);
       }
     };
 
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
+    document.addEventListener("keyup", down);
+    return () => document.removeEventListener("keyup", down);
   }, []);
 
   return (
@@ -157,7 +157,7 @@ export function SearchbarDialog({ onSelect }: SearchbarProps) {
           <Search className="light text-primary h-4 w-4 shrink-0 opacity-90 text-purple-900" />
         </div>
         <kbd className="pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-xs">⌘</span>K
+          <span className="text-xs">/</span>
         </kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
