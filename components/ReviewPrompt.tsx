@@ -38,7 +38,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { useToast } from "@/components/ui/use-toast";
-import { Course_Review_Create } from "@/services/review";
+import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
@@ -103,16 +103,19 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
     [courseCode],
   );
 
-  const editReviewMutationFn = useCallback(async (review: Course_Review_Create) => {
-    const res = await fetch(`/api/reviews/${review?.review_id}`, {
-      method: "PUT",
-      body: JSON.stringify(review),
-    });
-    if (!res.ok) {
-      throw new Error(`Error: Submitting your edited ${courseCode} review failed!`);
-    }
-    return res;
-  });
+  const editReviewMutationFn = useCallback(
+    async (review: Course_Review_Create) => {
+      const res = await fetch(`/api/reviews/${review?.review_id}`, {
+        method: "PUT",
+        body: JSON.stringify(review),
+      });
+      if (!res.ok) {
+        throw new Error(`Error: Submitting your edited ${courseCode} review failed!`);
+      }
+      return res;
+    },
+    [courseCode],
+  );
 
   const reviewMutation = useMutation({
     mutationFn: edit ? editReviewMutationFn : createReviewMutationFn,
