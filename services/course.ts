@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/db";
 
-export type FullCourse = Awaited<ReturnType<typeof getCourse>>;
-
 /**
  * Search for courses stored in the database.
  * @param query Substring to match course names/codes with
