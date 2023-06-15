@@ -3,7 +3,7 @@ import { SendVerificationRequestParams } from "next-auth/providers";
 import { createTransport } from "nodemailer";
 
 function isUwoEmail(email: string) {
-  return email.endsWith("@uwo.ca");
+  return email.endsWith("@uwo.ca") || email.endsWith("@ivey.ca");
 }
 
 export async function sendVerificationRequest(params: SendVerificationRequestParams) {
