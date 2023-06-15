@@ -1,11 +1,9 @@
 import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
+import PercentBar from "@/components/PercentBar";
 import ReviewPrompt from "@/components/ReviewPrompt";
 import Stars from "@/components/Stars";
-import { cn, formatTimeAgo } from "@/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,9 +14,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import { Button } from "./ui/button";
-import { toast } from "./ui/use-toast";
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { cn, formatTimeAgo } from "@/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 
 // profile pic, review text,
 interface ReviewProps {
@@ -78,14 +79,14 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
   return (
     <div
       className={cn(
-        "p-6 border-border border-[1px] rounded-md",
+        "px-6 py-5 border-border border-[1px] rounded-md",
         isUser ? "border-muted-foreground" : "",
       )}
     >
-      <div className="flex gap-2 flex-col sm:flex-row sm:justify-between">
-        <div className="flex flex-col flex-1">
-          <div className="flex items-center gap-1">
-            <h5 className="font-medium">{`${
+      <div className="flex gap-3 flex-col sm:flex-row sm:justify-between">
+        <div className="flex flex-col flex-1 gap-1">
+          <div className="flex items-end px-0 gap-1.5">
+            <h5 className="text-sm font-medium">{`${
               isUser ? "you" : review.anon ? "Anonymous" : review.email.split("@")[0]
             }`}</h5>
             <h6 className="text-sm text-muted-foreground">
@@ -93,9 +94,14 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
                 ? formatTimeAgo(review.last_edited)
                 : formatTimeAgo(review.date_created)}
             </h6>
+            {review.liked ? (
+              <ThumbsUp className="stroke-purple-600 px-1" />
+            ) : (
+              <ThumbsDown className="stroke-blue-400 px-1" />
+            )}
           </div>
-          <p className="flex-grow break-all pb-6">{review.review}</p>
-          <h6>
+          <p className="text-sm flex-grow break-all pb-6">{review.review}</p>
+          <h6 className="text-sm">
             {review?.professor && (
               <>
                 {"taught by "}
@@ -116,30 +122,27 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
         </div>
         <div className="w-42 flex flex-row flex-wrap items-center justify-between sm:flex-col md:items-end gap-2">
           <div className="flex flex-col md:items-end">
-            <h6 className="font-semibold">Difficulty</h6>
-            <Stars value={review.difficulty / 2.0} size={30} theme="purple" />
+            <h6 className="text-sm font-semibold">Difficulty</h6>
+            <Stars value={review.difficulty / 2.0} size={25} theme="purple" />
           </div>
           <div className="flex flex-col md:items-end">
-            <h6 className="font-semibold">Useful</h6>
-            <Stars value={review.useful / 2.0} size={30} theme="blue" />
+            <h6 className="text-sm font-semibold">Useful</h6>
+            <Stars value={review.useful / 2.0} size={25} theme="blue" />
           </div>
-          <div className="flex flex-col md:items-end">
-            <h6 className="font-semibold">Attendance</h6>
-            <p>{review.attendance}%</p>
+          <div className="flex flex-col md:items-end w-full gap-1.5">
+            <h6 className="text-sm font-semibold">Attendance</h6>
+            <PercentBar percent={review.attendance}>
+              <span>{`Attended ${review.attendance}% of lectures`}</span>
+            </PercentBar>
           </div>
-          {review.liked ? (
-            <ThumbsUp className="stroke-purple-600" />
-          ) : (
-            <ThumbsDown className="stroke-blue-400" />
-          )}
         </div>
       </div>
       {review.email === auth?.user?.email && (
         <div className="pt-4 flex-grow flex gap-2 justify-between">
           <AlertDialog>
             <Button
-              className="border-none hover:text-destructive hover:bg-destructive/5"
-              variant="outline"
+              className="text-destructive/80 hover:text-destructive hover:bg-destructive/5"
+              variant="ghost"
               asChild
             >
               <AlertDialogTrigger>

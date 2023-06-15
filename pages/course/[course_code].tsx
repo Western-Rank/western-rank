@@ -1,10 +1,10 @@
 import Navbar from "@/components/Navbar";
+import PercentBar from "@/components/PercentBar";
 import PercentCircle from "@/components/PercentCircle";
 import Requisite, { RequisiteTextItem } from "@/components/Requisite";
 import ReviewList from "@/components/ReviewList";
 import Stars from "@/components/Stars";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
 import { FullCourse } from "@/lib/courses";
@@ -120,11 +120,11 @@ const Course = ({ course }: CourseProps) => {
                   <h6 className="font-semibold">Useful</h6>
                   <Stars value={useful} size={30} theme="blue" />
                 </div>
-                <div>
+                <div className="flex flex-col gap-1.5">
                   <h6 className="font-semibold">Attendance</h6>
-                  <Progress value={attendance}>
-                    {`Attended/watched ${attendance}% of lectures.`}
-                  </Progress>
+                  <PercentBar percent={attendance}>
+                    <span>{`Attended ${attendance}% of lectures`}</span>
+                  </PercentBar>
                 </div>
                 <p>{course?._count.review_id} rating(s)</p>
               </div>

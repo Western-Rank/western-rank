@@ -12,9 +12,7 @@ const PercentBar = ({ percent, children }: PercentBarProps) => {
     <TooltipProvider>
       <Tooltip delayDuration={100}>
         <TooltipTrigger asChild>
-          <div>
-            <Progress value={percent} />
-          </div>
+          <Progress value={percent} />
         </TooltipTrigger>
         <TooltipContent side="left">{children}</TooltipContent>
       </Tooltip>

@@ -41,7 +41,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { Edit, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -163,10 +163,11 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
         <Button
           disabled={!auth}
           onClick={() => setOpen(true)}
-          variant="gradient"
-          className="w-full sm:min-w-fit sm:w-auto"
+          variant="ghost"
+          className="text-purple-600 hover:bg-purple-100 w-full sm:min-w-fit sm:w-auto"
         >
-          {reviewButtonText}
+          <Edit />
+          <span className="sr-only">Edit Review</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="light text-primary sm:max-w-[900px] max-h-[100vh]">

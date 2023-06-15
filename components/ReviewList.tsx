@@ -80,7 +80,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
 
   return (
     <div className="break-words" id="reviews">
-      <h5 className="font-bold text-lg">Course Reviews ({reviewsData?._count?.review_id ?? 0})</h5>
+      <h5 className="font-bold text-lg">Written Reviews ({reviewsData?._count?.review_id ?? 0})</h5>
       <div className="flex flex-col sm:flex-row gap-2 items-center sm:justify-between py-2">
         <div className="flex items-center w-full gap-2">
           <label className="min-w-fit">Sort By</label>
