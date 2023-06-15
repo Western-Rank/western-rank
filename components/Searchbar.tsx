@@ -1,5 +1,5 @@
-import { useRouter } from "next/router";
 import { debounce } from "@/lib/debounce";
+import { useRouter } from "next/router";
 //@ts-ignore
 import commandScore from "command-score";
 

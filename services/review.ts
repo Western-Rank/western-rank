@@ -1,7 +1,6 @@
-import { Course_Review, Prisma } from "@prisma/client";
-import { prisma } from "../lib/db";
 import { SortKey, SortOrder } from "@/components/ReviewList";
-import { count } from "console";
+import { Course_Review } from "@prisma/client";
+import { prisma } from "../lib/db";
 
 export type Course_Review_Create = Omit<
   Course_Review,

@@ -1,4 +1,3 @@
-import { Course } from "@prisma/client";
 import { prisma } from "../lib/db";
 
 export type FullCourse = Awaited<ReturnType<typeof getCourse>>;
@@ -66,8 +65,6 @@ export async function getCourse(courseCode: string) {
       liked: true,
     },
   });
-
-  // change this to use
 
   const [course, aggregate, count_liked] = await prisma.$transaction([
     course_query,

@@ -1,15 +1,14 @@
+import { CourseSearchItem } from "@/components/Searchbar";
+import { getAllCourses } from "@/services/course";
 import { Box, Card, Grid, Typography, useTheme } from "@mui/material";
 import { Course_Review, User } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Navbar from "../components/Navbar";
-import ReviewList from "../components/ReviewList";
 import { getReviewsbyUser } from "../services/review";
 import { getUserByEmail } from "../services/user";
 import { authOptions } from "./api/auth/[...nextauth]";
-import { getAllCourses } from "@/services/course";
-import { CourseSearchItem } from "@/components/Searchbar";
 
 interface ProfileProps {
   user: User;

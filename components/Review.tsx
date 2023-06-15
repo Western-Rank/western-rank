@@ -1,9 +1,9 @@
 import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
-import { Button } from "./ui/button";
 import { cn, formatTimeAgo } from "@/lib/utils";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+import ReviewPrompt from "./ReviewPrompt";
 import Stars from "./Stars";
 import {
   AlertDialog,
@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import ReviewPrompt from "./ReviewPrompt";
+import { Button } from "./ui/button";
 
 // profile pic, review text,
 interface ReviewProps {

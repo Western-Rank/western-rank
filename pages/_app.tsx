@@ -4,10 +4,10 @@ import type { AppProps } from "next/app";
 
 import { Toaster } from "@/components/ui/toaster";
 
+import "@/styles/globals.css";
 import "@fontsource/lexend";
 import "@fontsource/open-sans";
 import "@fontsource/poppins";
-import "@/styles/globals.css";
 
 const queryClient = new QueryClient();
 

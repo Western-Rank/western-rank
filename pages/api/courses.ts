@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getAllCourses } from "../../services/course";
 import { formatFullCourseName } from "../../lib/courses";
+import { getAllCourses } from "../../services/course";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {

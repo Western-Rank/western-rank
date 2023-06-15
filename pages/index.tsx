@@ -1,10 +1,9 @@
 import { getAllCourses } from "@/services/course";
 
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Navbar from "../components/Navbar";
 import Searchbar, { CourseSearchItem } from "../components/Searchbar";
-import { cn } from "@/lib/utils";
-import { GetServerSideProps } from "next";
 
 type HomeProps = {
   courses: CourseSearchItem[];

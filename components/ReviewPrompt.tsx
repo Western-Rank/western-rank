@@ -1,8 +1,8 @@
-import { Course, Course_Review, Term as Terms, type Term } from "@prisma/client";
+import { Course, Course_Review, Term as Terms } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components//ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,24 +22,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Checkbox } from "@/components//ui/checkbox";
-import { useToast } from "@/components/ui/use-toast";
-import { Combobox } from "@/components/ui/combobox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Slider } from "@/components/ui/slider";
-import { Toggle } from "@/components/ui/toggle";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { ScrollArea } from "./ui/scroll-area";
+import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Toggle } from "@/components/ui/toggle";
+import { useToast } from "@/components/ui/use-toast";
 import { Course_Review_Create } from "@/services/review";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Spinner from "./ui/spinner";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { ScrollArea } from "./ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import Spinner from "./ui/spinner";
 
 interface ReviewPromptProps {
   courseCode: Course["course_code"];

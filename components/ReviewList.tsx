@@ -1,10 +1,8 @@
 import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import Review from "./Review";
 import ReviewPrompt from "./ReviewPrompt";
-import Image from "next/image";
 
 import {
   Select,
@@ -13,15 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "./ui/use-toast";
-import Spinner from "./ui/spinner";
-import { useMousePosition } from "@/hooks/useMousePosition";
-import { Toggle } from "./ui/toggle";
-import { ArrowDownNarrowWide, ArrowUp, ArrowUpNarrowWide } from "lucide-react";
-import { z } from "zod";
 import { Course_ReviewsData } from "@/pages/api/reviews";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
 import { Button } from "./ui/button";
+import Spinner from "./ui/spinner";
+import { Toggle } from "./ui/toggle";
+import { toast } from "./ui/use-toast";
 
 const TAKE_DEFAULT = 5;
 

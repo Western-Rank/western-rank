@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Progress } from "./ui/progress";
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "./ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 type PercentBarProps = {
   percent: number;
