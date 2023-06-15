@@ -107,13 +107,14 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
     async (new_review: Course_Review_Create) => {
       const res = await fetch(`/api/reviews/${review?.review_id}`, {
         method: "PUT",
+        body: JSON.stringify(new_review),
       });
       if (!res.ok) {
         throw new Error(`Error: Submitting your edited ${courseCode} review failed!`);
       }
       return res;
     },
-    [courseCode],
+    [review?.review_id, courseCode],
   );
 
   const reviewMutation = useMutation({

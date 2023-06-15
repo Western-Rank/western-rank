@@ -51,12 +51,13 @@ export const getStaticProps: GetStaticProps<CourseProps> = async ({ params }) =>
 
 const Course = ({ course }: CourseProps) => {
   const [course_description, isExpanded, toggleExpand] = useShowMore({
-    text: course.description ?? "",
+    text: course?.description ?? "",
     maxLength: 200,
   });
 
   const likedPercent = Math.round(
-    ((course?.count_liked ?? 0) / (course._count.review_id == 0 ? 1 : course._count.review_id)) *
+    ((course?.count_liked ?? 0) /
+      (course?._count?.review_id == 0 ? 1 : course?._count?.review_id)) *
       100,
   );
 
@@ -65,21 +66,23 @@ const Course = ({ course }: CourseProps) => {
   const attendance = roundToNearest(course?._avg?.attendance ?? 0, 1);
 
   const prerequisites = JSON.parse(
-    JSON.stringify(course?.prerequisites_text),
+    JSON.stringify(course?.prerequisites_text || ""),
   ) as RequisiteTextItem[];
   const antirequisites = JSON.parse(
-    JSON.stringify(course?.antirequisites_text),
+    JSON.stringify(course?.antirequisites_text || ""),
   ) as RequisiteTextItem[];
-  const corequisites = JSON.parse(JSON.stringify(course?.corequisites_text)) as RequisiteTextItem[];
+  const corequisites = JSON.parse(
+    JSON.stringify(course?.corequisites_text || ""),
+  ) as RequisiteTextItem[];
   const precorequisites = JSON.parse(
-    JSON.stringify(course?.precorequisites_text),
+    JSON.stringify(course?.precorequisites_text || ""),
   ) as RequisiteTextItem[];
 
   return (
     <>
       <Head>
-        <title>{course.course_code} | Western Rank</title>
-        <meta name="description" content={`See reviews for ${course.course_code} from `} />
+        <title>{course?.course_code} | Western Rank</title>
+        <meta name="description" content={`See reviews for ${course?.course_code} from `} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -89,10 +92,10 @@ const Course = ({ course }: CourseProps) => {
           <div className="py-4 pt-16 bg-background dark relative">
             <div className="h-40 w-[10vw] absolute bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-0 left-0 blur-2xl opacity-25"></div>
             <h4 className="px-4 md:px-8 lg:px-15 xl:px-40 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-blue-800 py-1">
-              {course.course_code}
+              {course?.course_code}
             </h4>
             <h5 className="px-4 md:px-8 lg:px-15 xl:px-40 text-xl text-primary">
-              {course.course_name}
+              {course?.course_name}
             </h5>
           </div>
 
@@ -137,22 +140,22 @@ const Course = ({ course }: CourseProps) => {
 
           <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
             <div className="flex-grow">
-              {course.course_code && <ReviewList courseCode={course.course_code} />}
+              {course?.course_code && <ReviewList courseCode={course?.course_code} />}
             </div>
 
             <Separator orientation="vertical" className="w-[1px] h-200" />
 
             <div className="flex flex-col gap-4 lg:w-[30vw]">
-              {prerequisites.length > 0 && (
+              {prerequisites?.length > 0 && (
                 <Requisite type="Prerequisites" requisiteText={prerequisites} />
               )}
-              {antirequisites.length > 0 && (
+              {antirequisites?.length > 0 && (
                 <Requisite type="Antirequisites" requisiteText={antirequisites} />
               )}
-              {corequisites.length > 0 && (
+              {corequisites?.length > 0 && (
                 <Requisite type="Corequisites" requisiteText={corequisites} />
               )}
-              {precorequisites.length > 0 && (
+              {precorequisites?.length > 0 && (
                 <Requisite type="Pre-or-Corequisites" requisiteText={precorequisites} />
               )}
               <div>
