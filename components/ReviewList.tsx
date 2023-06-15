@@ -140,7 +140,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
     },
   });
 
-  const hasReviewed = auth?.user?.email != null && reviewsData?.userReview != null;
+  const hasReviewed = !!auth?.user?.email && !!reviewsData?.userReview;
 
   return (
     <div className="break-words" id="reviews">
