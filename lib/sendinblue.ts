@@ -1,40 +1,73 @@
-var SibApiV3Sdk = require("sib-api-v3-sdk");
-var defaultClient = SibApiV3Sdk.ApiClient.instance;
+const Brevo = require("@getbrevo/brevo");
+const defaultClient = Brevo.ApiClient.instance;
 
 // Configure API key authorization: api-key
-var apiKey = defaultClient.authentications["api-key"];
-apiKey.apiKey = "YOUR_API_KEY";
+defaultClient.authentications["api-key"].apiKey = process.env.SENDINBLUE_API_KEY;
 
-// Uncomment below two lines to configure authorization using: partner-key
-// var partnerKey = defaultClient.authentications['partner-key'];
-// partnerKey.apiKey = 'YOUR API KEY';
+const apiInstance = new Brevo.TransactionalEmailsApi();
 
-var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+//   curl --request POST \
+//   --url https://api.brevo.com/v3/smtp/email \
+//   --header 'accept: application/json' \
+//   --header 'api-key:YOUR_API_KEY' \
+//   --header 'content-type: application/json' \
+//   --data '{
+//    "sender":{
+//       "name":"Sender Alex",
+//       "email":"senderalex@example.com"
+//    },
+//    "to":[
+//       {
+//          "email":"testmail@example.com",
+//          "name":"John Doe"
+//       }
+//    ],
+//    "subject":"Hello world",
+//    "htmlContent":"<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Brevo.</p></body></html>"
+// }'
 
-var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+export async function sendEmail({
+  to,
+  from,
+  subject,
+  text,
+  html,
+}: {
+  to: string;
+  from: string;
+  subject: string;
+  text: string;
+  html: string;
+}) {
+  const sendSmtpEmail = new Brevo.SendSmtpEmail({
+    to: [{ email: to }],
+    sender: { email: from },
+    subject: subject,
+    textContent: text,
+    htmlContent: html,
+  });
+  return apiInstance.sendTransacEmail(sendSmtpEmail);
 
-sendSmtpEmail = {
-  to: [
-    {
-      email: "testmail@example.com",
-      name: "John Doe",
-    },
-  ],
-  templateId: 59,
-  params: {
-    name: "John",
-    surname: "Doe",
-  },
-  headers: {
-    "X-Mailin-custom": "custom_header_1:custom_value_1|custom_header_2:custom_value_2",
-  },
-};
-
-apiInstance.sendTransacEmail(sendSmtpEmail).then(
-  function (data) {
-    console.log("API called successfully. Returned data: " + data);
-  },
-  function (error) {
-    console.error(error);
-  },
-);
+  // return fetch("https://api.brevo.com/v3/smtp/email", {
+  //   method: "POST",
+  //   headers: {
+  //     Accept: "application/json",
+  //     "api-key": process.env.SENDINBLUE_API_KEY || "",
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({
+  //     sender: {
+  //       name: "Western Rank",
+  //       email: from,
+  //     },
+  //     to: [
+  //       {
+  //         email: to,
+  //       },
+  //     ],
+  //     subject: subject,
+  //     htmlContent: html,
+  //     textContent: text,
+  //   }),
+  // });
+}

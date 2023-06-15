@@ -1,5 +1,5 @@
 import { SendVerificationRequestParams } from "next-auth/providers";
-import { createTransport } from "nodemailer";
+import { sendEmail } from "./sendinblue";
 
 function isUwoEmail(email: string) {
   return email.endsWith("@uwo.ca");
@@ -13,18 +13,28 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
     throw new Error("Please enter a valid UWO email address");
   }
 
-  // NOTE: You are not required to use `nodemailer`, use whatever you want.
-  const transport = createTransport(provider.server);
-  const result = await transport.sendMail({
-    to: identifier,
-    from: provider.from,
-    subject: `Sign in to ${host}`,
-    text: text({ url, host }),
-    html: html({ url, host, theme }),
-  });
-  const failed = result.rejected.concat(result.pending).filter(Boolean);
-  if (failed.length) {
-    throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
+  // // NOTE: You are not required to use `nodemailer`, use whatever you want.
+  // const transport = createTransport(provider.server);
+  // const result = await transport.sendMail({
+  //   to: identifier,
+  //   from: provider.from,
+  //   subject: `Sign in to ${host}`,
+  //   text: text({ url, host }),
+  //   html: html({ url, host, theme }),
+  // });
+
+  try {
+    const sent = await sendEmail({
+      to: identifier,
+      from: provider.from || "westernrank@gmail.com",
+      subject: `Sign in to ${host}`,
+      text: text({ url, host }),
+      html: html({ url, host, theme }),
+    });
+
+    console.log("sent", await sent.json());
+  } catch (e) {
+    throw new Error("Email could not be sent: " + e);
   }
 }
 
