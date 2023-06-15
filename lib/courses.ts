@@ -1,6 +1,8 @@
+import { getCourse } from "@/services/course";
 import { Course } from "@prisma/client";
 
 export type FullCourseName = `${Course["course_code"]}: ${Course["course_name"]}`;
+export type FullCourse = Awaited<ReturnType<typeof getCourse>>;
 
 /**
  * Concatenate course code and course name into one entry, e.g. CALC 1000: Calculus I

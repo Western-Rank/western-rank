@@ -1,17 +1,19 @@
-import { Box, Card, Grid, Typography, useTheme } from "@mui/material";
+import Navbar from "@/components/Navbar";
+import { CourseSearchItem } from "@/components/Searchbar";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getAllCourses } from "@/services/course";
+import { getReviewsbyUser } from "@/services/review";
+import { getUserByEmail } from "@/services/user";
+import { Box, Card, Grid, Typography } from "@mui/material";
 import { Course_Review, User } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
-import Navbar from "../components/Navbar";
-import ReviewList from "../components/ReviewList";
-import { getReviewsbyUser } from "../services/review";
-import { getUserByEmail } from "../services/user";
-import { authOptions } from "./api/auth/[...nextauth]";
 
 interface ProfileProps {
   user: User;
   reviews: Course_Review[];
+  courses: CourseSearchItem[];
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -28,17 +30,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const user = await getUserByEmail(session.user.email);
   const reviews = (await getReviewsbyUser(session.user.email)) || [];
+  const courses = await getAllCourses();
 
   return {
     props: {
       user,
       reviews,
+      courses: courses.map((course) => {
+        return {
+          course_code: course.course_code,
+          course_name: course.course_name,
+        };
+      }),
     },
   };
 };
 
-function Profile({ reviews, user }: ProfileProps) {
-  const theme = useTheme();
+function Profile({ courses, reviews, user }: ProfileProps) {
+  return null;
 
   return (
     <>
@@ -59,7 +68,7 @@ function Profile({ reviews, user }: ProfileProps) {
           </Grid>
 
           <Grid item xs={10}>
-            <ReviewList reviews={reviews}></ReviewList>
+            {/* <ReviewList></ReviewList> */}
           </Grid>
         </Grid>
       </Box>

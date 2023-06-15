@@ -1,3 +1,4 @@
+import { Theme } from "next-auth";
 import { SendVerificationRequestParams } from "next-auth/providers";
 import { createTransport } from "nodemailer";
 
