@@ -1,11 +1,11 @@
 import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
+import ReviewPrompt from "@/components/ReviewPrompt";
+import Stars from "@/components/Stars";
 import { cn, formatTimeAgo } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
-import ReviewPrompt from "./ReviewPrompt";
-import Stars from "./Stars";
 import {
   AlertDialog,
   AlertDialogAction,

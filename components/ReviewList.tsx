@@ -1,8 +1,10 @@
+import Review, { UserReview } from "@/components/Review";
+import ReviewPrompt from "@/components/ReviewPrompt";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import Review, { UserReview } from "./Review";
-import ReviewPrompt from "./ReviewPrompt";
 
+import Goose from "@/components/Goose";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -10,14 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Spinner from "@/components/ui/spinner";
+import { Toggle } from "@/components/ui/toggle";
+import { toast } from "@/components/ui/use-toast";
 import { Course_ReviewsData } from "@/pages/api/reviews";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
-import Goose from "./Goose";
-import { Button } from "./ui/button";
-import Spinner from "./ui/spinner";
-import { Toggle } from "./ui/toggle";
-import { toast } from "./ui/use-toast";
 
 const TAKE_DEFAULT = 5;
 

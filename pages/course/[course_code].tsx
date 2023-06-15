@@ -1,4 +1,6 @@
+import Navbar from "@/components/Navbar";
 import PercentCircle from "@/components/PercentCircle";
+import ReviewList from "@/components/ReviewList";
 import { CourseSearchItem } from "@/components/Searchbar";
 import Stars from "@/components/Stars";
 import { Button } from "@/components/ui/button";
@@ -6,13 +8,11 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
 import { roundToNearest } from "@/lib/utils";
+import { getAllCourses, getCourse, type FullCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
 import { GetServerSideProps, GetStaticPaths } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import Navbar from "../../components/Navbar";
-import ReviewList from "../../components/ReviewList";
-import { getAllCourses, getCourse, type FullCourse } from "../../services/course";
 
 interface CourseProps {
   course: FullCourse; // the course information for the course displayed on this page

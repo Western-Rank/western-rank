@@ -5,6 +5,7 @@ import commandScore from "command-score";
 
 import { GraduationCap, Search } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandDialog,
@@ -15,7 +16,6 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
 
 export type CourseSearchItem = {
   course_code: string;

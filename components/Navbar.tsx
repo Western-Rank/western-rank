@@ -1,9 +1,9 @@
+import { CourseSearchItem, SearchbarDialog } from "@/components/Searchbar";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { CourseSearchItem, SearchbarDialog } from "./Searchbar";
-import { Button } from "./ui/button";
 
 type NavbarProps = {
   searchBar?: boolean;

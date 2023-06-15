@@ -1,14 +1,14 @@
+import Navbar from "@/components/Navbar";
 import { CourseSearchItem } from "@/components/Searchbar";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getAllCourses } from "@/services/course";
+import { getReviewsbyUser } from "@/services/review";
+import { getUserByEmail } from "@/services/user";
 import { Box, Card, Grid, Typography, useTheme } from "@mui/material";
 import { Course_Review, User } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
-import Navbar from "../components/Navbar";
-import { getReviewsbyUser } from "../services/review";
-import { getUserByEmail } from "../services/user";
-import { authOptions } from "./api/auth/[...nextauth]";
 
 interface ProfileProps {
   user: User;

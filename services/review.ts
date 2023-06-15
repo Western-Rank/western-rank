@@ -1,6 +1,6 @@
 import { SortKey, SortOrder } from "@/components/ReviewList";
+import { prisma } from "@/lib/db";
 import { Course_Review } from "@prisma/client";
-import { prisma } from "../lib/db";
 
 export type Course_Review_Create = Omit<
   Course_Review,
