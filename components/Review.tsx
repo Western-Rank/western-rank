@@ -5,7 +5,7 @@ import ReviewPrompt from "@/components/ReviewPrompt";
 import Stars from "@/components/Stars";
 import { cn, formatTimeAgo } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -137,8 +137,15 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
       {review.email === auth?.user?.email && (
         <div className="pt-4 flex-grow flex gap-2 justify-between">
           <AlertDialog>
-            <Button variant="destructive" asChild>
-              <AlertDialogTrigger>Delete</AlertDialogTrigger>
+            <Button
+              className="border-none hover:text-destructive hover:bg-destructive/5"
+              variant="outline"
+              asChild
+            >
+              <AlertDialogTrigger>
+                <Trash2 />
+                <span className="sr-only">Delete</span>
+              </AlertDialogTrigger>
             </Button>
             <AlertDialogContent className="light">
               <AlertDialogHeader>
@@ -156,7 +163,7 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <ReviewPrompt courseCode={review.course_code} editReview={review} />
+          <ReviewPrompt courseCode={review.course_code} review={review} />
         </div>
       )}
     </div>

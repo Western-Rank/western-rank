@@ -1,6 +1,6 @@
 import { Course, Course_Review, Term as Terms } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Checkbox } from "@/components//ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,7 @@ import { z } from "zod";
 
 interface ReviewPromptProps {
   courseCode: Course["course_code"];
-  editReview?: Course_Review;
+  review?: Course_Review;
   onSubmitReview?: () => void;
 }
 
@@ -66,42 +66,45 @@ const reviewFormSchema = z.object({
 /**
  * The component for submitting a review and its related information.
  */
-const ReviewPrompt = ({ courseCode, onSubmitReview, editReview }: ReviewPromptProps) => {
+const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps) => {
   const { data: auth } = useSession();
   const queryClient = useQueryClient();
 
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
-  const edit = editReview !== undefined;
+  const edit = review !== undefined;
 
   const reviewButtonText = !auth?.user ? "Log in to Review" : edit ? "Edit Review" : "Review";
 
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
     defaultValues: {
-      professor: edit ? editReview.professor : "",
-      review: edit && editReview?.review != null ? editReview?.review : undefined,
-      liked: edit ? editReview.liked : true,
-      difficulty: [edit ? editReview.difficulty / 2 : 2.5],
-      useful: [edit ? editReview.useful / 2 : 2.5],
-      attendance: [edit ? editReview.attendance : 50],
-      anon: edit ? editReview.anon : false,
-      date_taken: edit ? editReview.date_taken.getFullYear() : new Date().getFullYear(),
-      term_taken: edit ? editReview.term_taken : "Fall",
+      professor: edit ? review.professor : "",
+      review: edit && review?.review != null ? review?.review : undefined,
+      liked: edit ? review.liked : true,
+      difficulty: [edit ? review.difficulty / 2 : 2.5],
+      useful: [edit ? review.useful / 2 : 2.5],
+      attendance: [edit ? review.attendance : 50],
+      anon: edit ? review.anon : false,
+      date_taken: edit ? review.date_taken.getFullYear() : new Date().getFullYear(),
+      term_taken: edit ? review.term_taken : "Fall",
     },
   });
 
-  const createReviewMutationFn = async (review: Course_Review_Create) => {
-    const res = await fetch("/api/reviews", { method: "POST", body: JSON.stringify(review) });
-    if (!res.ok) {
-      throw new Error(`Error: Submitting your ${courseCode} review failed!`);
-    }
-    return res;
-  };
+  const createReviewMutationFn = useCallback(
+    async (review: Course_Review_Create) => {
+      const res = await fetch("/api/reviews", { method: "POST", body: JSON.stringify(review) });
+      if (!res.ok) {
+        throw new Error(`Error: Submitting your ${courseCode} review failed!`);
+      }
+      return res;
+    },
+    [courseCode],
+  );
 
-  const editReviewMutationFn = async (review: Course_Review_Create) => {
-    const res = await fetch(`/api/reviews/${editReview?.review_id}`, {
+  const editReviewMutationFn = useCallback(async (review: Course_Review_Create) => {
+    const res = await fetch(`/api/reviews/${review?.review_id}`, {
       method: "PUT",
       body: JSON.stringify(review),
     });
@@ -109,7 +112,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, editReview }: ReviewPromptPr
       throw new Error(`Error: Submitting your edited ${courseCode} review failed!`);
     }
     return res;
-  };
+  });
 
   const reviewMutation = useMutation({
     mutationFn: edit ? editReviewMutationFn : createReviewMutationFn,
@@ -421,9 +424,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, editReview }: ReviewPromptPr
                   </FormItem>
                 )}
               />
-              {reviewMutation.isLoading && !reviewMutation.isSuccess && (
-                <Spinner text="Loading submission..." />
-              )}
+              {reviewMutation.isLoading && <Spinner text="Loading submission..." />}
               <Button type="submit" variant="gradient">
                 {edit ? "Edit" : "Submit"} Review
               </Button>
