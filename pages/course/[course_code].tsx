@@ -136,13 +136,13 @@ const Course = ({ course }: CourseProps) => {
           </div>
 
           <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
-            <div className="flex-grow lg:min-w-[45vw]">
+            <div className="flex-grow">
               {course.course_code && <ReviewList courseCode={course.course_code} />}
             </div>
 
             <Separator orientation="vertical" className="w-[1px] h-200" />
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 lg:w-[30vw]">
               {prerequisites.length > 0 && (
                 <Requisite type="Prerequisites" requisiteText={prerequisites} />
               )}
