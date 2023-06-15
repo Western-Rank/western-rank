@@ -1,73 +1,21 @@
 import Navbar from "@/components/Navbar";
 import PercentCircle from "@/components/PercentCircle";
+import Requisite, { RequisiteTextItem } from "@/components/Requisite";
 import ReviewList from "@/components/ReviewList";
 import Stars from "@/components/Stars";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
-import { requisiteTypes } from "@/lib/reviews";
 import { roundToNearest } from "@/lib/utils";
 import { getAllCoursesSearch, getCourse, type FullCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
 import { GetServerSideProps, GetStaticPaths } from "next";
 import Head from "next/head";
-import Link from "next/link";
 
 interface CourseProps {
   course: FullCourse; // the course information for the course displayed on this page
 }
-
-type RequisiteTextItem = {
-  text: string;
-  isLink: boolean;
-};
-
-type RequisiteProps = {
-  type: (typeof requisiteTypes)[number];
-  requisiteText?: RequisiteTextItem[] | null;
-  requisites?: Course[];
-};
-
-const Requisite = ({ type, requisiteText, requisites }: RequisiteProps) => {
-  if (!requisiteText || requisiteText.length == 0) {
-    return <></>;
-  }
-
-  let currRequisiteIndex = 0;
-
-  return (
-    <div>
-      <h5 className="text-lg font-semibold">{type}</h5>
-      <p className="whitespace-pre-wrap">
-        {requisiteText && requisiteText.length > 0
-          ? requisiteText.map((item, index) => {
-              if (item.isLink && requisites) {
-                const requisiteCourse = requisites[currRequisiteIndex++];
-                console.log(requisiteCourse, currRequisiteIndex);
-                return (
-                  <>
-                    <Button
-                      key={index}
-                      variant="link"
-                      className="p-0 h-3 pr-1 text-blue-500"
-                      asChild
-                    >
-                      <Link href={`/course/${encodeURIComponent(requisiteCourse?.course_code)}`}>
-                        {item.text}
-                      </Link>
-                    </Button>
-                  </>
-                );
-              } else {
-                return <span key={index}>{item.text + " "}</span>;
-              }
-            })
-          : "None"}
-      </p>
-    </div>
-  );
-};
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const courses = await getAllCoursesSearch();
@@ -194,26 +142,18 @@ const Course = ({ course }: CourseProps) => {
             <Separator orientation="vertical" className="w-[1px] h-200" />
 
             <div className="flex flex-col gap-4">
-              <Requisite
-                type="Prerequisites"
-                requisiteText={prerequisites}
-                requisites={course.prerequisites}
-              />
-              <Requisite
-                type="Antirequisites"
-                requisiteText={antirequisites}
-                requisites={course.antirequisites}
-              />
-              <Requisite
-                type="Corequisites"
-                requisiteText={corequisites}
-                requisites={course.corequisites}
-              />
-              <Requisite
-                type="Pre-or-Corequisites"
-                requisiteText={precorequisites}
-                requisites={course.precorequisites}
-              />
+              {prerequisites.length > 0 && (
+                <Requisite type="Prerequisites" requisiteText={prerequisites} />
+              )}
+              {antirequisites.length > 0 && (
+                <Requisite type="Antirequisites" requisiteText={antirequisites} />
+              )}
+              {corequisites.length > 0 && (
+                <Requisite type="Corequisites" requisiteText={corequisites} />
+              )}
+              {precorequisites.length > 0 && (
+                <Requisite type="Pre-or-Corequisites" requisiteText={precorequisites} />
+              )}
               <div>
                 <h5 className="text-lg font-semibold">Extra Info</h5>
                 <p>{course?.extra_info || "None"}</p>
