@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
+import { requisiteTypes } from "@/lib/reviews";
 import { roundToNearest } from "@/lib/utils";
 import { getAllCourses, getCourse, type FullCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
@@ -18,13 +19,6 @@ interface CourseProps {
   course: FullCourse; // the course information for the course displayed on this page
   courses: CourseSearchItem[];
 }
-
-const requisiteTypes = [
-  "Prerequisites",
-  "Corequisites",
-  "Antirequisites",
-  "Pre-or-Corequisites",
-] as const;
 
 type RequisiteTextItem = {
   text: string;
