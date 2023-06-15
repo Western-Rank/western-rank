@@ -104,10 +104,9 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   );
 
   const editReviewMutationFn = useCallback(
-    async (review: Course_Review_Create) => {
+    async (new_review: Course_Review_Create) => {
       const res = await fetch(`/api/reviews/${review?.review_id}`, {
         method: "PUT",
-        body: JSON.stringify(review),
       });
       if (!res.ok) {
         throw new Error(`Error: Submitting your edited ${courseCode} review failed!`);
