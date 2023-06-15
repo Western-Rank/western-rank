@@ -1,4 +1,3 @@
-import { Course_Review } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Review from "./Review";
@@ -32,45 +31,8 @@ const SortOrderOptions = ["asc", "desc"] as const;
 export type SortOrder = (typeof SortOrderOptions)[number];
 
 /**
- * Course review page for the given course_code
- */
-const testReviews: Course_Review[] = [
-  {
-    review_id: 1,
-    course_code: "AAAA 1000",
-    professor: "Professor A",
-    review: "An amazing adult awesomely aggregrating addictive assignments",
-    email: "a@awwscar.ca",
-    difficulty: 1,
-    liked: true,
-    attendance: 11,
-    useful: 24,
-    anon: false,
-    date_created: new Date("2020-06-19"),
-    last_edited: new Date("2021-06-19"),
-    term_taken: "Fall",
-    date_taken: new Date(),
-  },
-  {
-    review_id: 2,
-    course_code: "BBBB 2222",
-    professor: "Professor B",
-    review: "Bad, barely beautiful, boring. BAD!",
-    email: "b@bing.com",
-    difficulty: 10,
-    liked: false,
-    attendance: 22,
-    useful: 30,
-    anon: true,
-    date_created: new Date("2022-09-19"),
-    last_edited: new Date("2022-10-19"),
-    term_taken: "Winter",
-    date_taken: new Date(),
-  },
-];
-
-/**
- * The modal displaying all reviews on the course page.
+ * A component that renders all reviews for a course, a user's review
+ * sorting controls, and includes the review prompt dialog for reviewing.
  */
 const ReviewList = ({ courseCode }: ReviewListProps) => {
   const queryClient = useQueryClient();
@@ -87,6 +49,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
     data: reviewsData,
     isLoading,
     isError,
+    isSuccess,
   } = useQuery({
     queryKey: ["reviews", courseCode, sortKey, sortOrder, take],
     queryFn: async () => {
@@ -140,7 +103,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
     },
   });
 
-  const hasReviewed = !!auth?.user?.email && !!reviewsData?.userReview;
+  const hasReviewed = !!auth?.user?.email && !!reviewsData && !!reviewsData.userReview;
 
   return (
     <div className="break-words" id="reviews">
@@ -192,20 +155,23 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
         {!hasReviewed && <ReviewPrompt courseCode={courseCode} />}
       </div>
       <div className="flex flex-col gap-4 py-2">
-        {!isLoading && !isError && auth && reviewsData?.userReview && (
+        {isSuccess && hasReviewed && reviewsData?.userReview && (
           <Review
             review={{
-              ...reviewsData?.userReview,
-              date_created: new Date(reviewsData?.userReview.date_created),
-              last_edited: new Date(reviewsData?.userReview.last_edited),
-              date_taken: new Date(reviewsData?.userReview.date_taken),
+              ...reviewsData.userReview,
+              date_created: new Date(reviewsData.userReview.date_created),
+              last_edited: new Date(reviewsData.userReview.last_edited),
+              date_taken: new Date(reviewsData.userReview.date_taken),
             }}
             onDelete={deleteReviewMutation.mutate}
             isUser
           />
         )}
-        {!isLoading && !isError ? (
-          reviewsData?.reviews?.length > 0 ? (
+        {isLoading && (
+          <Spinner className="py-6 flex items-center justify-center" text="Loading..." />
+        )}
+        {isSuccess &&
+          (reviewsData?.reviews?.length > 0 ? (
             <>
               {reviewsData?.reviews?.map((review) => (
                 <Review
@@ -240,10 +206,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
                 <br /> {`(Translation: No ${hasReviewed ? "other" : ""} written reviews yet)`}
               </p>
             </div>
-          )
-        ) : (
-          <Spinner className="py-6 flex items-center justify-center" text="Loading..." />
-        )}
+          ))}
       </div>
     </div>
   );
