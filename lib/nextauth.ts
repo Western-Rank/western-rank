@@ -1,6 +1,6 @@
 import { SendVerificationRequestParams } from "next-auth/providers";
 import { Resend } from "resend";
-import { sendEmail } from "./sendinblue";
+import { sendEmail } from "./email";
 
 function isUwoEmail(email: string) {
   return email.endsWith("@uwo.ca");
@@ -10,19 +10,9 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
 
-  // if (!isUwoEmail(identifier)) {
-  //   throw new Error("Please enter a valid UWO email address");
-  // }
-
-  // // NOTE: You are not required to use `nodemailer`, use whatever you want.
-  // const transport = createTransport(provider.server);
-  // const result = await transport.sendMail({
-  //   to: identifier,
-  //   from: provider.from,
-  //   subject: `Sign in to ${host}`,
-  //   text: text({ url, host }),
-  //   html: html({ url, host, theme }),
-  // });
+  if (!isUwoEmail(identifier)) {
+    throw new Error("Please enter a valid UWO email address");
+  }
 
   try {
     const sent = await sendEmail({
