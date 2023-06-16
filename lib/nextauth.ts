@@ -1,4 +1,5 @@
 import { SendVerificationRequestParams } from "next-auth/providers";
+import { Resend } from "resend";
 import { sendEmail } from "./sendinblue";
 
 function isUwoEmail(email: string) {
@@ -32,8 +33,6 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
       text: url,
       html: html({ url, host, theme }),
     });
-
-    // console.log("sent", await sent.json());
   } catch (e) {
     throw new Error("Email could not be sent: " + e);
   }
