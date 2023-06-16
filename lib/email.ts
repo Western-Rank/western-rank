@@ -17,8 +17,10 @@ export async function sendEmail({
 }) {
   return resend.emails.send({
     from: "onboarding@resend.dev",
+    // from: from,
     to: to,
-    subject: "Hello World",
-    html: "<p>Congrats on sending your <strong>first email</strong>!</p>",
+    subject: subject,
+    html: html,
+    text: text,
   });
 }
