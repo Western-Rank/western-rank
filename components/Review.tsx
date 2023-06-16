@@ -178,12 +178,6 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
           </div>
         </div>
       </div>
-
-      {false && (
-        <div className="pt-4 flex-grow flex gap-2 justify-between">
-          <ReviewPrompt courseCode={review.course_code} review={review} />
-        </div>
-      )}
     </div>
   );
 };
