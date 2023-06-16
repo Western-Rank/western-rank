@@ -1,14 +1,16 @@
+import { Theme } from "next-auth";
 import { SendVerificationRequestParams } from "next-auth/providers";
 import { Resend } from "resend";
 import { sendEmail } from "./email";
 
 function isUwoEmail(email: string) {
-  return email.endsWith("@uwo.ca");
+  return email.endsWith("@uwo.ca") || email.endsWith("@ivey.ca");
 }
 
 export async function sendVerificationRequest(params: SendVerificationRequestParams) {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
+  if (process.env.NODE_ENV == "development") console.log(url);
 
   if (!isUwoEmail(identifier)) {
     throw new Error("Please enter a valid UWO email address");
