@@ -1,5 +1,4 @@
 const Brevo = require("@getbrevo/brevo");
-const { exec } = require("child_process");
 const defaultClient = Brevo.ApiClient.instance;
 
 // Configure API key authorization: api-key
