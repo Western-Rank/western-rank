@@ -7,6 +7,9 @@ import { prisma } from "@/lib/db";
  */
 export async function getUserByEmail(email: string) {
   return prisma.user.findUnique({
+    include: {
+      Course_Review: true,
+    },
     where: {
       email,
     },

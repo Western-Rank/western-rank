@@ -171,7 +171,12 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
             Edit
           </Button>
         ) : (
-          <Button disabled={!auth} onClick={() => setOpen(true)} variant="gradient">
+          <Button
+            disabled={!auth}
+            onClick={() => setOpen(true)}
+            variant="gradient"
+            className="w-full md:w-fit"
+          >
             Review
           </Button>
         )}
