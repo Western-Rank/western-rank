@@ -41,7 +41,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Edit, ThumbsDown, ThumbsUp } from "lucide-react";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -75,7 +75,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
 
   const edit = review !== undefined;
 
-  const reviewButtonText = !auth?.user ? "Log in to Review" : edit ? "Edit Review" : "Review";
+  const reviewButtonText = !auth?.user ? "Log in to Review" : "Review";
 
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
@@ -161,15 +161,20 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          disabled={!auth}
-          onClick={() => setOpen(true)}
-          variant="ghost"
-          className="text-purple-600 hover:bg-purple-100 w-full sm:min-w-fit sm:w-auto"
-        >
-          <Edit />
-          <span className="sr-only">Edit Review</span>
-        </Button>
+        {edit ? (
+          <Button
+            disabled={!auth}
+            onClick={() => setOpen(true)}
+            variant="ghost"
+            className="text-purple-600 hover:bg-purple-100 sm:w-auto rounded-l-none"
+          >
+            Edit
+          </Button>
+        ) : (
+          <Button disabled={!auth} onClick={() => setOpen(true)} variant="gradient">
+            Review
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="light text-primary sm:max-w-[900px] max-h-[100vh]">
         <Form {...reviewForm}>

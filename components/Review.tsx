@@ -16,6 +16,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { cn, formatTimeAgo } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -79,7 +81,7 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
   return (
     <div
       className={cn(
-        "px-6 py-5 border-border border-[1px] rounded-md",
+        "px-6 py-5 border-border border-[1px] rounded-md group",
         isUser ? "border-muted-foreground" : "",
       )}
     >
@@ -93,6 +95,23 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
               <ThumbsUp className="stroke-purple-600 px-1" />
             ) : (
               <ThumbsDown className="stroke-blue-400 px-1" />
+            )}
+            {review.email === auth?.user?.email && (
+              <Popover>
+                <PopoverTrigger className="text-lg text-muted-foreground font-bold">
+                  ...
+                </PopoverTrigger>
+                <PopoverContent side="top" className="p-0 w-fit flex flex-row">
+                  <Button
+                    variant="ghost"
+                    className="m-0 hover:bg-destructive/30 text-destructive hover:text-destructive rounded-r-none"
+                  >
+                    Delete
+                  </Button>
+                  <Separator orientation="vertical" className="w-[1px] h-200" />
+                  <ReviewPrompt courseCode={review.course_code} review={review} />
+                </PopoverContent>
+              </Popover>
             )}
           </div>
           <h6 className="text-xs text-muted-foreground">
@@ -137,6 +156,7 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
           </div>
         </div>
       </div>
+
       {false && (
         <div className="pt-4 flex-grow flex gap-2 justify-between">
           <AlertDialog>
