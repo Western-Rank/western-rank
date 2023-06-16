@@ -19,8 +19,7 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
       to: identifier,
       from: provider.from || "westernrank@gmail.com",
       subject: `Sign in to ${host}`,
-      // text: text({ url, host }),
-      text: url,
+      text: text({ url, host }),
       html: html({ url, host, theme }),
     });
   } catch (e) {
