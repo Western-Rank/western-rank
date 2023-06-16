@@ -15,7 +15,7 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
   }
 
   try {
-    const sent = await sendEmail({
+    await sendEmail({
       to: identifier,
       from: provider.from || "westernrank@gmail.com",
       subject: `Sign in to ${host}`,
