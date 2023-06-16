@@ -9,9 +9,9 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
 
-  if (!isUwoEmail(identifier)) {
-    throw new Error("Please enter a valid UWO email address");
-  }
+  // if (!isUwoEmail(identifier)) {
+  //   throw new Error("Please enter a valid UWO email address");
+  // }
 
   // // NOTE: You are not required to use `nodemailer`, use whatever you want.
   // const transport = createTransport(provider.server);
@@ -28,11 +28,12 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
       to: identifier,
       from: provider.from || "westernrank@gmail.com",
       subject: `Sign in to ${host}`,
-      text: text({ url, host }),
+      // text: text({ url, host }),
+      text: url,
       html: html({ url, host, theme }),
     });
 
-    console.log("sent", await sent.json());
+    // console.log("sent", await sent.json());
   } catch (e) {
     throw new Error("Email could not be sent: " + e);
   }
