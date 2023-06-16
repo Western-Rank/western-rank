@@ -16,8 +16,7 @@ export async function sendEmail({
   html: string;
 }) {
   return resend.emails.send({
-    // from: from,
-    from: "onboarding@resend.dev",
+    from: from,
     to: to,
     subject: subject,
     html: html,
