@@ -16,10 +16,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { cn, formatTimeAgo } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
+import { MoreHorizontal, ThumbsDown, ThumbsUp } from "lucide-react";
 
 // profile pic, review text,
 interface ReviewProps {
@@ -79,28 +81,67 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
   return (
     <div
       className={cn(
-        "px-6 py-5 border-border border-[1px] rounded-md",
+        "px-6 py-5 border-border border-[1px] rounded-md group",
         isUser ? "border-muted-foreground" : "",
       )}
     >
       <div className="flex gap-3 flex-col sm:flex-row sm:justify-between">
-        <div className="flex flex-col flex-1 gap-1">
-          <div className="flex items-end px-0 gap-1.5">
+        <div className="flex flex-col flex-1">
+          <div className="flex items-end px-0 gap-1">
             <h5 className="text-sm font-medium">{`${
-              isUser ? "you" : review.anon ? "Anonymous" : review.email.split("@")[0]
+              review.anon ? "Anonymous" : review.email.split("@")[0]
             }`}</h5>
-            <h6 className="text-sm text-muted-foreground">
-              {review.date_created < review.last_edited
-                ? formatTimeAgo(review.last_edited)
-                : formatTimeAgo(review.date_created)}
-            </h6>
             {review.liked ? (
               <ThumbsUp className="stroke-purple-600 px-1" />
             ) : (
               <ThumbsDown className="stroke-blue-400 px-1" />
             )}
+            {review.email === auth?.user?.email && (
+              <Popover>
+                <PopoverTrigger className="text-xs text-muted-foreground font-bold">
+                  <MoreHorizontal />
+                </PopoverTrigger>
+                <PopoverContent side="top" className="p-0 w-fit flex flex-row">
+                  <AlertDialog>
+                    <Button
+                      variant="ghost"
+                      className="m-0 hover:bg-destructive/30 text-destructive hover:text-destructive rounded-r-none"
+                      asChild
+                    >
+                      <AlertDialogTrigger>Delete</AlertDialogTrigger>
+                    </Button>
+                    <AlertDialogContent className="light">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you sure you want to delete your review?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete your review for{" "}
+                          {review.course_code}.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <Button variant="destructive" asChild>
+                          <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
+                        </Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                  <Separator orientation="vertical" className="w-[1px] h-200" />
+                  <ReviewPrompt courseCode={review.course_code} review={review} />
+                </PopoverContent>
+              </Popover>
+            )}
           </div>
-          <p className="text-sm flex-grow break-all pb-6">{review.review}</p>
+          <h6 className="text-xs text-muted-foreground">
+            {review.date_created < review.last_edited
+              ? formatTimeAgo(review.last_edited)
+              : formatTimeAgo(review.date_created)}
+          </h6>
+          <p className="text-sm flex-grow break-all py-2">
+            {review.review ?? <span className="text-muted-foreground">[No written review]</span>}
+          </p>
           <h6 className="text-sm">
             {review?.professor && (
               <>
@@ -137,38 +178,6 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
           </div>
         </div>
       </div>
-      {review.email === auth?.user?.email && (
-        <div className="pt-4 flex-grow flex gap-2 justify-between">
-          <AlertDialog>
-            <Button
-              className="text-destructive/80 hover:text-destructive hover:bg-destructive/5"
-              variant="ghost"
-              asChild
-            >
-              <AlertDialogTrigger>
-                <Trash2 />
-                <span className="sr-only">Delete</span>
-              </AlertDialogTrigger>
-            </Button>
-            <AlertDialogContent className="light">
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete your account and remove
-                  your data from our servers.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <Button variant="destructive" asChild>
-                  <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-          <ReviewPrompt courseCode={review.course_code} review={review} />
-        </div>
-      )}
     </div>
   );
 };
