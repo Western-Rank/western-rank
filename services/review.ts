@@ -133,3 +133,11 @@ export function deleteReview(review_id: number) {
     },
   });
 }
+
+export function deleteAllUserReviews(email: string) {
+  return prisma.course_Review.deleteMany({
+    where: {
+      email: email,
+    },
+  });
+}

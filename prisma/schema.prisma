@@ -44,7 +44,7 @@ model Course_Review {
   email        String
   useful       Int
   course       Course   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
-  user         User     @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
+  user         User     @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model Account {

@@ -15,3 +15,11 @@ export async function getUserByEmail(email: string) {
     },
   });
 }
+
+export async function deleteUserByEmail(email: string) {
+  return prisma.user.delete({
+    where: {
+      email: email,
+    },
+  });
+}
