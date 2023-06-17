@@ -30,7 +30,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: course_paths,
-    fallback: true,
+    fallback: false,
   };
 };
 
