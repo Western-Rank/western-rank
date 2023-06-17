@@ -22,6 +22,7 @@ import { toast } from "@/components/ui/use-toast";
 import { cn, formatTimeAgo } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal, ThumbsDown, ThumbsUp } from "lucide-react";
+import Link from "next/link";
 
 // profile pic, review text,
 interface ReviewProps {
@@ -29,13 +30,14 @@ interface ReviewProps {
   onDelete?: () => void;
   onEdit?: () => void;
   isUser?: boolean;
+  includeCourseCode?: boolean;
 }
 
-export const UserReview = ({ review }: ReviewProps) => {
+export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
   const queryClient = useQueryClient();
 
   const deleteReviewMutation = useMutation({
-    mutationKey: ["delete-reviews", review.review_id],
+    mutationKey: ["delete-review", review.review_id],
     mutationFn: async () => {
       const res = await fetch(`/api/reviews/${review.review_id}`, {
         method: "DELETE",
@@ -71,18 +73,19 @@ export const UserReview = ({ review }: ReviewProps) => {
       }}
       onDelete={deleteReviewMutation.mutate}
       isUser
+      includeCourseCode={includeCourseCode}
     />
   );
 };
 
-export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
+export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: ReviewProps) => {
   const { data: auth } = useSession();
 
   return (
     <div
       className={cn(
-        "px-6 py-5 border-border border-[1px] rounded-md group",
-        isUser ? "border-muted-foreground" : "",
+        "px-6 py-5 border-[1px] rounded-md group",
+        isUser && !includeCourseCode ? "border-muted-foreground" : "border-border",
       )}
     >
       <div className="flex gap-3 flex-col sm:flex-row sm:justify-between">
@@ -142,24 +145,33 @@ export const Review = ({ review, onDelete, onEdit, isUser }: ReviewProps) => {
           <p className="text-sm flex-grow break-all py-2">
             {review.review ?? <span className="text-muted-foreground">[No written review]</span>}
           </p>
-          <h6 className="text-sm">
-            {review?.professor && (
-              <>
-                {"taught by "}
-                <a
-                  href={`https://www.ratemyprofessors.com/search/professors/1491?q=${encodeURIComponent(
-                    review?.professor || "",
-                  )}`}
-                  className="hover:underline text-blue-400"
-                  target="_blank"
-                >
-                  {review?.professor}
-                </a>
-                {", "}
-              </>
+          <div>
+            {includeCourseCode && (
+              <Button variant="link" className="text-sm text-blue-400 p-0 pr-1 h-2" asChild>
+                <Link href={`/course/${encodeURIComponent(review.course_code)}`}>
+                  {review.course_code}
+                </Link>
+              </Button>
             )}
-            {`${review.term_taken} ${review.date_taken?.getFullYear()}`}
-          </h6>
+            <h6 className="text-sm">
+              {review?.professor && (
+                <>
+                  {"taught by "}
+                  <a
+                    href={`https://www.ratemyprofessors.com/search/professors/1491?q=${encodeURIComponent(
+                      review?.professor || "",
+                    )}`}
+                    className="hover:underline text-blue-400"
+                    target="_blank"
+                  >
+                    {review?.professor}
+                  </a>
+                  {", "}
+                </>
+              )}
+              {`${review.term_taken} ${review.date_taken?.getFullYear()}`}
+            </h6>
+          </div>
         </div>
         <div className="w-42 flex flex-row flex-wrap items-center justify-between sm:flex-col md:items-end gap-2">
           <div className="flex flex-col md:items-end">

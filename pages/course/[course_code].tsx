@@ -91,10 +91,10 @@ const Course = ({ course }: CourseProps) => {
         <div className="flex flex-col light">
           <div className="py-4 pt-16 bg-background dark relative">
             <div className="h-40 w-[10vw] absolute bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-0 left-0 blur-2xl opacity-25"></div>
-            <h4 className="px-4 md:px-8 lg:px-15 xl:px-40 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-purple-400 to-blue-800 py-1">
+            <h4 className="px-4 md:px-8 lg:px-15 xl:px-40 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-400 to-55% py-1">
               {course?.course_code}
             </h4>
-            <h5 className="px-4 md:px-8 lg:px-15 xl:px-40 text-xl text-primary">
+            <h5 className="px-4 md:px-8 lg:px-15 xl:px-40 text-lg text-primary">
               {course?.course_name}
             </h5>
           </div>
