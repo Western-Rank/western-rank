@@ -109,15 +109,15 @@ function Profile({ user }: ProfileProps) {
             You&apos;ve made{" "}
             <span className="font-semibold">{user.Course_Review.length} reviews</span>
           </h5>
-          <div className="grid lg:grid-cols-2 gap-3 py-2">
+          <div className="grid lg:grid-cols-2 gap-3 py-2 pb-6">
             {user.Course_Review.map((review, index) => (
               <UserReview key={index} review={review} includeCourseCode />
             ))}
           </div>
           <Separator />
-          <div>
+          <div className="pt-3 flex justify-end flex-grow">
             <AlertDialog>
-              <Button variant="destructive" className="my-3" asChild>
+              <Button variant="destructive" className="my-3 w-full md:w-fit" asChild>
                 <AlertDialogTrigger>Delete Account</AlertDialogTrigger>
               </Button>
               <AlertDialogContent className="light">
