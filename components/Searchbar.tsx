@@ -19,6 +19,9 @@ import Spinner from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
+import { cn } from "@/lib/utils";
+import { dm_sans } from "@/pages/_app";
+
 export type CourseSearchItem = {
   course_code: string;
   course_name: string;
@@ -101,7 +104,7 @@ export function Searchbar({ onSelect }: SearchbarProps) {
   };
 
   return (
-    <Command shouldFilter={false} className="border light relative">
+    <Command shouldFilter={false} className={cn("border light relative", dm_sans.className)}>
       <CommandInput placeholder="Search for a Course..." onValueChange={onSearchTermChange} />
       <CommandList inputMode="search">
         {isSuccess && results != null && results?.length > 0 && (
