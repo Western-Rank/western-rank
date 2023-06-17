@@ -31,9 +31,15 @@ model Course {
 }
 
 model Category {
-  category_name String   @id @default(cuid()) @db.VarChar(255)
-  breadth       String[]
+  category_name String         @id @default(cuid()) @db.VarChar(255)
+  breadth       BreadthTypes[]
   courses       Course[]
+}
+
+enum BreadthTypes {
+  A
+  B
+  C
 }
 
 model Course_Review {
