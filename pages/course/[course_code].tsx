@@ -19,6 +19,13 @@ interface CourseProps {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+    return {
+      paths: [],
+      fallback: "blocking",
+    };
+  }
+
   const courses = await getAllCoursesSearch();
   const course_paths = courses.map((course) => {
     return {
