@@ -37,6 +37,7 @@ import Spinner from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,11 +46,17 @@ import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-interface ReviewPromptProps {
+type ReviewPromptProps = {
   courseCode: Course["course_code"];
   review?: Course_Review;
   onSubmitReview?: () => void;
-}
+};
+
+type ReviewPromptButtonProps = {
+  edit?: boolean;
+  auth?: boolean;
+  onClick: () => void;
+};
 
 const reviewFormSchema = z.object({
   professor: z.string().nonempty(),
@@ -62,6 +69,42 @@ const reviewFormSchema = z.object({
   date_taken: z.number().min(2010).max(new Date().getFullYear()),
   term_taken: z.nativeEnum(Terms),
 });
+
+const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) => {
+  if (edit) {
+    return (
+      <Button
+        disabled={!auth}
+        onClick={onClick}
+        variant="ghost"
+        className="text-purple-600 hover:bg-purple-100 sm:w-auto rounded-l-none"
+      >
+        Edit
+      </Button>
+    );
+  }
+
+  if (auth) {
+    return (
+      <Button onClick={onClick} variant="gradient" className="w-full md:w-fit">
+        Review
+      </Button>
+    );
+  }
+
+  return (
+    <TooltipProvider>
+      <Tooltip delayDuration={100}>
+        <TooltipTrigger className="cursor-not-allowed">
+          <Button disabled onClick={onClick} variant="gradient" className="w-full md:w-fit">
+            Review
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="top">Please login to review.</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
 
 /**
  * The component for submitting a review and its related information.
@@ -161,25 +204,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {edit ? (
-          <Button
-            disabled={!auth}
-            onClick={() => setOpen(true)}
-            variant="ghost"
-            className="text-purple-600 hover:bg-purple-100 sm:w-auto rounded-l-none"
-          >
-            Edit
-          </Button>
-        ) : (
-          <Button
-            disabled={!auth}
-            onClick={() => setOpen(true)}
-            variant="gradient"
-            className="w-full md:w-fit"
-          >
-            Review
-          </Button>
-        )}
+        <ReviewPromptButton edit={edit} auth={!!auth} onClick={() => setOpen(true)} />
       </DialogTrigger>
       <DialogContent className="light text-primary sm:max-w-[900px] max-h-[100vh]">
         <Form {...reviewForm}>
