@@ -21,8 +21,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { User2 } from "lucide-react";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 interface ProfileProps {
   user: User & { Course_Review: Course_Review[] };
@@ -50,14 +51,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 function Profile({ user }: ProfileProps) {
-  const { data: auth } = useSession();
+  const session = useSession({
+    required: true,
+  });
+  const router = useRouter();
 
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
     mutationKey: ["delete-user", user],
     mutationFn: async () => {
-      if (auth?.user?.email !== user.email) {
+      if (session.data?.user?.email !== user.email) {
         throw new Error("Error: Failed to authenticate.");
       }
 
@@ -75,7 +79,9 @@ function Profile({ user }: ProfileProps) {
         description: "Feel free to make a new account.",
       });
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
-      signOut({ callbackUrl: "/" });
+      session.update();
+      router.push("/");
+      router.reload();
     },
     onError(err: Error) {
       toast({
