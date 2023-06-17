@@ -148,7 +148,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
           <div>
             {includeCourseCode && (
               <Button variant="link" className="text-sm text-blue-400 p-0 pr-1 h-2" asChild>
-                <Link href={`/course/${encodeURIComponent(review.course_code)}`}>
+                <Link href={`/course/${encodeCourseCode(review.course_code)}`}>
                   {review.course_code}
                 </Link>
               </Button>

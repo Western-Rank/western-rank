@@ -125,7 +125,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
             </Toggle>
           </div>
         </div>
-        {!hasReviewed && <ReviewPrompt courseCode={courseCode} />}
+        {!hasReviewed && isSuccess && <ReviewPrompt courseCode={courseCode} />}
       </div>
       <div className="flex flex-col gap-4 py-2">
         {isSuccess && hasReviewed && reviewsData?.userReview && (

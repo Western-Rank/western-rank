@@ -1,3 +1,4 @@
+import { encodeCourseCode } from "@/lib/courses";
 import { requisiteTypes } from "@/lib/reviews";
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -22,7 +23,7 @@ const Requisite = ({ type, requisiteText }: RequisiteProps) => {
             const course_code = item?.text;
             return (
               <Button key={index} variant="link" className="p-0 h-3 pr-1 text-blue-500" asChild>
-                <Link href={`/course/${encodeURIComponent(course_code)}`}>{item.text}</Link>
+                <Link href={`/course/${encodeCourseCode(course_code)}`}>{item.text}</Link>
               </Button>
             );
           } else {
