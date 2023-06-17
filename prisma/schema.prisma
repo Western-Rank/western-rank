@@ -26,6 +26,14 @@ model Course {
   location             String?
   extra_info           String?
   course_reviews       Course_Review[]
+  category_code        String
+  category             Category        @relation(fields: [category_code], references: [category_name])
+}
+
+model Category {
+  category_name String   @id @default(cuid()) @db.VarChar(255)
+  breadth       String[]
+  courses       Course[]
 }
 
 model Course_Review {
