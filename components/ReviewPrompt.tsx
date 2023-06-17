@@ -39,10 +39,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import useWarnIfUnsavedChanges from "@/hooks/useWarnIfUnsavedChanges";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -112,6 +114,7 @@ const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) =>
 const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps) => {
   const { data: auth } = useSession();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
@@ -135,6 +138,10 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
     },
   });
 
+  useWarnIfUnsavedChanges(reviewForm.formState.isDirty, () =>
+    confirm("Warning! You have unsaved changes."),
+  );
+
   const onUnload = useCallback(
     (e: BeforeUnloadEvent) => {
       if (reviewForm.formState.isDirty) {
@@ -148,6 +155,9 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
 
   useEffect(() => {
     window.addEventListener("beforeunload", onUnload);
+    return () => {
+      window.removeEventListener("beforeunload", onUnload);
+    };
   });
 
   const createReviewMutationFn = useCallback(
