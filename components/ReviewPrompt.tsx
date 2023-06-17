@@ -1,6 +1,6 @@
 import { Course, Course_Review, Term as Terms } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Checkbox } from "@/components//ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -133,6 +133,21 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
       date_taken: edit ? review.date_taken.getFullYear() : new Date().getFullYear(),
       term_taken: edit ? review.term_taken : "Fall",
     },
+  });
+
+  const onUnload = useCallback(
+    (e: BeforeUnloadEvent) => {
+      if (reviewForm.formState.isDirty) {
+        e.preventDefault();
+        e.returnValue = "Save your changes before exiting.";
+        // return "Save your changes before exiting."; -- Old method
+      }
+    },
+    [reviewForm.formState.isDirty],
+  );
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", onUnload);
   });
 
   const createReviewMutationFn = useCallback(
