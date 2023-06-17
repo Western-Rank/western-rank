@@ -12,12 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Spinner from "@/components/ui/spinner";
 import { Toggle } from "@/components/ui/toggle";
 import { toast } from "@/components/ui/use-toast";
 import { Course_ReviewsData } from "@/pages/api/reviews";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
+import { Skeleton } from "./ui/skeleton";
 
 const TAKE_DEFAULT = 5;
 
@@ -132,9 +132,12 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
           <UserReview review={reviewsData?.userReview} />
         )}
         {isLoading && (
-          <Spinner className="py-6 flex items-center justify-center" text="Loading..." />
+          <>
+            <Skeleton className="h-40 w-full" />
+            <Skeleton className="h-40 w-full" />
+          </>
         )}
-        {isSuccess && reviewsData?.reviews?.length > 0 ? (
+        {isSuccess && reviewsData?.reviews?.length > 0 && (
           <>
             {reviewsData?.reviews?.map((review) => (
               <Review
@@ -153,7 +156,8 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
               </Button>
             )}
           </>
-        ) : (
+        )}
+        {isSuccess && reviewsData?.reviews?.length === 0 && (
           <div className="py-6 text-center flex flex-col items-center">
             <Goose>
               <p className="text-purple-200">
