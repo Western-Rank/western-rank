@@ -11,7 +11,7 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main
+      <div
         className={
           "min-h-screen items-center bg-[url('../public/College.svg'),_url('../public/College2.svg')] bg-[bottom_center,_bottom_right]"
         }
@@ -31,7 +31,7 @@ const Home = () => {
           </div>
         </div>
         <div className="h-[40vh] w-[20vw] absolute bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-1 left-1 blur-3xl opacity-20 animate-tilt"></div>
-      </main>
+      </div>
 
       <footer></footer>
     </>

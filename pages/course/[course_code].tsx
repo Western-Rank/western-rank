@@ -86,7 +86,7 @@ const Course = ({ course }: CourseProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="light bg-background text-primary min-h-[110vh]">
+      <div className="light bg-background text-primary min-h-[110vh]">
         <Navbar searchBar className="dark z-1" />
         <div className="flex flex-col light">
           <div className="py-4 pt-16 bg-background dark relative">
@@ -169,7 +169,7 @@ const Course = ({ course }: CourseProps) => {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 };
