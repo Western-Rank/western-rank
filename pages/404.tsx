@@ -16,13 +16,13 @@ export default function Custom404() {
         <div className="flex-grow h-full flex items-center justify-center pb-20">
           <Goose
             parentClassName="md:flex-row items-center justify-center gap-2"
-            className="light h-[500px] md:h-[700px] w-[500px] md:w-[700px] stroke-1 stroke-muted-foreground opacity-40"
+            className="light h-[110vw] sm:h-[80vw] md:h-[50vw] w-[110vw] sm:w-[80vw] md:w-[50vw] stroke-1 stroke-muted-foreground opacity-40"
           >
-            <div className="w-full md:w-fit px-14 md:px-0">
-              <h1 className="text-7xl md:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400">
+            <div className="w-full md:w-fit px-14 md:px-0 py-3">
+              <h1 className="text-7xl lg:text-9xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400">
                 HONK!
               </h1>
-              <h2 className="text-xl md:text-3xl md:pb-20">
+              <h2 className="text-xl lg:text-3xl md:pb-20">
                 (Translation: <span className="font-extrabold">404</span> Error)
               </h2>
             </div>

@@ -71,37 +71,41 @@ const reviewFormSchema = z.object({
 });
 
 const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) => {
-  if (edit) {
+  if (!auth) {
     return (
-      <Button
-        disabled={!auth}
-        onClick={onClick}
-        variant="ghost"
-        className="text-purple-600 hover:bg-purple-100 sm:w-auto rounded-l-none"
-      >
-        Edit
-      </Button>
+      <TooltipProvider>
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger className="cursor-not-allowed">
+            <Button disabled onClick={onClick} variant="gradient" className="w-full md:w-fit">
+              Review
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top">Please login to review.</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   }
 
-  if (auth) {
+  if (edit) {
     return (
-      <Button onClick={onClick} variant="gradient" className="w-full md:w-fit">
-        Review
-      </Button>
+      <TooltipProvider>
+        <Button
+          disabled={!auth}
+          onClick={onClick}
+          variant="ghost"
+          className="text-purple-600 hover:bg-purple-100 sm:w-auto rounded-l-none"
+        >
+          Edit
+        </Button>
+      </TooltipProvider>
     );
   }
 
   return (
     <TooltipProvider>
-      <Tooltip delayDuration={100}>
-        <TooltipTrigger className="cursor-not-allowed">
-          <Button disabled onClick={onClick} variant="gradient" className="w-full md:w-fit">
-            Review
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top">Please login to review.</TooltipContent>
-      </Tooltip>
+      <Button onClick={onClick} variant="gradient" className="w-full md:w-fit">
+        Review
+      </Button>
     </TooltipProvider>
   );
 };
@@ -117,8 +121,6 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   const { toast } = useToast();
 
   const edit = review !== undefined;
-
-  const reviewButtonText = !auth?.user ? "Log in to Review" : "Review";
 
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),

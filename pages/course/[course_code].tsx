@@ -7,7 +7,7 @@ import Stars from "@/components/Stars";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
-import { FullCourse } from "@/lib/courses";
+import { FullCourse, decodeCourseCode, encodeCourseCode } from "@/lib/courses";
 import { roundToNearest } from "@/lib/utils";
 import { getAllCoursesSearch, getCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
@@ -23,7 +23,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const course_paths = courses.map((course) => {
     return {
       params: {
-        course_code: course.course_code,
+        course_code: encodeCourseCode(course.course_code),
       },
     };
   });
@@ -43,7 +43,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<CourseProps> = async ({ params }) => {
   const { course_code } = params as { course_code: string };
-  const course = await getCourse(course_code);
+  const course = await getCourse(decodeCourseCode(course_code));
 
   return {
     props: {
