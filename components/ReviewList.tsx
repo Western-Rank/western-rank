@@ -155,7 +155,12 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
           </>
         ) : (
           <div className="py-6 text-center flex flex-col items-center">
-            <Goose text={`No ${hasReviewed ? "other" : ""} written reviews yet)`} />
+            <Goose>
+              <p className="text-purple-200">
+                HONK!
+                <br /> {`(Translation: ${`No ${hasReviewed ? "other" : ""} written reviews yet)`})`}
+              </p>
+            </Goose>
           </div>
         )}
       </div>
