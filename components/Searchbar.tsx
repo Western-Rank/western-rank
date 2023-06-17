@@ -15,12 +15,12 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import Spinner from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { dm_sans } from "@/pages/_app";
+import { Skeleton } from "./ui/skeleton";
 
 export type CourseSearchItem = {
   course_code: string;
@@ -124,7 +124,10 @@ export function Searchbar({ onSelect }: SearchbarProps) {
         )}
         {isLoading && (
           <CommandEmpty className="grid place-items-center">
-            <Spinner className="py-3" text="Loading courses..." />
+            <div className="p-1 w-full space-y-1">
+              <Skeleton className="h-8 w-full rounded-lg" />
+              <Skeleton className="h-8 w-full rounded-lg" />
+            </div>
           </CommandEmpty>
         )}
         {!isLoading && results != null && <CommandEmpty>No results found.</CommandEmpty>}
