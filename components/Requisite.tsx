@@ -1,6 +1,8 @@
-import { requisiteTypes } from "@/lib/reviews";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { requisiteDescription, requisiteTypes } from "@/lib/courses";
+import { Info } from "lucide-react";
 import Link from "next/link";
-import { Button } from "./ui/button";
 
 export type RequisiteTextItem = {
   text: string;
@@ -15,7 +17,17 @@ type RequisiteProps = {
 const Requisite = ({ type, requisiteText }: RequisiteProps) => {
   return (
     <div>
-      <h5 className="text-lg font-semibold">{type}</h5>
+      <div className="flex">
+        <h5 className="text-lg font-semibold">{type}</h5>
+        <Popover>
+          <PopoverTrigger className="text-xs text-muted-foreground font-bold px-1.5">
+            <Info width="18" />
+          </PopoverTrigger>
+          <PopoverContent side="top" className="w-[250px] text-sm">
+            {requisiteDescription[type]}
+          </PopoverContent>
+        </Popover>
+      </div>
       <p className="whitespace-pre-wrap">
         {requisiteText.map((item, index) => {
           if (item.isLink) {
