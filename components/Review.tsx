@@ -143,7 +143,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
               : formatTimeAgo(review.date_created)}
           </h6>
           <p className="text-sm flex-grow break-all py-2">
-            {review.review ?? <span className="text-muted-foreground">[No written review]</span>}
+            {review.review ?? <span className="text-muted-foreground">(no written review)</span>}
           </p>
           <div>
             {includeCourseCode && (
