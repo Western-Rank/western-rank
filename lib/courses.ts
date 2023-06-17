@@ -16,7 +16,7 @@ export const requisiteDescription = {
     "a course or criteria that must be completed in order to register for this course.",
   Corequisites: "a course that must be taken concurrently with this course.",
   Antirequisites:
-    "a course that has very similar content with this course so they cannot both be taken for credit.",
+    "a course that has very similar content with this course, so only one course can be taken for credit.",
   "Pre-or-Corequisites":
     "a course that must be completed before taking or concurrently with this course.",
 };
