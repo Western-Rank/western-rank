@@ -93,10 +93,18 @@ export function getReviewsbyCourse({
  * @param email email of the user
  * @returns List of reviews for the user
  */
-export function getReviewsbyUser(email: string) {
+export function getReviewsByUser(email: string) {
   return prisma.course_Review.findMany({
     where: {
       email: email,
+    },
+  });
+}
+
+export function getReviewById(review_id: number) {
+  return prisma.course_Review.findUnique({
+    where: {
+      review_id: review_id,
     },
   });
 }

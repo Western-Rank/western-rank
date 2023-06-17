@@ -1,7 +1,8 @@
 import { SearchbarDialog } from "@/components/Searchbar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -33,11 +34,12 @@ const Navbar = ({ className, searchBar }: NavbarProps) => {
                 Profile
               </Link>
             </Button>
-            <Button asChild variant="link" className="px-1 md:px-2s">
-              {/* TODO change to onclick with signout() */}
-              <Link href="/api/auth/signout" className="text-sm">
-                Log out
-              </Link>
+            <Button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              variant="link"
+              className="px-1 md:px-2 text-sm"
+            >
+              Log out
             </Button>
           </>
         ) : (

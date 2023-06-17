@@ -1,12 +1,27 @@
 import Navbar from "@/components/Navbar";
 import { UserReview } from "@/components/Review";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "@/components/ui/use-toast";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getUserByEmail } from "@/services/user";
 import { Course_Review, User } from "@prisma/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { User2 } from "lucide-react";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
+import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 
 interface ProfileProps {
@@ -35,7 +50,42 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 function Profile({ user }: ProfileProps) {
-  console.log(user.Course_Review[0]);
+  const { data: auth } = useSession();
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationKey: ["delete-user", user],
+    mutationFn: async () => {
+      if (auth?.user?.email !== user.email) {
+        throw new Error("Error: Failed to authenticate.");
+      }
+
+      const res = await fetch(`/api/user/${encodeURIComponent(user?.email ?? "")}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error(`Error: Failed to delete your account!`);
+      }
+      return res;
+    },
+    onSuccess() {
+      toast({
+        title: `User was deleted!`,
+        description: "Feel free to make a new account.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      signOut({ callbackUrl: "/" });
+    },
+    onError(err: Error) {
+      toast({
+        title: err.message,
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   return (
     <>
       <Head>
@@ -64,8 +114,30 @@ function Profile({ user }: ProfileProps) {
               <UserReview key={index} review={review} includeCourseCode />
             ))}
           </div>
+          <Separator />
+          <div>
+            <AlertDialog>
+              <Button variant="destructive" className="my-3" asChild>
+                <AlertDialogTrigger>Delete Account</AlertDialogTrigger>
+              </Button>
+              <AlertDialogContent className="light">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to delete your account?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete {user.email} and its
+                    associated account.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <Button variant="destructive" asChild>
+                    <AlertDialogAction onClick={() => mutate()}>Continue</AlertDialogAction>
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
-        <Separator />
       </main>
     </>
   );

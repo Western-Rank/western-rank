@@ -37,7 +37,7 @@ export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
   const queryClient = useQueryClient();
 
   const deleteReviewMutation = useMutation({
-    mutationKey: ["delete-reviews", review.review_id],
+    mutationKey: ["delete-review", review.review_id],
     mutationFn: async () => {
       const res = await fetch(`/api/reviews/${review.review_id}`, {
         method: "DELETE",
