@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
+import { encodeCourseCode } from "@/lib/courses";
 import { cn, formatTimeAgo } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal, ThumbsDown, ThumbsUp } from "lucide-react";
