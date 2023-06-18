@@ -43,7 +43,7 @@ const SignIn = () => {
               </span>
             </h1>
             <h3 className="text-primary text-xl">
-              with a <span className="text-purple-600">@uwo.ca</span> or{" "}
+              with an <span className="text-purple-600">@uwo.ca</span> or{" "}
               <span className="text-green-500">@ivey.ca</span> email.
             </h3>
           </div>
