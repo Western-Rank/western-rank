@@ -25,6 +25,10 @@ export async function createReview(review: Course_Review_Create) {
   });
 }
 
+export async function getReviewCount() {
+  return prisma.course_Review.count();
+}
+
 /**
  * Get reviews for a specific course.
  * @param courseCode Course code of the course
