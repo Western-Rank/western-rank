@@ -1,9 +1,8 @@
 import { Theme } from "next-auth";
 import { SendVerificationRequestParams } from "next-auth/providers";
-import { Resend } from "resend";
 import { sendEmail } from "./email";
 
-function isUwoEmail(email: string) {
+export function isUwoEmail(email: string) {
   return email.endsWith("@uwo.ca") || email.endsWith("@ivey.ca");
 }
 
