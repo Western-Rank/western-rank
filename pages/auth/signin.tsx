@@ -36,14 +36,14 @@ const SignIn = () => {
               <Image src="/logo.svg" alt="logo" width={42} height={30} />
               <span className="text-primary font-extrabold text-sm">Rank</span>
             </Link>
-            <h1 className="text-primary font-bold text-2xl md:text-3xl lg:text-4xl">
+            <h1 className="text-primary font-bold text-3xl lg:text-5xl">
               Sign in to{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400">
                 Western Rank
               </span>
             </h1>
             <h3 className="text-primary text-xl">
-              with a <span className="text-purple-500">@uwo.ca</span> or{" "}
+              with a <span className="text-purple-600">@uwo.ca</span> or{" "}
               <span className="text-green-500">@ivey.ca</span> email.
             </h3>
           </div>
