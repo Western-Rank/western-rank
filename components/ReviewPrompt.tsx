@@ -121,44 +121,47 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
 
   const edit = review !== undefined;
 
-  const reviewButtonText = !auth?.user ? "Log in to Review" : "Review";
-
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
     defaultValues: {
-      professor: edit ? review.professor : "",
-      review: edit && review?.review != null ? review?.review : undefined,
-      liked: edit ? review.liked : true,
-      difficulty: [edit ? review.difficulty / 2 : 2.5],
-      useful: [edit ? review.useful / 2 : 2.5],
-      attendance: [edit ? review.attendance : 50],
-      anon: edit ? review.anon : false,
-      date_taken: edit ? review.date_taken.getFullYear() : new Date().getFullYear(),
-      term_taken: edit ? review.term_taken : "Fall",
+      professor: "",
+      review: undefined,
+      liked: true,
+      difficulty: [2.5],
+      useful: [2.5],
+      attendance: [50],
+      anon: false,
+      date_taken: new Date().getFullYear(),
+      term_taken: "Fall",
     },
   });
-
-  useWarnIfUnsavedChanges(reviewForm.formState.isDirty, () =>
-    confirm("Warning! You have unsaved changes."),
-  );
-
-  const onUnload = useCallback(
-    (e: BeforeUnloadEvent) => {
-      if (reviewForm.formState.isDirty) {
-        e.preventDefault();
-        e.returnValue = "Save your changes before exiting.";
-        // return "Save your changes before exiting."; -- Old method
-      }
-    },
-    [reviewForm.formState.isDirty],
-  );
 
   useEffect(() => {
-    window.addEventListener("beforeunload", onUnload);
-    return () => {
-      window.removeEventListener("beforeunload", onUnload);
-    };
-  });
+    if (review) {
+      reviewForm.reset({
+        professor: review.professor,
+        review: review?.review != null ? review?.review : undefined,
+        liked: review.liked,
+        difficulty: [review.difficulty / 2],
+        useful: [review.useful / 2],
+        attendance: [review.attendance],
+        anon: review.anon,
+        date_taken: review.date_taken.getFullYear(),
+        term_taken: review.term_taken,
+      });
+    } else {
+      reviewForm.reset();
+    }
+  }, [reviewForm, courseCode, review]);
+
+  useWarnIfUnsavedChanges(
+    reviewForm.formState.isDirty,
+    () => confirm("Warning! You have unsubmitted changes."),
+    (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "Save your changes before exiting.";
+    },
+  );
 
   const createReviewMutationFn = useCallback(
     async (review: Course_Review_Create) => {
@@ -305,6 +308,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                                   type="number"
                                   min={2010}
                                   max={new Date().getFullYear()}
+                                  formNoValidate
                                   step={1}
                                   value={field?.value}
                                   onChange={(e) => {
