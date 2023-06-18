@@ -49,10 +49,10 @@ const SignIn = () => {
           </div>
           <form
             className="space-y-4 w-full"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               if (isValidEmail) {
-                signIn("email", { callbackUrl: "/", email: email });
+                signIn("email", { callbackUrl: `${window.location.origin}/`, email: email });
               } else {
                 setSubmitAttempted(true);
               }
