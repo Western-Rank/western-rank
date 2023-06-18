@@ -37,6 +37,25 @@ export function formatTimeAgo(date: Date) {
 }
 
 /**
+ * 0 -> 10, 13 -> 10, 46 -> 40, 1123 -> 1000, etc.
+ *
+ * @param x number
+ * @returns
+ */
+export function formatCount(x: number): number {
+  if (x === 0) {
+    return 10;
+  }
+
+  // 13
+
+  const numDigits = x.toString().length; // 2
+  // 10^2 = 100
+  // 13
+  return Math.floor(x / 10 ** (numDigits - 1)) * 10 ** (numDigits - 1);
+}
+
+/**
  * Generate tick labels for a MUI material slider's 'marks' prop from min to max, inclusive
  */
 export function generateSliderTicks(min: number, max: number, step = 1) {

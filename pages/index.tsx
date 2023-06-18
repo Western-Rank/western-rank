@@ -1,8 +1,33 @@
 import Navbar from "@/components/Navbar";
 import Searchbar from "@/components/Searchbar";
+import { formatCount } from "@/lib/utils";
+import { getCourseCount } from "@/services/course";
+import { getReviewCount } from "@/services/review";
+import { type GetStaticProps } from "next";
 import Head from "next/head";
 
-const Home = () => {
+type HomeProps = {
+  reviewCount: number;
+  courseCount: number;
+};
+
+export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+  const reviewCount = await getReviewCount();
+  const courseCount = await getCourseCount();
+
+  return {
+    props: {
+      reviewCount,
+      courseCount,
+    },
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every _ seconds
+    revalidate: 10,
+  };
+};
+
+const Home = ({ reviewCount, courseCount }: HomeProps) => {
   return (
     <>
       <Head>
@@ -26,8 +51,11 @@ const Home = () => {
             students
           </h1>
           <div className="relative group">
+            <h3 className="absolute top-[60px] text-lg text-muted">
+              {formatCount(reviewCount)}+ reviews for {courseCount} courses.
+            </h3>
             <Searchbar />
-            <div className="z-[-1] absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-70 group-focus-within:opacity-70 animate-tilt"></div>
+            <div className="z-[-1] absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-80 group-focus-within:opacity-80 animate-tilt"></div>
           </div>
         </div>
         <div className="h-[40vh] w-[20vw] absolute bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-1 left-1 blur-3xl opacity-20 animate-tilt"></div>
