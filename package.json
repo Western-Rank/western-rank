@@ -40,6 +40,7 @@
     "@radix-ui/react-tooltip": "^1.0.6",
     "@react-email/button": "0.0.9",
     "@react-email/column": "0.0.7",
+    "@react-email/components": "0.0.7",
     "@react-email/head": "0.0.5",
     "@react-email/html": "0.0.4",
     "@react-email/link": "0.0.5",
