@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Searchbar from "@/components/Searchbar";
-import { formatCount } from "@/lib/utils";
+import formatNumber from "@/lib/utils";
 import { getCourseCount } from "@/services/course";
 import { getReviewCount } from "@/services/review";
 import { type GetStaticProps } from "next";
@@ -52,7 +52,7 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
           </h1>
           <div className="relative group">
             <h3 className="absolute top-[60px] text-lg text-muted">
-              {formatCount(reviewCount)}+ reviews for {courseCount} courses.
+              {formatNumber(reviewCount, 1)}+ reviews for {courseCount} courses.
             </h3>
             <Searchbar />
             <div className="z-[-1] absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-80 group-focus-within:opacity-80 animate-tilt"></div>
