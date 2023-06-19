@@ -52,7 +52,7 @@ const SignIn = () => {
             onSubmit={async (e) => {
               e.preventDefault();
               if (isValidEmail) {
-                signIn("email", { email: email });
+                signIn("email", { callbackUrl: "/", email: email });
               } else {
                 setSubmitAttempted(true);
               }

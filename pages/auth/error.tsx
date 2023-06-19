@@ -4,12 +4,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-const errorCodes = ["Configuration", "AccessDenied", "Verification", "Default"] as const;
+type ErrorType = "Default" | "Configuration" | "AccessDenied" | "Verification";
 
-type ErrorCode = (typeof errorCodes)[number];
+interface InternalUrl {
+  /** @default "http://localhost:3000" */
+  origin: string;
+  /** @default "localhost:3000" */
+  host: string;
+  /** @default "/api/auth" */
+  path: string;
+  /** @default "http://localhost:3000/api/auth" */
+  base: string;
+  /** @default "http://localhost:3000/api/auth" */
+  toString: () => string;
+}
 
 type ErrorProps = {
-  code: ErrorCode;
+  code: ErrorType;
 };
 
 const Error = ({ code }: ErrorProps) => {
@@ -41,7 +52,7 @@ const Error = ({ code }: ErrorProps) => {
   );
 };
 
-const ErrorPage = () => {
+const ErrorPage = ({}) => {
   const router = useRouter();
 
   const { error } = router.query;
@@ -61,7 +72,7 @@ const ErrorPage = () => {
               <Image src="/logo.svg" alt="logo" width={42} height={30} />
               <span className="text-primary font-extrabold text-sm">Rank</span>
             </Link>
-            <Error code={error as ErrorCode} />
+            <Error code={error as ErrorType} />
             <div className="flex flex-grow w-full justify-end">
               <Button className="w-full sm:w-fit" variant="gradient" asChild>
                 <Link href="/auth/signin">Sign in</Link>
