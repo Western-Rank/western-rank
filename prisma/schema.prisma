@@ -27,11 +27,12 @@ model Course {
   extra_info           String?
   course_reviews       Course_Review[]
   category_code        String
-  category             Category        @relation(fields: [category_code], references: [category_name])
+  category             Category        @relation(fields: [category_code], references: [category_code])
 }
 
 model Category {
-  category_name String         @id @default(cuid()) @db.VarChar(255)
+  category_code String         @id @default(cuid()) @db.VarChar(255)
+  category_name String
   breadth       BreadthTypes[]
   courses       Course[]
 }
