@@ -65,22 +65,11 @@ const Course = ({ course }: CourseProps) => {
     maxLength: 200,
   });
 
-  const {
-    ref,
-    inView: listInView,
-    entry,
-  } = useInView({
+  const { ref, inView: listInView } = useInView({
     rootMargin: "-150px",
-    onChange(inView, entry) {
-      console.log(inView);
-    },
   });
 
-  const { ref: navRef, inView: navInView } = useInView({
-    onChange(inView, entry) {
-      console.log(inView);
-    },
-  });
+  const { ref: navRef, inView: navInView } = useInView();
 
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
