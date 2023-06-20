@@ -67,15 +67,18 @@ const Course = ({ course }: CourseProps) => {
     maxLength: 200,
   });
 
-  const { ref, inView, entry } = useInView({
-    rootMargin: "-300px",
+  const {
+    ref,
+    inView: listInView,
+    entry,
+  } = useInView({
+    rootMargin: "-150px",
     onChange(inView, entry) {
       console.log(inView);
     },
   });
 
   const { ref: navRef, inView: navInView } = useInView({
-    rootMargin: "-300px",
     onChange(inView, entry) {
       console.log(inView);
     },
@@ -122,9 +125,10 @@ const Course = ({ course }: CourseProps) => {
         sticky
         Icon={GraduationCap}
       />
+      <span ref={navRef} className="h-0"></span>
       <div className="light bg-background text-primary min-h-[110vh]">
         <div className="flex flex-col light">
-          <BackToTop visible={inView} onClick={scrollTop} />
+          <BackToTop visible={listInView && !navInView} onClick={scrollTop} />
           <div className="py-8 px-4 md:px-8 lg:px-15 xl:px-40 flex flex-col-reverse lg:flex-row lg:gap-10">
             <p className="flex-1 text-primary flex flex-col">
               {course_description}
@@ -161,10 +165,6 @@ const Course = ({ course }: CourseProps) => {
           </div>
 
           <div className="px-4 md:px-8 lg:px-15 xl:px-40">
-            <Separator className="border-primary" />
-          </div>
-
-          <div className="py-24">
             <Separator className="border-primary" />
           </div>
           <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
