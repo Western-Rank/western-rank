@@ -1,5 +1,4 @@
 import BackToTop from "@/components/BackToTop";
-import Navbar from "@/components/Navbar";
 import NavbarHeader from "@/components/NavbarHeader";
 import PercentBar from "@/components/PercentBar";
 import PercentCircle from "@/components/PercentCircle";
@@ -9,14 +8,13 @@ import Stars from "@/components/Stars";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
-import { FullCourse, decodeCourseCode, encodeCourseCode } from "@/lib/courses";
+import { decodeCourseCode, encodeCourseCode, FullCourse } from "@/lib/courses";
 import { roundToNearest } from "@/lib/utils";
 import { getAllCoursesSearch, getCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
 import { GraduationCap } from "lucide-react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 interface CourseProps {
