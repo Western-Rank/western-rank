@@ -13,6 +13,7 @@ import { getAllCoursesSearch, getCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 
 interface CourseProps {
   course: FullCourse; // the course information for the course displayed on this page
@@ -62,6 +63,15 @@ const Course = ({ course }: CourseProps) => {
     maxLength: 200,
   });
 
+  const [hasScrolled, setHasScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => setHasScrolled(window.scrollY > 100)
+
+    document.addEventListener("scroll", handleScroll)
+    return () => document.removeEventListener("scroll", handleScroll)
+  }, [])  
+
   const likedPercent = Math.round(
     ((course?.count_liked ?? 0) /
       (course?._count?.review_id == 0 ? 1 : course?._count?.review_id)) *
@@ -105,7 +115,7 @@ const Course = ({ course }: CourseProps) => {
               {course?.course_name}
             </h5>
           </div>
-
+          {hasScrolled && <div className="fixed bottom-3 right-3 w-10 h-10 bg-red-300">top</div>}
           <div className="py-8 px-4 md:px-8 lg:px-15 xl:px-40 flex flex-col-reverse lg:flex-row lg:gap-10">
             <p className="flex-1 text-primary flex flex-col">
               {course_description}
