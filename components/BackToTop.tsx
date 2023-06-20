@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
 type BackToTopProps = {
@@ -13,12 +13,20 @@ const BackToTop = ({ offset = 100 }: BackToTopProps) => {
 
     document.addEventListener("scroll", handleScroll);
     return () => document.removeEventListener("scroll", handleScroll);
+  }, [offset]);
+
+  const scrollTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   if (!hasScrolled) return null;
 
   return (
-    <Button className="fixed bottom-3 right-3">
+    <Button
+      variant={"outline"}
+      className="fixed bottom-3 right-3 bg-background"
+      onClick={scrollTop}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
