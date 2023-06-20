@@ -18,8 +18,7 @@ const Navbar = ({ sticky, searchBar, className }: NavbarProps) => {
   return (
     <nav
       className={cn(
-        "dark bg-background flex items-center justify-between px-4 md:px-8 lg:px-15 xl:px-[9.4rem] z-14",
-        sticky ? "sticky top-0" : "",
+        "dark bg-background sticky top-0 flex items-center justify-between px-4 md:px-8 lg:px-15 xl:px-[9.4rem] z-14",
         className,
       )}
     >

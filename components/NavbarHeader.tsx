@@ -27,8 +27,6 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
     },
   });
 
-  const { scrollY } = useScroll();
-
   const [headerSticky, setHeaderSticky] = useState<boolean>(false);
   const [lastUpdateTime, setLastUpdateTime] = useState<number>(0);
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -58,8 +56,6 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
     }
   }, [sticky, fromTopInView, fromBottomInView, lastUpdateTime, headerSticky, hasScrolled]);
 
-  const navbarSticky = !headerSticky && (fromBottomInView || fromTopInView);
-
   return (
     <>
       <span ref={fromTopRef}></span>
@@ -69,7 +65,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
           headerSticky ? "sticky top-0" : "",
         )}
       >
-        <Navbar {...navbarProps} sticky={navbarSticky} key="nav" />
+        <Navbar {...navbarProps} key="nav" />
         <motion.div
           layout="size"
           className={cn("h-16", headerSticky ? "max-h-0" : "")}
