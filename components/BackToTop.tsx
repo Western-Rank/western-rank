@@ -1,33 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 
 type BackToTopProps = {
-  offset?: number;
   visible?: boolean;
   onClick?: () => void;
 };
 
-const BackToTop = ({ offset = 100, visible = false, onClick }: BackToTopProps) => {
-  // useEffect(() => {
-  //   const handleScroll = () => setHasScrolled(window.scrollY > offset);
-  //
-  //   document.addEventListener("scroll", handleScroll);
-  //   return () => document.removeEventListener("scroll", handleScroll);
-  // }, [offset]);
-  //
-  // const scrollTop = useCallback(() => {
-  //   window.scrollTo({ top: 0, behavior: "smooth" });
-  // }, []);
-
-
+const BackToTop = ({ visible = false, onClick }: BackToTopProps) => {
   if (!visible) return null;
 
   return (
-    <Button
-      variant={"outline"}
-      className="fixed bottom-3 right-3 bg-background"
-      onClick={onClick}
-    >
+    <Button variant={"outline"} className="fixed bottom-3 right-3 bg-background" onClick={onClick}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
