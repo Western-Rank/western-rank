@@ -1,6 +1,6 @@
 import Navbar, { type NavbarProps } from "@/components/Navbar";
 import { cn } from "@/lib/utils";
-import { motion, useScroll } from "framer-motion";
+import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -65,12 +65,11 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
           headerSticky ? "sticky top-0" : "",
         )}
       >
-        <Navbar {...navbarProps} key="nav" />
+        <Navbar {...navbarProps} sticky key="nav" />
         <motion.div
-          layout="size"
-          className={cn("h-16", headerSticky ? "max-h-0" : "")}
-        ></motion.div>
-        <div
+          animate={{
+            paddingTop: headerSticky ? "0px" : "4rem",
+          }}
           key="header"
           className={cn("duration-75 px-4 md:px-8 lg:px-15 xl:px-40 pb-1 z-8 bg-background")}
         >
@@ -91,17 +90,12 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
               </span>
             )}
           </h4>
-          <motion.h5
-            layout
-            animate={{ opacity: 1 }}
-            className={cn(
-              "text-lg text-primary pb-3",
-              headerSticky ? "max-h-0 hidden" : "animate-in duration-1000",
-            )}
-          >
-            {subHeading}
-          </motion.h5>
-        </div>
+          {!headerSticky && (
+            <motion.h5 layout className="text-lg text-primary pb-3">
+              {subHeading}
+            </motion.h5>
+          )}
+        </motion.div>
       </div>
       <span ref={fromBottomRef}></span>
     </>
