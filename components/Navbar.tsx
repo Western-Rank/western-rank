@@ -6,18 +6,20 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
-type NavbarProps = {
+export type NavbarProps = {
+  sticky?: boolean;
   searchBar?: boolean;
   className?: string;
 };
 
-const Navbar = ({ className, searchBar }: NavbarProps) => {
+const Navbar = ({ sticky, searchBar, className }: NavbarProps) => {
   const { data: auth } = useSession();
 
   return (
     <nav
       className={cn(
-        "bg-background flex items-center justify-between px-4 md:px-8 lg:px-15 xl:px-40",
+        "dark bg-background flex items-center justify-between px-4 md:px-8 lg:px-15 xl:px-[9.4rem] z-14",
+        sticky ? "sticky top-0" : "",
         className,
       )}
     >
