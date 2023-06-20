@@ -1,5 +1,6 @@
 import Navbar, { type NavbarProps } from "@/components/Navbar";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -67,28 +68,27 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
         )}
       >
         <Navbar {...navbarProps} sticky={navbarSticky} key="nav" />
-        <div
+        <motion.div
+          layout
           key="pad"
-          className={cn("pt-16", headerSticky ? "p-0" : "transition-[padding] duration-150")}
-        ></div>
+          className={cn("h-16", headerSticky ? "max-h-0" : "")}
+        ></motion.div>
         <div
           key="header"
           className={cn(
-            "duration-75 transition-[padding] px-4 md:px-8 lg:px-15 xl:px-40 pb-4 z-8 bg-background",
+            "duration-75 px-4 md:px-8 lg:px-15 xl:px-40 pb-4 z-8 bg-background",
             headerSticky ? "pb-2" : "",
           )}
         >
-          {!headerSticky && !!Icon && (
-            <Icon className="animate-in animate-out stroke-purple-500" width={36} height={36} />
-          )}
+          {!headerSticky && !!Icon && <Icon className="stroke-purple-500" width={36} height={36} />}
           <h4
             className={cn(
-              "duration-200 transition-[padding,_font-size] text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500 to-[25rem] py-1 max-w-screen whitespace-nowrap overflow-ellipsis overflow-hidden",
+              "duration-200 transition-[font-size] text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500 to-[25rem] py-1 max-w-screen whitespace-nowrap overflow-ellipsis overflow-hidden",
               headerSticky ? "text-sm pb-0" : "",
             )}
           >
             {headerSticky && !!Icon && (
-              <Icon className="animate-in animate-out stroke-purple-500 inline-block h-4 mb-1" />
+              <Icon className="transition-opacity fade-in duration-1000 animate-in animate-out stroke-purple-500 inline-block h-4 mb-1" />
             )}
             {heading}{" "}
             {headerSticky && (
@@ -97,7 +97,14 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
               </span>
             )}
           </h4>
-          <h5 className={cn("text-lg text-primary", headerSticky ? "hidden" : "")}>{subHeading}</h5>
+          <h5
+            className={cn(
+              "text-lg text-primary",
+              headerSticky ? "hidden" : "animate-in duration-1000",
+            )}
+          >
+            {subHeading}
+          </h5>
         </div>
       </div>
       <span ref={fromBottomRef}></span>
