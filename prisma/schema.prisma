@@ -84,6 +84,12 @@ model User {
   sessions      Session[]
 }
 
+model Professor {
+  id            Int             @id @default(autoincrement())
+  name          String
+  rmpId         Int?
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique
