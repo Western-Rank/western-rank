@@ -93,7 +93,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
             {heading}{" "}
             {headerSticky && (
               <span className="animate-in animate-out transition-none text-sm text-primary">
-                | {subHeading}
+                · {subHeading}
               </span>
             )}
           </h4>
