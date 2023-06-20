@@ -1,3 +1,4 @@
+import { MagicLinkEmail } from "@/emails/email";
 import { Theme } from "next-auth";
 import { SendVerificationRequestParams } from "next-auth/providers";
 import { sendEmail } from "./email";
@@ -20,8 +21,8 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
       to: identifier,
       from: provider.from || "westernrank@gmail.com",
       subject: `Sign in to ${host}`,
-      text: text({ url, host }),
-      html: html({ url, host, theme }),
+      text: "",
+      react: MagicLinkEmail({ magicLinkUrl: url, emailAddress: identifier }),
     });
   } catch (e) {
     throw new Error("Email could not be sent: " + e);
