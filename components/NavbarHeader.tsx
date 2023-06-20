@@ -1,6 +1,6 @@
 import Navbar, { type NavbarProps } from "@/components/Navbar";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, useScroll } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -27,11 +27,11 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
     },
   });
 
+  const { scrollY } = useScroll();
+
   const [headerSticky, setHeaderSticky] = useState<boolean>(false);
   const [lastUpdateTime, setLastUpdateTime] = useState<number>(0);
   const [hasScrolled, setHasScrolled] = useState(false);
-
-  const navbarSticky = !headerSticky && fromBottomInView;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +58,8 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
     }
   }, [sticky, fromTopInView, fromBottomInView, lastUpdateTime, headerSticky, hasScrolled]);
 
+  const navbarSticky = !headerSticky && (fromBottomInView || fromTopInView);
+
   return (
     <>
       <span ref={fromTopRef}></span>
@@ -69,21 +71,17 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
       >
         <Navbar {...navbarProps} sticky={navbarSticky} key="nav" />
         <motion.div
-          layout
-          key="pad"
+          layout="size"
           className={cn("h-16", headerSticky ? "max-h-0" : "")}
         ></motion.div>
         <div
           key="header"
-          className={cn(
-            "duration-75 px-4 md:px-8 lg:px-15 xl:px-40 pb-4 z-8 bg-background",
-            headerSticky ? "pb-2" : "",
-          )}
+          className={cn("duration-75 px-4 md:px-8 lg:px-15 xl:px-40 pb-1 z-8 bg-background")}
         >
           {!headerSticky && !!Icon && <Icon className="stroke-purple-500" width={36} height={36} />}
           <h4
             className={cn(
-              "duration-200 transition-[font-size] text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500 to-[25rem] py-1 max-w-screen whitespace-nowrap overflow-ellipsis overflow-hidden",
+              "duration-100 transition-[font-size] text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500 to-[25rem] py-1 max-w-screen whitespace-nowrap overflow-ellipsis overflow-hidden",
               headerSticky ? "text-sm pb-0" : "",
             )}
           >
@@ -97,14 +95,16 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
               </span>
             )}
           </h4>
-          <h5
+          <motion.h5
+            layout
+            animate={{ opacity: 1 }}
             className={cn(
-              "text-lg text-primary",
-              headerSticky ? "hidden" : "animate-in duration-1000",
+              "text-lg text-primary pb-3",
+              headerSticky ? "max-h-0 hidden" : "animate-in duration-1000",
             )}
           >
             {subHeading}
-          </h5>
+          </motion.h5>
         </div>
       </div>
       <span ref={fromBottomRef}></span>
