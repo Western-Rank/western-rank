@@ -100,7 +100,7 @@ const Course = ({ course }: CourseProps) => {
         searchBar
         className="dark bg-opacity-5"
         sticky
-        Logo={GraduationCap}
+        Icon={GraduationCap}
       />
       <div className="light bg-background text-primary min-h-[110vh]">
         <div className="flex flex-col light">
