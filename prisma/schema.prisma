@@ -29,22 +29,24 @@ model Course {
 }
 
 model Course_Review {
-  review_id    Int      @id @default(autoincrement())
-  professor    String
-  review       String?
-  difficulty   Int
-  liked        Boolean
-  attendance   Int
-  anon         Boolean
-  term_taken   Term
-  date_taken   DateTime @db.Date
-  date_created DateTime @default(now()) @db.Timestamptz(6)
-  last_edited  DateTime @default(now()) @db.Timestamptz(6)
-  course_code  String   @db.VarChar(255)
-  email        String
-  useful       Int
-  course       Course   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
-  user         User     @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
+  review_id     Int       @id @default(autoincrement())
+  professorName String?
+  professorId   Int?
+  review        String?
+  difficulty    Int
+  liked         Boolean
+  attendance    Int
+  anon          Boolean
+  term_taken    Term
+  date_taken    DateTime  @db.Date
+  date_created  DateTime  @default(now()) @db.Timestamptz(6)
+  last_edited   DateTime  @default(now()) @db.Timestamptz(6)
+  course_code   String    @db.VarChar(255)
+  email         String
+  useful        Int
+  course        Course    @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
+  user          User      @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
+  professor     Professor? @relation(fields: [professorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Account {
@@ -88,6 +90,7 @@ model Professor {
   id            Int             @id @default(autoincrement())
   name          String
   rmpId         Int?
+  Course_Review Course_Review[]
 }
 
 model VerificationToken {
