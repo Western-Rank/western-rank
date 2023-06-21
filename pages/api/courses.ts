@@ -14,8 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 const querySchema = z.object({
   format: z.enum(["search"]).optional(),
-  sortKey: z.enum(SortKeys).optional(),
-  sortOrder: z.enum(SortOrderOptions).optional(),
+  sortkey: z.enum(SortKeys).optional(),
+  sortorder: z.enum(SortOrderOptions).optional(),
   hasprereqs: z
     .enum(["true", "false"])
     .transform((val) => val === "true")
@@ -36,7 +36,7 @@ const querySchema = z.object({
  */
 async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { sortKey, sortOrder, minratings, hasprereqs, breadth, format } = querySchema.parse(
+    const { sortkey, sortorder, minratings, hasprereqs, breadth, format } = querySchema.parse(
       req.query,
     );
 
@@ -45,13 +45,11 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
       return res.status(200).json(courses);
     } else {
       const courses = await getCourses({
-        sortOrder: sortOrder,
-        sortKey: sortKey,
-        filter: {
-          minratings: minratings,
-          hasprereqs: hasprereqs,
-          breadth: breadth?.split("") as BreadthCategories,
-        },
+        sortOrder: sortorder,
+        sortKey: sortkey,
+        minratings: minratings,
+        hasprereqs: hasprereqs,
+        breadth: breadth?.split("") as BreadthCategories,
       });
       return res.status(200).json(courses);
     }
