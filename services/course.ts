@@ -58,7 +58,7 @@ export async function getCourses({
       course_code: true,
     },
     orderBy: {
-      course_code: sortKey === "coursecode" ? sortOrder : undefined,
+      course_code: sortOrder,
     },
     where: {
       AND: [
