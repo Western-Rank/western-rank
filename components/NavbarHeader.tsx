@@ -15,16 +15,10 @@ type NavbarHeaderProps = NavbarProps & {
 const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: NavbarHeaderProps) => {
   const { ref: fromBottomRef, inView: fromBottomInView } = useInView({
     rootMargin: "-140px 0px",
-    onChange(inView, entry) {
-      console.log("FROM BOTTOM inView:", inView, "entry:", entry);
-    },
   });
 
   const { ref: fromTopRef, inView: fromTopInView } = useInView({
     rootMargin: "0px 0px",
-    onChange(inView, entry) {
-      console.log("FROM TOP inView:", inView, "entry:", entry);
-    },
   });
 
   const [headerSticky, setHeaderSticky] = useState<boolean>(false);

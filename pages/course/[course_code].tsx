@@ -1,3 +1,4 @@
+import BackToTop from "@/components/BackToTop";
 import NavbarHeader from "@/components/NavbarHeader";
 import PercentBar from "@/components/PercentBar";
 import PercentCircle from "@/components/PercentCircle";
@@ -7,13 +8,14 @@ import Stars from "@/components/Stars";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
-import { FullCourse, decodeCourseCode, encodeCourseCode } from "@/lib/courses";
+import { decodeCourseCode, encodeCourseCode, FullCourse } from "@/lib/courses";
 import { roundToNearest } from "@/lib/utils";
 import { getAllCoursesSearch, getCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
 import { GraduationCap } from "lucide-react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
+import { useInView } from "react-intersection-observer";
 
 interface CourseProps {
   course: FullCourse; // the course information for the course displayed on this page
@@ -63,6 +65,14 @@ const Course = ({ course }: CourseProps) => {
     maxLength: 200,
   });
 
+  const { ref, inView: listInView } = useInView({
+    rootMargin: "-150px",
+  });
+
+  const { ref: navRef, inView: navInView } = useInView();
+
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
   const likedPercent = Math.round(
     ((course?.count_liked ?? 0) /
       (course?._count?.review_id == 0 ? 1 : course?._count?.review_id)) *
@@ -102,8 +112,10 @@ const Course = ({ course }: CourseProps) => {
         sticky
         Icon={GraduationCap}
       />
+      <span ref={navRef} className="h-0"></span>
       <div className="light bg-background text-primary min-h-[110vh]">
         <div className="flex flex-col light">
+          <BackToTop visible={listInView && !navInView} onClick={scrollTop} />
           <div className="py-8 px-4 md:px-8 lg:px-15 xl:px-40 flex flex-col-reverse lg:flex-row lg:gap-10">
             <p className="flex-1 text-primary flex flex-col">
               {course_description}
@@ -142,9 +154,8 @@ const Course = ({ course }: CourseProps) => {
           <div className="px-4 md:px-8 lg:px-15 xl:px-40">
             <Separator className="border-primary" />
           </div>
-
           <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
-            <div className="flex-grow">
+            <div ref={ref} className="flex-grow">
               {course?.course_code && <ReviewList courseCode={course?.course_code} />}
             </div>
 
