@@ -27,6 +27,11 @@ const querySchema = z.object({
     .pipe(z.number())
     .optional(),
   breadth: z.enum(["A", "B", "C", "AB", "AC", "BC", "ABC"]).optional(),
+  cursor: z
+    .string()
+    .transform((val) => parseInt(val))
+    .pipe(z.number())
+    .optional(),
 });
 
 /**
@@ -36,22 +41,29 @@ const querySchema = z.object({
  */
 async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { sortkey, sortorder, minratings, hasprereqs, breadth, format } = querySchema.parse(
-      req.query,
-    );
+    const { sortkey, sortorder, minratings, hasprereqs, breadth, format, cursor } =
+      querySchema.parse(req.query);
 
     if (format === "search") {
       const courses = await getAllCoursesSearch();
       return res.status(200).json(courses);
     } else {
-      const courses = await getCourses({
+      const [courses, length] = await getCourses({
         sortOrder: sortorder,
         sortKey: sortkey,
         minratings: minratings,
         hasprereqs: hasprereqs,
         breadth: breadth?.split("") as BreadthCategories,
+        pageSize: 20,
+        cursor: cursor,
       });
-      return res.status(200).json(courses);
+
+      let next_cursor = (cursor ?? 0) + 20;
+      if (next_cursor >= length) next_cursor = length - (length % 20);
+
+      return res
+        .status(200)
+        .json({ courses: courses, _count: courses.length, next_cursor: next_cursor });
     }
   } catch (err: any) {
     return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);

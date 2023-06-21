@@ -19,6 +19,8 @@ export function searchCourses(query: string) {
 type GetCoursesParams = {
   sortKey?: SortKey;
   sortOrder?: SortOrder;
+  pageSize?: number;
+  cursor?: number;
 } & GetCoursesFilterParams;
 
 type GetCoursesFilterParams = {
@@ -37,7 +39,9 @@ export async function getCourses({
   sortOrder = "asc",
   breadth = ["A", "B", "C"],
   minratings = 0,
-  hasprereqs = false,
+  pageSize = 20,
+  cursor = 0,
+  hasprereqs,
   cat,
 }: GetCoursesParams) {
   const categoryFilters: Partial<Prisma.CourseWhereInput["category"]> = {};
@@ -115,7 +119,9 @@ export async function getCourses({
     };
   });
 
-  return sort_func ? courses.sort(sort_func) : courses;
+  if (sort_func) courses.sort(sort_func);
+
+  return [courses.slice(cursor, cursor + pageSize), courses.length] as const;
 }
 
 export function getCourseCount() {
