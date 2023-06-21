@@ -1,4 +1,4 @@
-import { BreadthCategories, SortKey, SortOrder, SORT_MAP_ASC, SORT_MAP_DESC } from "@/lib/courses";
+import { BreadthCategories, SORT_MAP_ASC, SORT_MAP_DESC, SortKey, SortOrder } from "@/lib/courses";
 import { prisma } from "@/lib/db";
 import { roundToNearest } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
