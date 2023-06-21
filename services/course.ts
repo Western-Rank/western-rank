@@ -15,33 +15,41 @@ export function searchCourses(query: string) {
 }
 
 type GetCoursesParams = {
-  sortKey: SortKey;
-  sortOrder: SortOrder;
-  filter: GetCoursesFilterParams;
+  sortKey?: SortKey;
+  sortOrder?: SortOrder;
+  filter?: GetCoursesFilterParams;
 };
 
 type GetCoursesFilterParams = {
-  hasprereqs: boolean;
-  minratings: number;
-  cat: string;
-  breadth: BreadthCategories;
+  hasprereqs?: boolean;
+  minratings?: number;
+  cat?: string;
+  breadth?: BreadthCategories;
 };
 
 /**
  * Get all courses stored in the database.
  * @returns List of all courses stored in the database
  */
-export function getCourses({ sortKey = "liked", sortOrder = "desc", filter }: GetCoursesParams) {
+export function getCourses({
+  sortKey = "liked",
+  sortOrder = "desc",
+  filter = {
+    hasprereqs: false,
+    minratings: 0,
+    breadth: ["A", "B", "C"],
+  },
+}: GetCoursesParams) {
   return prisma.course.findMany({
     where: {
       AND: [
         {
           category: {
             breadth: {
-              hasSome: filter.breadth ?? BreadthCategoryOptions,
+              hasSome: filter.breadth,
             },
             category_code: {
-              equals: filter.cat ?? "",
+              equals: filter.cat,
             },
           },
         },
