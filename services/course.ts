@@ -1,3 +1,4 @@
+import { SortKey, SortOrder } from "@/lib/courses";
 import { prisma } from "@/lib/db";
 
 /**
@@ -13,11 +14,19 @@ export function searchCourses(query: string) {
   });
 }
 
+type GetCoursesParams = {
+  sortKey: SortKey;
+  sortOrder: SortOrder;
+  filter: GetCoursesFilterParams;
+};
+
+type GetCoursesFilterParams = {};
+
 /**
  * Get all courses stored in the database.
  * @returns List of all courses stored in the database
  */
-export function getAllCourses() {
+export function getCourses({}: GetCoursesParams) {
   return prisma.course.findMany({
     orderBy: {
       course_code: "asc",

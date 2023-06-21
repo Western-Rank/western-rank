@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Toggle } from "@/components/ui/toggle";
 import { toast } from "@/components/ui/use-toast";
+import { SortKey, SortKeys, SortOrder } from "@/lib/reviews";
 import { Course_ReviewsData } from "@/pages/api/reviews";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
@@ -24,12 +25,6 @@ const TAKE_DEFAULT = 5;
 interface ReviewListProps {
   courseCode: string;
 }
-
-const SortKeys = ["date_created", "difficulty", "useful", "attendance"] as const;
-export type SortKey = (typeof SortKeys)[number];
-
-const SortOrderOptions = ["asc", "desc"] as const;
-export type SortOrder = (typeof SortOrderOptions)[number];
 
 /**
  * A component that renders all reviews for a course, a user's review

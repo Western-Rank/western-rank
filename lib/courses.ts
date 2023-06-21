@@ -4,6 +4,22 @@ import { Course } from "@prisma/client";
 export type FullCourseName = `${Course["course_code"]}: ${Course["course_name"]}`;
 export type FullCourse = Awaited<ReturnType<typeof getCourse>>;
 
+export const SortKeys = [
+  "coursecode",
+  "coursename",
+  "ratings",
+  "liked",
+  "difficulty",
+  "attendance",
+] as const;
+export type SortKey = (typeof SortKeys)[number];
+
+export const SortOrderOptions = ["asc", "desc"] as const;
+export type SortOrder = (typeof SortOrderOptions)[number];
+
+export const BreadthCategoryOptions = ["A", "B", "C"] as const;
+export type BreadthCategories = (typeof BreadthCategoryOptions)[number][];
+
 export const requisiteTypes = [
   "Prerequisites",
   "Corequisites",
