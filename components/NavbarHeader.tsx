@@ -84,11 +84,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
               </span>
             )}
           </h4>
-          {!headerSticky && (
-            <motion.h5 layout className="text-lg text-primary pb-3">
-              {subHeading}
-            </motion.h5>
-          )}
+          {!headerSticky && <h5 className="text-lg text-primary pb-3">{subHeading}</h5>}
         </motion.div>
       </div>
       <span ref={fromBottomRef}></span>
