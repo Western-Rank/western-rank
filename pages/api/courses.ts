@@ -1,5 +1,7 @@
+import { BreadthCategories, SortKeys, SortOrderOptions } from "@/lib/courses";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getAllCoursesSearch } from "../../services/course";
+import { z } from "zod";
+import { getAllCoursesSearch, getCourses } from "@/services/course";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -10,6 +12,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 }
 
+const querySchema = z.object({
+  format: z.enum(["search"]).optional(),
+  sortKey: z.enum(SortKeys).optional(),
+  sortOrder: z.enum(SortOrderOptions).optional(),
+  hasprereqs: z
+    .enum(["true", "false"])
+    .transform((val) => val === "true")
+    .pipe(z.boolean())
+    .optional(),
+  minratings: z
+    .string()
+    .transform((val) => parseInt(val))
+    .pipe(z.number())
+    .optional(),
+  breadth: z.enum(["A", "B", "C", "AB", "AC", "BC", "ABC"]).optional(),
+});
+
 /**
  * Get all courses from the database.
  * @param req The Next.js API request object
@@ -17,13 +36,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
  */
 async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const format = req.query.format as string;
+    const { sortKey, sortOrder, minratings, hasprereqs, breadth, format } = querySchema.parse(
+      req.query,
+    );
 
     if (format === "search") {
       const courses = await getAllCoursesSearch();
       return res.status(200).json(courses);
     } else {
-      const courses = await getAllCoursesSearch();
+      const courses = await getCourses({
+        sortOrder: sortOrder,
+        sortKey: sortKey,
+        filter: {
+          minratings: minratings,
+          hasprereqs: hasprereqs,
+          breadth: breadth?.split("") as BreadthCategories,
+        },
+      });
       return res.status(200).json(courses);
     }
   } catch (err: any) {
