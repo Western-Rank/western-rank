@@ -112,10 +112,9 @@ export async function getCourses({
           return (agg?._count?.review_id ?? 0) >= minratings;
         })
   ).map((course) => {
-    const agg = aggregates_map.get(course.course_code);
     return {
       ...course,
-      ...agg,
+      ...aggregates_map.get(course.course_code),
     };
   });
 
