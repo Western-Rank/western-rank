@@ -30,7 +30,7 @@ const querySchema = z.object({
   cursor: z
     .string()
     .transform((val) => parseInt(val))
-    .pipe(z.number())
+    .pipe(z.number().min(0))
     .optional(),
 });
 
