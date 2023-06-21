@@ -52,6 +52,9 @@ export function getCourses({
               equals: filter.cat,
             },
           },
+          precorequisites_text: {
+            equals: filter.hasprereqs ? undefined : "",
+          },
         },
       ],
     },
