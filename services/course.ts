@@ -1,21 +1,7 @@
-import { roundToNearest } from "@/lib/utils";
-import { BreadthCategories, BreadthCategoryOptions, SortKey, SortOrder } from "@/lib/courses";
+import { BreadthCategories, SortKey, SortOrder, SORT_MAP_ASC, SORT_MAP_DESC } from "@/lib/courses";
 import { prisma } from "@/lib/db";
+import { roundToNearest } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
-
-const SORT_MAP_ASC = new Map<string, (a: any, b: any) => number>([
-  ["liked", (a, b) => b?._count?.liked ?? 0 - a?._count?.liked ?? 0],
-  ["useful", (a, b) => b?._avg?.useful ?? 0 - a?._avg?.useful ?? 0],
-  ["attendance", (a, b) => b?._avg?.attendance ?? 0 - a?._avg?.attendance ?? 0],
-  ["difficulty", (a, b) => b?._avg?.difficulty ?? 0 - a?._avg?.difficulty ?? 0],
-]);
-
-const SORT_MAP_DESC = new Map<string, (a: any, b: any) => number>([
-  ["liked", (a, b) => a?._count?.liked ?? 0 - b?._count?.liked ?? 0],
-  ["useful", (a, b) => a?._avg?.useful ?? 0 - b?._avg?.useful ?? 0],
-  ["attendance", (a, b) => a?._avg?.attendance ?? 0 - b?._avg?.attendance ?? 0],
-  ["difficulty", (a, b) => a?._avg?.difficulty ?? 0 - b?._avg?.difficulty ?? 0],
-]);
 
 /**
  * Search for courses stored in the database.
@@ -33,8 +19,7 @@ export function searchCourses(query: string) {
 type GetCoursesParams = {
   sortKey?: SortKey;
   sortOrder?: SortOrder;
-  filter?: GetCoursesFilterParams;
-};
+} & GetCoursesFilterParams;
 
 type GetCoursesFilterParams = {
   hasprereqs?: boolean;
@@ -50,15 +35,18 @@ type GetCoursesFilterParams = {
 export async function getCourses({
   sortKey = "liked",
   sortOrder = "asc",
-  filter = {
-    hasprereqs: false,
-    minratings: 0,
-    breadth: ["A", "B", "C"],
-  },
+  breadth = ["A", "B", "C"],
+  minratings = 0,
+  hasprereqs = false,
+  cat,
 }: GetCoursesParams) {
-  const catfilter: Partial<Prisma.CourseWhereInput["category"]> = {};
-  if (filter.cat) catfilter.category_code = filter.cat;
-  if (filter.breadth) catfilter.breadth = { hasSome: filter.breadth };
+  const categoryFilters: Partial<Prisma.CourseWhereInput["category"]> = {};
+  if (cat) categoryFilters.category_code = cat;
+  if (breadth) categoryFilters.breadth = { hasSome: breadth };
+
+  const prereqFilters: Partial<Prisma.CourseWhereInput["prerequisites_text"]> = {};
+  if (hasprereqs) prereqFilters.not = [];
+  else if (hasprereqs !== undefined) prereqFilters.equals = [];
 
   const _courses = await prisma.course.findMany({
     select: {
@@ -71,10 +59,8 @@ export async function getCourses({
     where: {
       AND: [
         {
-          category: catfilter,
-          prerequisites_text: {
-            equals: filter.hasprereqs ? undefined : [],
-          },
+          category: categoryFilters,
+          prerequisites_text: prereqFilters,
         },
       ],
     },
@@ -97,7 +83,7 @@ export async function getCourses({
       },
       review_id: {
         _count: {
-          gte: filter.minratings,
+          gte: minratings,
         },
       },
     },
@@ -114,7 +100,14 @@ export async function getCourses({
 
   const sort_func = sortOrder === "desc" ? SORT_MAP_DESC.get(sortKey) : SORT_MAP_ASC.get(sortKey);
 
-  const courses = _courses.map((course) => {
+  const courses = (
+    minratings === 0
+      ? _courses
+      : _courses.filter((course) => {
+          const agg = aggregates_map.get(course.course_code);
+          return (agg?._count?.review_id ?? 0) >= minratings;
+        })
+  ).map((course) => {
     const agg = aggregates_map.get(course.course_code);
     return {
       ...course,
