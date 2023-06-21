@@ -6,7 +6,7 @@ import { Prisma } from "@prisma/client";
 /**
  * Search for courses stored in the database.
  * @param query Substring to match course names/codes with
- * @returns List of courses that match  the given query
+ * @returns List of courses that match the given query
  */
 export function searchCourses(query: string) {
   return prisma.course.findMany({
@@ -94,23 +94,19 @@ export async function getCourses({
   });
 
   const aggregates_map = new Map<string, Omit<(typeof aggregates)[0], "course_code">>();
+  const isFilteringAggregates = minratings !== 0; // add difficulty, attendance, useful, liked
+
   aggregates.forEach(({ course_code, ...agg }) => {
-    agg._count.liked = roundToNearest(
-      ((agg?._count?.liked ?? 0) / (agg?._count?.review_id ?? 1)) * 100,
-      1,
-    );
+    agg._count.liked = roundToNearest((agg?._count?.liked / agg?._count?.review_id) * 100 || 0, 1);
     aggregates_map.set(course_code, agg);
   });
 
   const sort_func = sortOrder === "desc" ? SORT_MAP_DESC.get(sortKey) : SORT_MAP_ASC.get(sortKey);
 
   const courses = (
-    minratings === 0
+    !isFilteringAggregates
       ? _courses
-      : _courses.filter((course) => {
-          const agg = aggregates_map.get(course.course_code);
-          return (agg?._count?.review_id ?? 0) >= minratings;
-        })
+      : _courses.filter((course) => aggregates_map.has(course.course_code))
   ).map((course) => {
     return {
       ...course,
@@ -118,7 +114,9 @@ export async function getCourses({
     };
   });
 
-  if (sort_func) courses.sort(sort_func);
+  if (sort_func) {
+    courses.sort(sort_func);
+  }
 
   return [courses.slice(cursor, cursor + pageSize), courses.length] as const;
 }
