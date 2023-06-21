@@ -1,4 +1,4 @@
-import { SortKey, SortOrder } from "@/lib/courses";
+import { BreadthCategories, SortKey, SortOrder } from "@/lib/courses";
 import { prisma } from "@/lib/db";
 
 /**
@@ -20,17 +20,27 @@ type GetCoursesParams = {
   filter: GetCoursesFilterParams;
 };
 
-type GetCoursesFilterParams = {};
+type GetCoursesFilterParams = {
+  hasprereqs: boolean;
+  minratings: number;
+  cat: string;
+  breadth: BreadthCategories;
+};
 
 /**
  * Get all courses stored in the database.
  * @returns List of all courses stored in the database
  */
-export function getCourses({}: GetCoursesParams) {
+export function getCourses({ sortKey = "liked", sortOrder = "desc", filter }: GetCoursesParams) {
   return prisma.course.findMany({
-    orderBy: {
-      course_code: "asc",
+    select: {
+      _count: {
+        select: {
+          course_reviews: true,
+        },
+      },
     },
+    where: {},
   });
 }
 
