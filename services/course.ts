@@ -1,5 +1,20 @@
+import { roundToNearest } from "@/lib/utils";
 import { BreadthCategories, BreadthCategoryOptions, SortKey, SortOrder } from "@/lib/courses";
 import { prisma } from "@/lib/db";
+
+const SORT_MAP_ASC = new Map<string, (a: any, b: any) => number>([
+  ["liked", (a, b) => b?._count?.liked ?? 0 - a?._count?.liked ?? 0],
+  ["useful", (a, b) => b?._avg?.useful ?? 0 - a?._avg?.useful ?? 0],
+  ["attendance", (a, b) => b?._avg?.attendance ?? 0 - a?._avg?.attendance ?? 0],
+  ["difficulty", (a, b) => b?._avg?.difficulty ?? 0 - a?._avg?.difficulty ?? 0],
+]);
+
+const SORT_MAP_DESC = new Map<string, (a: any, b: any) => number>([
+  ["liked", (a, b) => a?._count?.liked ?? 0 - b?._count?.liked ?? 0],
+  ["useful", (a, b) => a?._avg?.useful ?? 0 - b?._avg?.useful ?? 0],
+  ["attendance", (a, b) => a?._avg?.attendance ?? 0 - b?._avg?.attendance ?? 0],
+  ["difficulty", (a, b) => a?._avg?.difficulty ?? 0 - b?._avg?.difficulty ?? 0],
+]);
 
 /**
  * Search for courses stored in the database.
@@ -31,16 +46,23 @@ type GetCoursesFilterParams = {
  * Get all courses stored in the database.
  * @returns List of all courses stored in the database
  */
-export function getCourses({
+export async function getCourses({
   sortKey = "liked",
-  sortOrder = "desc",
+  sortOrder = "asc",
   filter = {
     hasprereqs: false,
     minratings: 0,
     breadth: ["A", "B", "C"],
   },
 }: GetCoursesParams) {
-  return prisma.course.findMany({
+  const _courses = await prisma.course.findMany({
+    select: {
+      course_name: true,
+      course_code: true,
+    },
+    orderBy: {
+      course_code: sortKey === "coursecode" ? sortOrder : undefined,
+    },
     where: {
       AND: [
         {
@@ -52,13 +74,57 @@ export function getCourses({
               equals: filter.cat,
             },
           },
-          precorequisites_text: {
-            equals: filter.hasprereqs ? undefined : "",
+          prerequisites_text: {
+            equals: filter.hasprereqs ? undefined : [],
           },
         },
       ],
     },
   });
+
+  const aggregates = await prisma.course_Review.groupBy({
+    by: ["course_code"],
+    _count: {
+      liked: true,
+      review_id: true,
+    },
+    _avg: {
+      difficulty: true,
+      attendance: true,
+      useful: true,
+    },
+    having: {
+      course_code: {
+        in: _courses.map((course) => course.course_code),
+      },
+      review_id: {
+        _count: {
+          gte: filter.minratings,
+        },
+      },
+    },
+  });
+
+  const aggregates_map = new Map<string, Omit<(typeof aggregates)[0], "course_code">>();
+  aggregates.forEach(({ course_code, ...agg }) => {
+    agg._count.liked = roundToNearest(
+      ((agg?._count?.liked ?? 0) / (agg?._count?.review_id ?? 1)) * 100,
+      1,
+    );
+    aggregates_map.set(course_code, agg);
+  });
+
+  const sort_func = sortOrder === "desc" ? SORT_MAP_DESC.get(sortKey) : SORT_MAP_ASC.get(sortKey);
+
+  const courses = _courses.map((course) => {
+    const agg = aggregates_map.get(course.course_code);
+    return {
+      ...course,
+      ...agg,
+    };
+  });
+
+  return sort_func ? courses.sort(sort_func) : courses;
 }
 
 export function getCourseCount() {
