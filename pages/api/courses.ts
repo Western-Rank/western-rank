@@ -58,8 +58,7 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
         cursor: cursor,
       });
 
-      let next_cursor = (cursor ?? 0) + 20;
-      if (next_cursor >= length) next_cursor = length - (length % 20);
+      const next_cursor = Math.min((cursor ?? 0) + 20, length - (length % 20));
 
       return res
         .status(200)
