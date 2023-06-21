@@ -1,7 +1,7 @@
 import { BreadthCategories, SortKeys, SortOrderOptions } from "@/lib/courses";
+import { getAllCoursesSearch, getCourses } from "@/services/course";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
-import { getAllCoursesSearch, getCourses } from "@/services/course";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -31,7 +31,8 @@ const querySchema = z.object({
     .string()
     .transform((val) => parseInt(val))
     .pipe(z.number().min(0))
-    .optional(),
+    .optional()
+    .default("0"),
 });
 
 /**
@@ -58,13 +59,17 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
         cursor: cursor,
       });
 
-      const next_cursor = Math.min((cursor ?? 0) + 20, length - (length % 20));
+      const next_cursor = Math.min(cursor + 20, length - (length % 20));
 
       return res
         .status(200)
         .json({ courses: courses, _count: courses.length, next_cursor: next_cursor });
     }
   } catch (err: any) {
+    if (err instanceof z.ZodError) {
+      return res.status(400).send(`Invalid query parameters: ${err.message}`);
+    }
+
     return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
