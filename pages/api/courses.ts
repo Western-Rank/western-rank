@@ -24,7 +24,7 @@ const querySchema = z.object({
   minratings: z
     .string()
     .transform((val) => parseInt(val))
-    .pipe(z.number())
+    .pipe(z.number().int().min(0))
     .optional(),
   breadth: z.enum(["A", "B", "C", "AB", "AC", "BC", "ABC"]).optional(),
   cursor: z
