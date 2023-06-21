@@ -1,6 +1,7 @@
 import { roundToNearest } from "@/lib/utils";
 import { BreadthCategories, BreadthCategoryOptions, SortKey, SortOrder } from "@/lib/courses";
 import { prisma } from "@/lib/db";
+import { Prisma } from "@prisma/client";
 
 const SORT_MAP_ASC = new Map<string, (a: any, b: any) => number>([
   ["liked", (a, b) => b?._count?.liked ?? 0 - a?._count?.liked ?? 0],
@@ -55,6 +56,10 @@ export async function getCourses({
     breadth: ["A", "B", "C"],
   },
 }: GetCoursesParams) {
+  const catfilter: Partial<Prisma.CourseWhereInput["category"]> = {};
+  if (filter.cat) catfilter.category_code = filter.cat;
+  if (filter.breadth) catfilter.breadth = { hasSome: filter.breadth };
+
   const _courses = await prisma.course.findMany({
     select: {
       course_name: true,
@@ -66,14 +71,7 @@ export async function getCourses({
     where: {
       AND: [
         {
-          category: {
-            breadth: {
-              hasSome: filter.breadth,
-            },
-            category_code: {
-              equals: filter.cat,
-            },
-          },
+          category: catfilter,
           prerequisites_text: {
             equals: filter.hasprereqs ? undefined : [],
           },
