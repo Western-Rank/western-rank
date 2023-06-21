@@ -61,9 +61,7 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
 
       const next_cursor = Math.min(cursor + 20, length - (length % 20));
 
-      return res
-        .status(200)
-        .json({ courses: courses, _count: courses.length, next_cursor: next_cursor });
+      return res.status(200).json({ courses: courses, _count: length, next_cursor: next_cursor });
     }
   } catch (err: any) {
     if (err instanceof z.ZodError) {
