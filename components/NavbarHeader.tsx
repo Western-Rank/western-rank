@@ -55,8 +55,8 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
       <span ref={fromTopRef}></span>
       <div
         className={cn(
-          "z-10 bg-background shadow-2xl border-b-0 shadow-background/30",
-          headerSticky ? "sticky top-0" : "",
+          "z-10 bg-background",
+          headerSticky ? "sticky top-0 shadow-2xl border-b-0 shadow-background/30" : "",
         )}
       >
         <Navbar {...navbarProps} sticky key="nav" />
@@ -65,7 +65,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
             paddingTop: headerSticky ? "0px" : "4rem",
           }}
           key="header"
-          className={cn("duration-75 px-4 md:px-8 lg:px-15 xl:px-40 pb-1 z-8 bg-background")}
+          className={"duration-75 px-4 md:px-8 lg:px-15 xl:px-40 pb-1 z-8 bg-background"}
         >
           {!headerSticky && !!Icon && <Icon className="stroke-purple-500" width={36} height={36} />}
           <h4
