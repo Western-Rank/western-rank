@@ -1,5 +1,5 @@
 import { BreadthCategories, SortKeys, SortOrderOptions } from "@/lib/courses";
-import { getAllCoursesSearch, getCourses } from "@/services/course";
+import { getAllCoursesSearch, getCourses, type ExploreCourse } from "@/services/course";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 
@@ -35,6 +35,12 @@ const querySchema = z.object({
     .default("0"),
 });
 
+export type GetCoursesResponse = {
+  courses: ExploreCourse[];
+  _count: number;
+  next_cursor: number;
+};
+
 /**
  * Get all courses from the database.
  * @param req The Next.js API request object
@@ -49,7 +55,7 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
       const courses = await getAllCoursesSearch();
       return res.status(200).json(courses);
     } else {
-      const [courses, length] = await getCourses({
+      const { courses, length } = await getCourses({
         sortOrder: sortorder,
         sortKey: sortkey,
         minratings: minratings,
@@ -61,7 +67,13 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
 
       const next_cursor = Math.min(cursor + 20, length - (length % 20));
 
-      return res.status(200).json({ courses: courses, _count: length, next_cursor: next_cursor });
+      const response: GetCoursesResponse = {
+        courses: courses,
+        _count: length,
+        next_cursor: next_cursor,
+      };
+
+      return res.status(200).json(response);
     }
   } catch (err: any) {
     if (err instanceof z.ZodError) {

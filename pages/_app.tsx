@@ -14,7 +14,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
-        <main className={dm_sans.className}>
+        <main className={`${dm_sans.className}`}>
           <Component {...pageProps} />
         </main>
         <Toaster />

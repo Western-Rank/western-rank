@@ -1,3 +1,4 @@
+import { CourseSearchItem } from "@/components/Searchbar";
 import { BreadthCategories, SORT_MAP_ASC, SORT_MAP_DESC, SortKey, SortOrder } from "@/lib/courses";
 import { prisma } from "@/lib/db";
 import { roundToNearest } from "@/lib/utils";
@@ -30,9 +31,32 @@ type GetCoursesFilterParams = {
   breadth?: BreadthCategories;
 };
 
+export type ExploreCourse = {
+  _count?:
+    | {
+        liked: number;
+        review_id: number;
+      }
+    | undefined;
+  _avg?:
+    | {
+        difficulty: number | null;
+        attendance: number | null;
+        useful: number | null;
+      }
+    | undefined;
+} & CourseSearchItem;
+
+// export type ExploreCourse = Omit<Course, "precorequisites">;
+
+type GetCoursesServiceReturn = {
+  courses: ExploreCourse[];
+  length: number;
+};
+
 /**
  * Get all courses stored in the database.
- * @returns List of all courses stored in the database
+ * @returns List of all courses stored in the database, total amount of courses.
  */
 export async function getCourses({
   sortKey = "liked",
@@ -43,7 +67,7 @@ export async function getCourses({
   cursor = 0,
   hasprereqs,
   cat,
-}: GetCoursesParams) {
+}: GetCoursesParams): Promise<GetCoursesServiceReturn> {
   const categoryFilters: Partial<Prisma.CourseWhereInput["category"]> = {};
   if (cat) categoryFilters.category_code = cat;
   if (breadth) categoryFilters.breadth = { hasSome: breadth };
@@ -118,7 +142,10 @@ export async function getCourses({
     courses.sort(sort_func);
   }
 
-  return [courses.slice(cursor, cursor + pageSize), courses.length] as const;
+  return {
+    courses: courses.slice(cursor, cursor + pageSize),
+    length: _courses.length,
+  };
 }
 
 export function getCourseCount() {

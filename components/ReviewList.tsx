@@ -45,7 +45,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
     isLoading,
     isError,
     isSuccess,
-  } = useQuery({
+  } = useQuery<Course_ReviewsData>({
     queryKey: ["reviews", courseCode, sortKey, sortOrder, take],
     queryFn: async () => {
       const searchParams = new URLSearchParams({
@@ -59,10 +59,10 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
       }
       const response = await fetch(`/api/reviews?${searchParams.toString()}`);
       if (!response.ok) throw new Error("Courses were not found");
-      return response.json() as Promise<Course_ReviewsData>;
+      return response.json();
     },
     refetchOnWindowFocus: false,
-    onError(err: Error) {
+    onError(err: any) {
       toast({
         title: `Error loading reviews for ${courseCode}`,
         description: `${err.message.slice(0, 100) + "..." ?? ""}`,
