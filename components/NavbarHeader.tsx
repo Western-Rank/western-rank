@@ -27,7 +27,9 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
 
   useEffect(() => {
     const handleScroll = () => {
-      setHasScrolled(true);
+      if (!hasScrolled) {
+        setHasScrolled(true);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -35,7 +37,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [hasScrolled]);
 
   useEffect(() => {
     if (!sticky || Date.now() - lastUpdateTime <= 100) {

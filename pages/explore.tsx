@@ -1,5 +1,6 @@
 import NavbarHeader from "@/components/NavbarHeader";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/data-table";
+import { roundToNearest } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { Compass } from "lucide-react";
@@ -10,9 +11,9 @@ type ExploreCourseRow = {
   courseCode: string;
   courseName: string;
   ratingsCount: number;
-  likedPercent: number;
-  difficulty: number;
-  attendancePercent: number;
+  likedPercent: string;
+  difficulty: string;
+  attendancePercent: string;
 };
 
 const columns: ColumnDef<ExploreCourseRow | undefined>[] = [
@@ -30,7 +31,7 @@ const columns: ColumnDef<ExploreCourseRow | undefined>[] = [
   },
   {
     accessorKey: "likedPercent",
-    header: "Liked %",
+    header: "Liked",
   },
   {
     accessorKey: "difficulty",
@@ -38,7 +39,7 @@ const columns: ColumnDef<ExploreCourseRow | undefined>[] = [
   },
   {
     accessorKey: "attendancePercent",
-    header: "Attendance %",
+    header: "Attendance",
   },
 ];
 
@@ -47,9 +48,9 @@ function generateCourseRow(course: GetCoursesResponse["courses"][0]): ExploreCou
     courseCode: course.course_code,
     courseName: course.course_name,
     ratingsCount: course._count?.review_id ?? 0,
-    likedPercent: course._count?.liked ?? 0,
-    difficulty: course._avg?.difficulty ?? 0,
-    attendancePercent: course._avg?.attendance ?? 0,
+    likedPercent: roundToNearest(course._count?.liked ?? 0, 0) + "%",
+    difficulty: `${roundToNearest((course._avg?.difficulty ?? 0) / 2, 1)}/5`,
+    attendancePercent: roundToNearest(course._avg?.attendance ?? 0, 0) + "%",
   };
 }
 
@@ -94,7 +95,7 @@ const ExplorePage = () => {
           searchBar
           sticky
         />
-        <div className="light text-primary bg-background py-4 px-4 md:px-8 lg:px-15 xl:px-40 flex-grow">
+        <div className="flex light text-primary bg-background py-4 px-2 md:px-8 lg:px-15 xl:px-40 flex-grow">
           <DataTable columns={columns} data={coursesData?.courses ?? []} />
         </div>
       </div>
