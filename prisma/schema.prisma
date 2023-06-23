@@ -45,22 +45,24 @@ enum BreadthTypes {
 }
 
 model Course_Review {
-  review_id    Int      @id @default(autoincrement())
-  professor    String
-  review       String?
-  difficulty   Int
-  liked        Boolean
-  attendance   Int
-  anon         Boolean
-  term_taken   Term
-  date_taken   DateTime @db.Date
-  date_created DateTime @default(now()) @db.Timestamptz(6)
-  last_edited  DateTime @default(now()) @db.Timestamptz(6)
-  course_code  String   @db.VarChar(255)
-  email        String
-  useful       Int
-  course       Course   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
-  user         User     @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: NoAction)
+  review_id      Int       @id @default(autoincrement())
+  professor_name String    @default("Other")
+  professor_id   Int?       @default(-1)
+  review         String?
+  difficulty     Int
+  liked          Boolean
+  attendance     Int
+  anon           Boolean
+  term_taken     Term
+  date_taken     DateTime  @db.Date
+  date_created   DateTime  @default(now()) @db.Timestamptz(6)
+  last_edited    DateTime  @default(now()) @db.Timestamptz(6)
+  course_code    String    @db.VarChar(255)
+  email          String
+  useful         Int
+  course         Course    @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
+  user           User      @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
+  professor      Professor? @relation(fields: [professor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Account {
@@ -98,6 +100,12 @@ model User {
   accounts      Account[]
   Course_Review Course_Review[]
   sessions      Session[]
+}
+
+model Professor {
+  id            Int             @id
+  name          String
+  Course_Review Course_Review[]
 }
 
 model VerificationToken {
