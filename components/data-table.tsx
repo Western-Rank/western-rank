@@ -39,12 +39,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   });
 
   return (
-    <div className="rounded-md border h-[64vh] w-[70%]">
+    <div className="rounded-md border h-full">
       <Table className="overflow-y-scroll">
         <TableHeader className="sticky top-0 rounded-md z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
-              className="bg-white hover:bg-white text-xs rounded-md border-separate overflow-hidden"
+              className="bg-white hover:bg-white text-sm rounded-md border-separate overflow-hidden"
               key={headerGroup.id}
             >
               {headerGroup.headers.map((header) => {
@@ -64,7 +64,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             table.getRowModel().rows.map((row, row_id) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell, cell_id) => (
-                  <TableCell key={cell.id} className="whitespace-nowrap text-left">
+                  <TableCell
+                    key={cell.id}
+                    className={cn(
+                      "whitespace-nowrap text-center text-sm",
+                      cell_id === 0 ? "text-left" : "",
+                    )}
+                  >
                     {cell_id === 0 && (
                       <Button variant="link" className="text-blue-500 m-0 h-1.5 py-0 px-0" asChild>
                         <Link

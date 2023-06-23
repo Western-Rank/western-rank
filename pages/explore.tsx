@@ -1,7 +1,10 @@
 import NavbarHeader from "@/components/NavbarHeader";
 import { DataTable } from "@/components/data-table";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { roundToNearest } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { Compass } from "lucide-react";
 import Head from "next/head";
@@ -9,7 +12,6 @@ import { type GetCoursesResponse } from "./api/courses";
 
 type ExploreCourseRow = {
   courseCode: string;
-  courseName: string;
   ratingsCount: number;
   likedPercent: string;
   difficulty: string;
@@ -20,10 +22,6 @@ const columns: ColumnDef<ExploreCourseRow | undefined>[] = [
   {
     accessorKey: "courseCode",
     header: "Course Code",
-  },
-  {
-    accessorKey: "courseName",
-    header: "Course Name",
   },
   {
     accessorKey: "ratingsCount",
@@ -46,7 +44,6 @@ const columns: ColumnDef<ExploreCourseRow | undefined>[] = [
 function generateCourseRow(course: GetCoursesResponse["courses"][0]): ExploreCourseRow | undefined {
   return {
     courseCode: course.course_code,
-    courseName: course.course_name,
     ratingsCount: course._count?.review_id ?? 0,
     likedPercent: roundToNearest(course._count?.liked ?? 0, 0) + "%",
     difficulty: `${roundToNearest((course._avg?.difficulty ?? 0) / 2, 1)}/5`,
@@ -57,10 +54,15 @@ function generateCourseRow(course: GetCoursesResponse["courses"][0]): ExploreCou
 const ExplorePage = () => {
   const {
     data: coursesData,
-    isLoading,
-    isError,
+    error,
+    fetchPreviousPage,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
     isSuccess,
-  } = useQuery({
+  } = useInfiniteQuery({
     queryKey: ["explore-courses"],
     queryFn: async ({ pageParam = 0 }) => {
       const searchParams = new URLSearchParams({
@@ -78,6 +80,7 @@ const ExplorePage = () => {
         courses,
       };
     },
+    getNextPageParam: (lastPage) => lastPage.next_cursor,
   });
 
   return (
@@ -90,13 +93,27 @@ const ExplorePage = () => {
       <div className="flex flex-col min-h-screen">
         <NavbarHeader
           heading="Explore Courses"
-          subHeading="See all Western University Courses"
+          subHeading={`See all ${coursesData?.pages[0]._count} Western University Courses`}
           Icon={Compass}
           searchBar
           sticky
+          className="h-10 pt-6"
         />
-        <div className="flex light text-primary bg-background py-4 px-2 md:px-8 lg:px-15 xl:px-40 flex-grow">
-          <DataTable columns={columns} data={coursesData?.courses ?? []} />
+        <div className="flex flex-col md:flex-row gap-2 light text-primary bg-background py-4 px-2 md:px-8 lg:px-15 xl:px-40 flex-grow">
+          <div className="flex flex-col h-[58vh]">
+            {isSuccess && (
+              <DataTable
+                columns={columns}
+                data={coursesData?.pages?.flatMap((page) => page?.courses)}
+              />
+            )}
+            {!isSuccess && <Skeleton className="flex-1 w-full h-full" />}
+            <div className="py-2 flex justify-between w-full">
+              <Button onClick={() => fetchPreviousPage()}>Previous</Button>
+              <Button onClick={() => fetchNextPage()}>Next</Button>
+            </div>
+          </div>
+          <Separator orientation="vertical" className="w-[1px] h-200" />
         </div>
       </div>
     </>
