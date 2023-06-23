@@ -125,7 +125,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
     defaultValues: {
-      professor: edit ? review.professor : "",
+      professor: edit ? review.professor_name : "",
       review: edit && review?.review != null ? review?.review : undefined,
       liked: edit ? review.liked : true,
       difficulty: [edit ? review.difficulty / 2 : 2.5],
