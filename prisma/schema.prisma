@@ -26,39 +26,41 @@ model Course {
   location             String?
   extra_info           String?
   course_reviews       Course_Review[]
-  category_code        String
-  category             Category        @relation(fields: [category_code], references: [category_name])
+  category_code        String          @default("NONE")
+  category             Category        @relation(fields: [category_code], references: [category_code])
+  level                Int             @default(1)
 }
 
 model Category {
-  category_name String   @id @default(cuid()) @db.VarChar(255)
-  breadth       String[]
+  category_code String         @id @default(cuid()) @db.VarChar(255)
+  category_name String
+  breadth       BreadthTypes[]
   courses       Course[]
 }
 
+enum BreadthTypes {
+  A
+  B
+  C
+}
+
 model Course_Review {
-  review_id    Int       @id @default(autoincrement())
-  professor    String?
-  review       String
+  review_id    Int      @id @default(autoincrement())
+  professor    String
+  review       String?
   difficulty   Int
   liked        Boolean
   attendance   Int
-  enthusiasm   Int
   anon         Boolean
   term_taken   Term
-  date_taken   DateTime? @db.Date
-  date_created DateTime  @default(now()) @db.Timestamptz(6)
-  last_edited  DateTime  @default(now()) @db.Timestamptz(6)
-  course       Course    @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
-  course_code  String    @db.VarChar(255)
+  date_taken   DateTime @db.Date
+  date_created DateTime @default(now()) @db.Timestamptz(6)
+  last_edited  DateTime @default(now()) @db.Timestamptz(6)
+  course_code  String   @db.VarChar(255)
   email        String
-  user         User      @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction)
-}
-
-enum Term {
-  Fall
-  Winter
-  Summer
+  useful       Int
+  course       Course   @relation(fields: [course_code], references: [course_code], onDelete: NoAction, onUpdate: NoAction)
+  user         User     @relation(fields: [email], references: [email], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model Account {
@@ -67,15 +69,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -95,8 +96,8 @@ model User {
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  sessions      Session[]
   Course_Review Course_Review[]
+  sessions      Session[]
 }
 
 model VerificationToken {
@@ -105,4 +106,10 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum Term {
+  Fall
+  Winter
+  Summer
 }
