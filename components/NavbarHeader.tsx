@@ -64,6 +64,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
         <Navbar {...navbarProps} sticky key="nav" />
         <motion.div
           initial={false}
+          transition={{ duration: 0.25 }}
           animate={{
             paddingTop: headerSticky ? "0px" : "4rem",
             paddingBottom: headerSticky ? "0px" : "0.75rem",
