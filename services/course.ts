@@ -75,8 +75,6 @@ export async function getCourses({
   const prereqFilters: Partial<Prisma.CourseWhereInput["prerequisites_text"]> = {};
   if (noprereqs) prereqFilters.equals = [];
 
-  console.log(prereqFilters);
-
   const _courses = await prisma.course.findMany({
     select: {
       course_name: true,
@@ -94,8 +92,6 @@ export async function getCourses({
       ],
     },
   });
-
-  // console.log(_courses);
 
   const aggregates = await prisma.course_Review.groupBy({
     by: ["course_code"],
@@ -120,8 +116,6 @@ export async function getCourses({
     },
   });
 
-  // console.log(aggregates);
-
   const aggregates_map = new Map<string, Omit<(typeof aggregates)[0], "course_code">>();
   const isFilteringAggregates = minratings !== 0; // add difficulty, attendance, useful, liked
 
@@ -142,8 +136,6 @@ export async function getCourses({
       ...aggregates_map.get(course.course_code),
     };
   });
-
-  // console.log(courses);
 
   if (sort_func) {
     courses.sort(sort_func);
