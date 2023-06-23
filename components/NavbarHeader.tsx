@@ -57,7 +57,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
       <span ref={fromTopRef}></span>
       <div
         className={cn(
-          "z-10 bg-background",
+          "z-30 bg-background",
           headerSticky ? "sticky top-0 shadow-2xl border-b-0 shadow-background/30" : "",
         )}
       >

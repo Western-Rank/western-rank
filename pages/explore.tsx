@@ -2,56 +2,81 @@ import NavbarHeader from "@/components/NavbarHeader";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Toggle } from "@/components/ui/toggle";
+import { SortKey, SortOrder, encodeCourseCode } from "@/lib/courses";
 import { roundToNearest } from "@/lib/utils";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { ColumnDef } from "@tanstack/react-table";
-import { Compass } from "lucide-react";
+import { ColumnDef, Header } from "@tanstack/react-table";
+import { ChevronDown, ChevronUp, Compass } from "lucide-react";
 import Head from "next/head";
+import Link from "next/link";
+import { useState } from "react";
 import { type GetCoursesResponse } from "./api/courses";
 
 type ExploreCourseRow = {
-  courseCode: string;
-  ratingsCount: number;
-  likedPercent: string;
+  coursecode: string;
+  ratings: number;
+  liked: string;
   difficulty: string;
-  attendancePercent: string;
+  useful: string;
+  attendance: string;
 };
 
-const columns: ColumnDef<ExploreCourseRow | undefined>[] = [
-  {
-    accessorKey: "courseCode",
-    header: "Course Code",
-  },
-  {
-    accessorKey: "ratingsCount",
-    header: "Ratings",
-  },
-  {
-    accessorKey: "likedPercent",
-    header: "Liked",
-  },
-  {
-    accessorKey: "difficulty",
-    header: "Difficulty",
-  },
-  {
-    accessorKey: "attendancePercent",
-    header: "Attendance",
-  },
-];
+type CourseHeaderProps = {
+  header: Header<ExploreCourseRow, unknown>;
+  columnTitle: string;
+  sortKey: SortKey;
+  setSortKey: (key: SortKey) => void;
+  sortOrder: SortOrder;
+  setSortOrder: (order: SortOrder) => void;
+};
 
-function generateCourseRow(course: GetCoursesResponse["courses"][0]): ExploreCourseRow | undefined {
+const CourseHeader = ({
+  header,
+  columnTitle,
+  sortKey,
+  sortOrder,
+  setSortKey,
+  setSortOrder,
+}: CourseHeaderProps) => {
+  return (
+    <div className="flex gap-0.5 items-center">
+      <Toggle
+        onPressedChange={(pressed) => {
+          if (sortKey !== header.id) {
+            setSortKey(header.id as SortKey);
+            setSortOrder("desc");
+          } else {
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+          }
+        }}
+        pressed={sortKey === header.id}
+        size="sm"
+        className="p-1 h-5 "
+      >
+        <span>{columnTitle}</span>
+        {sortKey === header.id && sortOrder === "desc" && <ChevronDown width={16} />}
+        {sortKey === header.id && sortOrder === "asc" && <ChevronUp width={16} />}
+      </Toggle>
+    </div>
+  );
+};
+
+function courseRowData(course: GetCoursesResponse["courses"][0]): ExploreCourseRow {
   return {
-    courseCode: course.course_code,
-    ratingsCount: course._count?.review_id ?? 0,
-    likedPercent: roundToNearest(course._count?.liked ?? 0, 0) + "%",
+    coursecode: course.course_code,
+    ratings: course._count?.review_id ?? 0,
+    liked: roundToNearest(course._count?.liked ?? 0, 0) + "%",
     difficulty: `${roundToNearest((course._avg?.difficulty ?? 0) / 2, 1)}/5`,
-    attendancePercent: roundToNearest(course._avg?.attendance ?? 0, 0) + "%",
+    useful: `${roundToNearest((course._avg?.useful ?? 0) / 2, 1)}/5`,
+    attendance: roundToNearest(course._avg?.attendance ?? 0, 0) + "%",
   };
 }
 
 const ExplorePage = () => {
+  const [sortKey, setSortKey] = useState<SortKey>("liked");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+
   const {
     data: coursesData,
     error,
@@ -63,18 +88,18 @@ const ExplorePage = () => {
     status,
     isSuccess,
   } = useInfiniteQuery({
-    queryKey: ["explore-courses"],
+    queryKey: ["explore-courses", sortKey, sortOrder],
     queryFn: async ({ pageParam = 0 }) => {
       const searchParams = new URLSearchParams({
         cursor: pageParam,
-        sortkey: "liked",
-        sortorder: "desc",
+        sortkey: sortKey,
+        sortorder: sortOrder,
       });
 
       const response = await fetch(`/api/courses?${searchParams.toString()}`);
       if (!response.ok) throw new Error("Courses were not found");
       const coursesData: GetCoursesResponse = await response.json();
-      const courses = coursesData.courses.map((course) => generateCourseRow(course));
+      const courses = coursesData.courses.map((course) => courseRowData(course));
       return {
         ...coursesData,
         courses,
@@ -82,6 +107,99 @@ const ExplorePage = () => {
     },
     getNextPageParam: (lastPage) => lastPage.next_cursor,
   });
+
+  const columns: ColumnDef<ExploreCourseRow>[] = [
+    {
+      accessorKey: "coursecode",
+      header: ({ header }) => (
+        <CourseHeader
+          sortKey={sortKey}
+          setSortKey={setSortKey}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          header={header}
+          columnTitle="Course Code"
+        />
+      ),
+      cell: ({ cell }) => (
+        <div className="flex gap-1 items-center justify-start">
+          <Button variant="link" className="text-blue-500 m-0 h-1.5 py-0 px-0" asChild>
+            <Link
+              className="whitespace-nowrap "
+              href={`/course/${encodeCourseCode(cell.renderValue<string>())}`}
+            >
+              {cell.renderValue<string>()}
+            </Link>
+          </Button>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "ratings",
+      header: ({ header }) => (
+        <CourseHeader
+          sortKey={sortKey}
+          setSortKey={setSortKey}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          header={header}
+          columnTitle="Ratings"
+        />
+      ),
+    },
+    {
+      accessorKey: "liked",
+      header: ({ header }) => (
+        <CourseHeader
+          sortKey={sortKey}
+          setSortKey={setSortKey}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          header={header}
+          columnTitle="Liked"
+        />
+      ),
+    },
+    {
+      accessorKey: "difficulty",
+      header: ({ header }) => (
+        <CourseHeader
+          sortKey={sortKey}
+          setSortKey={setSortKey}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          header={header}
+          columnTitle="Difficulty"
+        />
+      ),
+    },
+    {
+      accessorKey: "useful",
+      header: ({ header }) => (
+        <CourseHeader
+          sortKey={sortKey}
+          setSortKey={setSortKey}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          header={header}
+          columnTitle="Useful"
+        />
+      ),
+    },
+    {
+      accessorKey: "attendance",
+      header: ({ header }) => (
+        <CourseHeader
+          sortKey={sortKey}
+          setSortKey={setSortKey}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          header={header}
+          columnTitle="Attendance"
+        />
+      ),
+    },
+  ];
 
   return (
     <>
@@ -93,27 +211,24 @@ const ExplorePage = () => {
       <div className="flex flex-col min-h-screen">
         <NavbarHeader
           heading="Explore Courses"
-          subHeading={`See all ${coursesData?.pages[0]._count} Western University Courses`}
+          subHeading={`See all ${coursesData?.pages[0]._count ?? ""} Western University Courses`}
           Icon={Compass}
           searchBar
           sticky
-          className="h-10 pt-6"
         />
         <div className="flex flex-col md:flex-row gap-2 light text-primary bg-background py-4 px-2 md:px-8 lg:px-15 xl:px-40 flex-grow">
-          <div className="flex flex-col h-[58vh]">
-            {isSuccess && (
-              <DataTable
-                columns={columns}
-                data={coursesData?.pages?.flatMap((page) => page?.courses)}
-              />
-            )}
-            {!isSuccess && <Skeleton className="flex-1 w-full h-full" />}
-            <div className="py-2 flex justify-between w-full">
+          <div className="flex flex-col h-[58vh] items-center">
+            <DataTable
+              columns={columns}
+              data={coursesData?.pages?.flatMap((page) => page?.courses) ?? []}
+            />
+            <div className="flex justify-between w-full py-2">
               <Button onClick={() => fetchPreviousPage()}>Previous</Button>
               <Button onClick={() => fetchNextPage()}>Next</Button>
             </div>
           </div>
           <Separator orientation="vertical" className="w-[1px] h-200" />
+          <form></form>
         </div>
       </div>
     </>
