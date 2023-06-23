@@ -75,8 +75,8 @@ const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) =>
     return (
       <TooltipProvider>
         <Tooltip delayDuration={100}>
-          <TooltipTrigger className="cursor-not-allowed">
-            <Button disabled onClick={onClick} variant="gradient" className="w-full md:w-fit">
+          <TooltipTrigger className="cursor-not-allowed w-full md:w-fit">
+            <Button disabled onClick={onClick} variant="gradient" className="w-full">
               Review
             </Button>
           </TooltipTrigger>
