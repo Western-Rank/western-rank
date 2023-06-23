@@ -59,7 +59,8 @@ type ReviewPromptButtonProps = {
 };
 
 const reviewFormSchema = z.object({
-  professor: z.string().nonempty(),
+  professor_name: z.string().nonempty(),
+  professor_id: z.number().int(),
   review: z.string().optional(),
   liked: z.boolean(),
   difficulty: z.array(z.number().min(0).max(5)),
@@ -125,7 +126,8 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
     defaultValues: {
-      professor: edit ? review.professor : "",
+      professor_name: edit ? review.professor_name : "Other",
+      professor_id: -1,
       review: edit && review?.review != null ? review?.review : undefined,
       liked: edit ? review.liked : true,
       difficulty: [edit ? review.difficulty / 2 : 2.5],
@@ -332,7 +334,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
 
                     <FormField
                       control={reviewForm.control}
-                      name="professor"
+                      name="professor_name"
                       render={({ field }) => (
                         <FormItem className="flex flex-col items-start px-1">
                           <FormLabel>Professor</FormLabel>
