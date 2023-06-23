@@ -61,7 +61,7 @@ export function DataTable<TData, TValue, TSortKey>({
             >
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead className="light" key={header.id}>
+                  <TableHead className="light" key={header.id} style={{ width: header.getSize() }}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -72,6 +72,11 @@ export function DataTable<TData, TValue, TSortKey>({
           ))}
         </TableHeader>
         <TableBody>
+          {paddingTop > 0 && (
+            <TableRow>
+              <TableCell style={{ height: `${paddingTop}px` }} />
+            </TableRow>
+          )}
           {virtualRows ? (
             virtualRows.map((virtualRow) => {
               const row = rows[virtualRow.index];

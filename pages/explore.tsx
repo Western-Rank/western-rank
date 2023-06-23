@@ -125,7 +125,7 @@ const ExplorePage = () => {
         courses,
       };
     },
-    getNextPageParam: (lastPage) => lastPage.next_cursor,
+    getNextPageParam: (nextpage) => nextpage?.next_cursor,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
