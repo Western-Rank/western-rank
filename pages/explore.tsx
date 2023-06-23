@@ -13,7 +13,7 @@ import { ColumnDef, Header } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, Compass, Star } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { type GetCoursesResponse } from "./api/courses";
 
 type ExploreCourseRow = {
@@ -89,6 +89,8 @@ const ExplorePage = () => {
   const [hasPreReqs, setHasPreReqs] = useState<boolean | undefined>(true);
   const [breadth, setBreadth] = useState<(BreadthCategories[number] | "")[]>(["A", "B", "C"]);
 
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+
   const {
     data: coursesData,
     error,
@@ -124,105 +126,138 @@ const ExplorePage = () => {
       };
     },
     getNextPageParam: (lastPage) => lastPage.next_cursor,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
   });
 
-  const columns: ColumnDef<ExploreCourseRow>[] = [
-    {
-      accessorKey: "coursecode",
-      header: ({ header }) => (
-        <CourseHeader
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          header={header}
-          columnTitle="Course Code"
-        />
-      ),
-      cell: ({ cell, row }) => (
-        <div className="flex gap-1 items-center justify-start">
-          <Button
-            variant="link"
-            className={cn("text-blue-500 m-0 h-1.5 py-0 px-0", topCoursesColours[row.index])}
-            asChild
-          >
-            <Link
-              className="whitespace-nowrap space-x-1"
-              href={`/course/${encodeCourseCode(cell.renderValue<string>())}`}
+  const columns: ColumnDef<ExploreCourseRow>[] = useMemo(
+    () => [
+      {
+        accessorKey: "coursecode",
+        header: ({ header }) => (
+          <CourseHeader
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            header={header}
+            columnTitle="Course Code"
+          />
+        ),
+        cell: ({ cell, row }) => (
+          <div className="flex gap-1 items-center justify-start">
+            <Button
+              variant="link"
+              className={cn("text-blue-500 m-0 h-1.5 py-0 px-0", topCoursesColours[row.index])}
+              asChild
             >
-              {(row.index === 0 || row.index === 1 || row.index === 2) && <Star width={16} />}
-              <span>{cell.renderValue<string>()}</span>
-            </Link>
-          </Button>
-        </div>
-      ),
+              <Link
+                className="whitespace-nowrap space-x-1"
+                href={`/course/${encodeCourseCode(cell.renderValue<string>())}`}
+              >
+                {(row.index === 0 || row.index === 1 || row.index === 2) && <Star width={16} />}
+                <span>{cell.renderValue<string>()}</span>
+              </Link>
+            </Button>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "ratings",
+        header: ({ header }) => (
+          <CourseHeader
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            header={header}
+            columnTitle="Ratings"
+          />
+        ),
+      },
+      {
+        accessorKey: "liked",
+        header: ({ header }) => (
+          <CourseHeader
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            header={header}
+            columnTitle="Liked"
+          />
+        ),
+      },
+      {
+        accessorKey: "difficulty",
+        header: ({ header }) => (
+          <CourseHeader
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            header={header}
+            columnTitle="Difficulty"
+          />
+        ),
+      },
+      {
+        accessorKey: "useful",
+        header: ({ header }) => (
+          <CourseHeader
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            header={header}
+            columnTitle="Useful"
+          />
+        ),
+      },
+      {
+        accessorKey: "attendance",
+        header: ({ header }) => (
+          <CourseHeader
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            header={header}
+            columnTitle="Attendance"
+          />
+        ),
+      },
+    ],
+    [sortKey, sortOrder],
+  );
+
+  //we must flatten the array of arrays from the useInfiniteQuery hook
+  const flatCoursesData = useMemo(
+    () => coursesData?.pages?.flatMap((page) => page.courses) ?? [],
+    [coursesData],
+  );
+
+  const totalDBRowCount = coursesData?.pages[0]._count ?? 0;
+  const totalFetched = flatCoursesData.length;
+
+  const fetchMoreOnBottomReached = useCallback(
+    async (containerRefElement?: HTMLDivElement | null) => {
+      if (containerRefElement) {
+        const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
+        //once the user has scrolled within 300px of the bottom of the table, fetch more data if there is any
+        if (
+          scrollHeight - scrollTop - clientHeight < 100 &&
+          !isFetching &&
+          totalFetched < totalDBRowCount
+        ) {
+          console.log("fetching next page");
+          const nextPage = await fetchNextPage();
+          console.log(nextPage);
+        }
+      }
     },
-    {
-      accessorKey: "ratings",
-      header: ({ header }) => (
-        <CourseHeader
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          header={header}
-          columnTitle="Ratings"
-        />
-      ),
-    },
-    {
-      accessorKey: "liked",
-      header: ({ header }) => (
-        <CourseHeader
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          header={header}
-          columnTitle="Liked"
-        />
-      ),
-    },
-    {
-      accessorKey: "difficulty",
-      header: ({ header }) => (
-        <CourseHeader
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          header={header}
-          columnTitle="Difficulty"
-        />
-      ),
-    },
-    {
-      accessorKey: "useful",
-      header: ({ header }) => (
-        <CourseHeader
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          header={header}
-          columnTitle="Useful"
-        />
-      ),
-    },
-    {
-      accessorKey: "attendance",
-      header: ({ header }) => (
-        <CourseHeader
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          header={header}
-          columnTitle="Attendance"
-        />
-      ),
-    },
-  ];
+    [fetchNextPage, isFetching, totalFetched, totalDBRowCount],
+  );
 
   return (
     <>
@@ -243,12 +278,9 @@ const ExplorePage = () => {
           <div className="h-[64vh] md:items-center justify-between">
             <DataTable
               columns={columns}
-              data={coursesData?.pages?.flatMap((page) => page?.courses) ?? []}
+              data={flatCoursesData ?? []}
+              onBottomReached={fetchMoreOnBottomReached}
             />
-            {/* <div className="flex justify-between w-full py-2">
-              <Button onClick={() => fetchPreviousPage()}>Previous</Button>
-              <Button onClick={() => fetchNextPage()}>Next</Button>
-            </div> */}
           </div>
           <Separator orientation="vertical" className="w-[1px] h-200" />
           <div className="flex flex-col w-full px-2 gap-6">
