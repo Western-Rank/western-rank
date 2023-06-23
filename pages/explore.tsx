@@ -1,7 +1,10 @@
 import NavbarHeader from "@/components/NavbarHeader";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider";
 import { Toggle } from "@/components/ui/toggle";
 import { BreadthCategories, SortKey, SortOrder, encodeCourseCode } from "@/lib/courses";
 import { cn, roundToNearest } from "@/lib/utils";
@@ -83,8 +86,8 @@ const ExplorePage = () => {
   const [sortKey, setSortKey] = useState<SortKey>("liked");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [minRatings, setMinRatings] = useState(0);
-  const [hasPreReqs, setHasPreReqs] = useState<boolean | undefined>(undefined);
-  const [breadth, setBreadth] = useState<BreadthCategories>(["A", "B", "C"]);
+  const [hasPreReqs, setHasPreReqs] = useState<boolean | undefined>(true);
+  const [breadth, setBreadth] = useState<(BreadthCategories[number] | "")[]>(["A", "B", "C"]);
 
   const {
     data: coursesData,
@@ -231,24 +234,100 @@ const ExplorePage = () => {
       <div className="flex flex-col min-h-screen">
         <NavbarHeader
           heading="Explore Courses"
-          subHeading={`See all ${coursesData?.pages[0]._count ?? ""} Western University Courses`}
+          subHeading={`See all Western University Courses`}
           Icon={Compass}
           searchBar
           sticky
         />
-        <div className="flex flex-col md:flex-row gap-2 light text-primary bg-background py-4 px-2 md:px-8 lg:px-15 xl:px-40 flex-grow">
-          <div className="flex flex-col h-[58vh] items-center">
+        <div className="flex flex-col-reverse md:flex-row gap-4 light text-primary bg-background py-4 px-2 md:px-8 lg:px-15 xl:px-40 flex-grow">
+          <div className="h-[64vh] md:items-center justify-between">
             <DataTable
               columns={columns}
               data={coursesData?.pages?.flatMap((page) => page?.courses) ?? []}
             />
-            <div className="flex justify-between w-full py-2">
+            {/* <div className="flex justify-between w-full py-2">
               <Button onClick={() => fetchPreviousPage()}>Previous</Button>
               <Button onClick={() => fetchNextPage()}>Next</Button>
-            </div>
+            </div> */}
           </div>
           <Separator orientation="vertical" className="w-[1px] h-200" />
-          <form></form>
+          <div className="flex flex-col w-full px-2 gap-6">
+            <div>
+              <h3 className="text-xl font-extrabold">Apply filters</h3>
+              <h4 className="text-md text-muted-foreground">
+                to find the courses you&apos;re looking for.
+              </h4>
+            </div>
+            <div className="space-y-4">
+              <Label className="font-bold text-md text-muted-foreground">
+                Minimum Number of Ratings
+              </Label>
+              <Slider
+                min={0}
+                max={1000}
+                step={50}
+                value={[minRatings]}
+                onValueChange={(value) => setMinRatings(value[0])}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={!hasPreReqs}
+                onCheckedChange={(checked) => setHasPreReqs(!hasPreReqs)}
+              />
+              <Label className="font-bold text-md text-muted-foreground">No Prerequisites</Label>
+            </div>
+            <div className="space-y-4 flex flex-col">
+              <Label className="font-bold text-md text-muted-foreground">
+                Breadth Requirements
+              </Label>
+              <div className="space-x-4">
+                <Toggle
+                  pressed={breadth[0] === "A"}
+                  onPressedChange={(pressed) => {
+                    if (breadth[0] === "A") {
+                      setBreadth(["", ...breadth.slice(1)]);
+                    } else {
+                      setBreadth(["A", ...breadth.slice(1)]);
+                    }
+                  }}
+                  className="px-6 text-md"
+                >
+                  A
+                </Toggle>
+                <Toggle
+                  pressed={breadth[1] === "B"}
+                  onPressedChange={(pressed) => {
+                    if (breadth[1] === "B") {
+                      setBreadth([breadth[0], "", breadth[2]]);
+                    } else {
+                      setBreadth([breadth[0], "B", breadth[2]]);
+                    }
+                  }}
+                  className="px-6 text-md"
+                >
+                  B
+                </Toggle>
+                <Toggle
+                  pressed={breadth[2] === "C"}
+                  onPressedChange={() => {
+                    if (breadth[2] === "C") {
+                      setBreadth([...breadth.slice(0, 2), ""]);
+                    } else {
+                      breadth[2] = "C";
+                      setBreadth([...breadth.slice(0, 2), "C"]);
+                    }
+                  }}
+                  className="px-6 text-md"
+                >
+                  C
+                </Toggle>
+              </div>
+            </div>
+            {isSuccess && (
+              <p className="text-purple-600">{coursesData?.pages[0]._count ?? ""} course results</p>
+            )}
+          </div>
         </div>
       </div>
     </>

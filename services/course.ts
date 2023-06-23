@@ -73,8 +73,7 @@ export async function getCourses({
   if (breadth) categoryFilters.breadth = { hasSome: breadth };
 
   const prereqFilters: Partial<Prisma.CourseWhereInput["prerequisites_text"]> = {};
-  if (hasprereqs) prereqFilters.not = [];
-  else if (hasprereqs !== undefined) prereqFilters.equals = [];
+  if (!hasprereqs) prereqFilters.equals = [];
 
   const _courses = await prisma.course.findMany({
     select: {

@@ -39,7 +39,7 @@ export function DataTable<TData, TValue, TSortKey>({
   });
 
   return (
-    <div className="rounded-md border h-full w-[50vw]">
+    <div className="rounded-md border flex-1 h-full w-full md:w-[50vw]">
       <Table className="overflow-y-scroll">
         <TableHeader className="sticky top-0 rounded-md z-10">
           {table.getHeaderGroups().map((headerGroup) => (
