@@ -45,7 +45,7 @@ enum BreadthTypes {
 
 model Course_Review {
   review_id     Int       @id @default(autoincrement())
-  professor_name String?
+  professor_name String
   professor_id   Int?
   review        String?
   difficulty    Int
