@@ -26,6 +26,21 @@ model Course {
   location             String?
   extra_info           String?
   course_reviews       Course_Review[]
+  category_code        String          @default("NONE")
+  category             Category        @relation(fields: [category_code], references: [category_code])
+}
+
+model Category {
+  category_code String         @id @default(cuid()) @db.VarChar(255)
+  category_name String
+  breadth       BreadthTypes[]
+  courses       Course[]
+}
+
+enum BreadthTypes {
+  A
+  B
+  C
 }
 
 model Course_Review {

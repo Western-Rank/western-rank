@@ -1,22 +1,25 @@
 import { SearchbarDialog } from "@/components/Searchbar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+
 import Image from "next/image";
 import Link from "next/link";
 
-type NavbarProps = {
+export type NavbarProps = {
+  sticky?: boolean;
   searchBar?: boolean;
   className?: string;
 };
 
-const Navbar = ({ className, searchBar }: NavbarProps) => {
+const Navbar = ({ sticky, searchBar, className }: NavbarProps) => {
   const { data: auth } = useSession();
 
   return (
     <nav
       className={cn(
-        "bg-background flex items-center justify-between px-4 md:px-8 lg:px-15 xl:px-40",
+        "dark bg-background flex items-center justify-between px-4 md:px-8 lg:px-15 xl:px-[9.4rem] z-14",
+        sticky ? "sticky top-0" : "",
         className,
       )}
     >
@@ -33,11 +36,12 @@ const Navbar = ({ className, searchBar }: NavbarProps) => {
                 Profile
               </Link>
             </Button>
-            <Button asChild variant="link" className="px-1 md:px-2s">
-              {/* TODO change to onclick with signout() */}
-              <Link href="/api/auth/signout" className="text-sm">
-                Log out
-              </Link>
+            <Button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              variant="link"
+              className="px-1 md:px-2 text-sm"
+            >
+              Log out
             </Button>
           </>
         ) : (

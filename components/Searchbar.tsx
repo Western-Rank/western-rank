@@ -15,9 +15,13 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import Spinner from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+
+import { encodeCourseCode } from "@/lib/courses";
+import { cn } from "@/lib/utils";
+import { dm_sans } from "@/pages/_app";
+import { Skeleton } from "./ui/skeleton";
 
 export type CourseSearchItem = {
   course_code: string;
@@ -42,7 +46,7 @@ type SearchbarProps = {
 function SearchItem({ courseCode, courseName, onSelect }: SearchItemProps) {
   return (
     <CommandItem value={courseCode} onSelect={onSelect}>
-      <GraduationCap className="mr-1.5 min-w-4 min-h-4 w-fit flex-shrink-0" />
+      <GraduationCap className="mr-1.5 min-w-4 min-h-4 flex-shrink-0 flex-grow-0" />
       <h4 className="overflow-hidden whitespace-nowrap overflow-ellipsis">
         <span className="font-semibold text-xs md:text-sm pr-1">{courseCode}</span>
         <span className="text-muted-foreground text-xs md:text-sm">{courseName}</span>
@@ -95,13 +99,14 @@ export function Searchbar({ onSelect }: SearchbarProps) {
   }, 75);
 
   const onCourseSelect = (value: string) => {
-    // e.g. CALC 1000: Calculus I -> CALC%201000
-    const courseCodeURI = encodeURIComponent(value.toUpperCase().split(":")[0]);
+    // e.g. CALC 1000A/B: Calculus I -> calc-1000a:b
+    const courseCode = value.toUpperCase().split(":")[0];
+    const courseCodeURI = encodeCourseCode(courseCode);
     router.push(`/course/${courseCodeURI}`);
   };
 
   return (
-    <Command shouldFilter={false} className="border light relative">
+    <Command shouldFilter={false} className={cn("border light relative", dm_sans.className)}>
       <CommandInput placeholder="Search for a Course..." onValueChange={onSearchTermChange} />
       <CommandList inputMode="search">
         {isSuccess && results != null && results?.length > 0 && (
@@ -121,7 +126,10 @@ export function Searchbar({ onSelect }: SearchbarProps) {
         )}
         {isLoading && (
           <CommandEmpty className="grid place-items-center">
-            <Spinner className="py-3" text="Loading courses..." />
+            <div className="p-1 w-full space-y-1">
+              <Skeleton className="h-8 w-full rounded-lg" />
+              <Skeleton className="h-8 w-full rounded-lg" />
+            </div>
           </CommandEmpty>
         )}
         {!isLoading && results != null && <CommandEmpty>No results found.</CommandEmpty>}

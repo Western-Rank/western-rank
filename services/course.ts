@@ -25,6 +25,10 @@ export function getAllCourses() {
   });
 }
 
+export function getCourseCount() {
+  return prisma.course.count();
+}
+
 export function getAllCoursesSearch() {
   return prisma.course.findMany({
     select: {

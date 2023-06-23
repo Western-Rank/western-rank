@@ -70,8 +70,19 @@ async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
  */
 async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
   try {
+    const data = await getServerSession(req, res, authOptions);
+    if (!data?.user) {
+      throw new Error("Failed to authenticate.");
+    }
+
     const review = JSON.parse(req.body);
-    console.log(review);
+
+    if (data?.user.email !== review.email) {
+      throw new Error(
+        `User ${data.user.email} not authenticated to create a review for ${review.email}`,
+      );
+    }
+
     const result = await createReview(review);
 
     console.log(`Created the review: ${result.review_id}`);

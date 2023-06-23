@@ -25,6 +25,10 @@ export async function createReview(review: Course_Review_Create) {
   });
 }
 
+export async function getReviewCount() {
+  return prisma.course_Review.count();
+}
+
 /**
  * Get reviews for a specific course.
  * @param courseCode Course code of the course
@@ -93,10 +97,18 @@ export function getReviewsbyCourse({
  * @param email email of the user
  * @returns List of reviews for the user
  */
-export function getReviewsbyUser(email: string) {
+export function getReviewsByUser(email: string) {
   return prisma.course_Review.findMany({
     where: {
       email: email,
+    },
+  });
+}
+
+export function getReviewById(review_id: number) {
+  return prisma.course_Review.findUnique({
+    where: {
+      review_id: review_id,
     },
   });
 }
@@ -130,6 +142,14 @@ export function deleteReview(review_id: number) {
   return prisma.course_Review.delete({
     where: {
       review_id: review_id,
+    },
+  });
+}
+
+export function deleteAllUserReviews(email: string) {
+  return prisma.course_Review.deleteMany({
+    where: {
+      email: email,
     },
   });
 }
