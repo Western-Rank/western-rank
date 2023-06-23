@@ -2,13 +2,14 @@ import NavbarHeader from "@/components/NavbarHeader";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Combobox } from "@/components/ui/combobox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Toggle } from "@/components/ui/toggle";
 import { BreadthCategories, SortKey, SortOrder, encodeCourseCode } from "@/lib/courses";
 import { cn, roundToNearest } from "@/lib/utils";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { ColumnDef, Header } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, Compass, Star } from "lucide-react";
 import Head from "next/head";
@@ -88,8 +89,19 @@ const ExplorePage = () => {
   const [minRatings, setMinRatings] = useState(0);
   const [noPreReqs, setNoPreReqs] = useState<boolean>(false);
   const [breadth, setBreadth] = useState<(BreadthCategories[number] | "")[]>(["A", "B", "C"]);
+  const [category, setCategory] = useState("");
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
+
+  const {} = useQuery({
+    queryKey: ["explore-categories"],
+    queryFn: async () => {
+      const response = await fetch("/api/categories");
+      if (!response.ok) throw new Error("Categories were not found");
+      const categories = await response.json();
+      return categories;
+    },
+  });
 
   const {
     data: coursesData,
@@ -361,6 +373,14 @@ const ExplorePage = () => {
                   C
                 </Toggle>
               </div>
+            </div>
+            <div>
+              <Combobox
+                value={category}
+                options={[]}
+                onChangeValue={(value) => setCategory(value)}
+                placeholder="Course Category"
+              />
             </div>
             {isSuccess && (
               <p className="text-purple-600">{coursesData?.pages[0]._count ?? ""} course results</p>

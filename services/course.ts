@@ -214,3 +214,15 @@ export async function getCourse(courseCode: string) {
     count_liked,
   };
 }
+
+export async function getCourseCategories() {
+  return prisma.course.findMany({
+    select: {
+      category: {
+        select: {
+          category_code: true,
+        },
+      },
+    },
+  });
+}
