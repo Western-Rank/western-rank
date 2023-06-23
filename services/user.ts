@@ -1,4 +1,4 @@
-import { prisma } from "../lib/db";
+import { prisma } from "@/lib/db";
 
 /**
  * Get a user by their email
@@ -7,8 +7,19 @@ import { prisma } from "../lib/db";
  */
 export async function getUserByEmail(email: string) {
   return prisma.user.findUnique({
+    include: {
+      Course_Review: true,
+    },
     where: {
       email,
+    },
+  });
+}
+
+export async function deleteUserByEmail(email: string) {
+  return prisma.user.delete({
+    where: {
+      email: email,
     },
   });
 }

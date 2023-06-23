@@ -1,13 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getAllCourses } from "../../services/course";
-import { formatFullCourseName } from "../../lib/courses";
+import { getAllCoursesSearch } from "../../services/course";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
       return await handleGetCourses(req, res);
     default:
-      return res.send("Invalid API route");
+      return res.status(405).send("Invalid API route");
   }
 }
 
@@ -20,18 +19,14 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
   try {
     const format = req.query.format as string;
 
-    const courses = await getAllCourses();
-
-    if (format === "names") {
-      return res
-        .status(200)
-        .json(
-          courses.map((course) => formatFullCourseName(course.course_code, course.course_name)),
-        );
+    if (format === "search") {
+      const courses = await getAllCoursesSearch();
+      return res.status(200).json(courses);
     } else {
+      const courses = await getAllCoursesSearch();
       return res.status(200).json(courses);
     }
   } catch (err: any) {
-    return res.send(`Error: ${err.message}\nDetails: ${err.details}`);
+    return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }

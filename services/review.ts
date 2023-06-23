@@ -1,15 +1,32 @@
+import { SortKey, SortOrder } from "@/components/ReviewList";
+import { prisma } from "@/lib/db";
+import { Course_Review_Create } from "@/lib/reviews";
 import { Course_Review } from "@prisma/client";
-import { prisma } from "../lib/db";
 
 /**
  * Create a review for a course.
  * @param review review to be created
  * @returns the review created
  */
-export function createReview(review: Course_Review) {
+export async function createReview(review: Course_Review_Create) {
+  const userReview = await prisma.course_Review.findFirst({
+    where: {
+      course_code: review.course_code,
+      email: review.email,
+    },
+  });
+
+  if (userReview) {
+    throw new Error(`Review for ${review.course_code} from ${review.email} already exists`);
+  }
+
   return prisma.course_Review.create({
     data: review,
   });
+}
+
+export async function getReviewCount() {
+  return prisma.course_Review.count();
 }
 
 /**
@@ -17,12 +34,62 @@ export function createReview(review: Course_Review) {
  * @param courseCode Course code of the course
  * @returns List of reviews for the course
  */
-export function getReviewsbyCourse(courseCode: string) {
-  return prisma.course_Review.findMany({
+export function getReviewsbyCourse({
+  courseCode,
+  sortKey,
+  sortOrder,
+  take,
+  email,
+}: {
+  courseCode: string;
+  sortKey: SortKey;
+  sortOrder: SortOrder;
+  take?: number;
+  email?: string;
+}) {
+  const reviewsQuery = prisma.course_Review.findMany({
     where: {
       course_code: courseCode,
+      review: {
+        not: null,
+      },
+      email: {
+        not: email,
+      },
+    },
+    orderBy: {
+      [sortKey]: sortOrder,
+    },
+    take: take,
+  });
+
+  const userReview = prisma.course_Review.findFirst({
+    where: {
+      course_code: courseCode,
+      email: email,
     },
   });
+
+  const countQuery = prisma.course_Review.aggregate({
+    _count: {
+      review_id: true,
+    },
+    where: {
+      course_code: courseCode,
+      review: {
+        not: null,
+      },
+    },
+    orderBy: {
+      [sortKey]: sortOrder,
+    },
+  });
+
+  if (email) {
+    return prisma.$transaction([reviewsQuery, countQuery, userReview]);
+  } else {
+    return prisma.$transaction([reviewsQuery, countQuery]);
+  }
 }
 
 /**
@@ -30,10 +97,18 @@ export function getReviewsbyCourse(courseCode: string) {
  * @param email email of the user
  * @returns List of reviews for the user
  */
-export function getReviewsbyUser(email: string) {
+export function getReviewsByUser(email: string) {
   return prisma.course_Review.findMany({
     where: {
       email: email,
+    },
+  });
+}
+
+export function getReviewById(review_id: number) {
+  return prisma.course_Review.findUnique({
+    where: {
+      review_id: review_id,
     },
   });
 }
@@ -47,10 +122,10 @@ export function updateReview(review: Course_Review) {
   });
 }
 
-export function upsertReview(review: Course_Review) {
+export function upsertReview(review_id: number, review: Course_Review_Create) {
   return prisma.course_Review.upsert({
     where: {
-      review_id: review.review_id,
+      review_id: review_id,
     },
     create: review,
     update: review,
@@ -63,12 +138,18 @@ export function upsertReview(review: Course_Review) {
  * @param courseCode course code of the course
  * @returns list of reviews for the user and course
  */
-export function deleteReview(email: string, courseCode: string) {
-  // use deleteMany() since delete() can only use review id
+export function deleteReview(review_id: number) {
+  return prisma.course_Review.delete({
+    where: {
+      review_id: review_id,
+    },
+  });
+}
+
+export function deleteAllUserReviews(email: string) {
   return prisma.course_Review.deleteMany({
     where: {
       email: email,
-      course_code: courseCode,
     },
   });
 }
