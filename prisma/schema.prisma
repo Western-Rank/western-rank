@@ -28,6 +28,7 @@ model Course {
   course_reviews       Course_Review[]
   category_code        String          @default("NONE")
   category             Category        @relation(fields: [category_code], references: [category_code])
+  level                Int             @default(1)
 }
 
 model Category {
