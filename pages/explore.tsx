@@ -3,7 +3,7 @@ import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
-import { SortKey, SortOrder, encodeCourseCode } from "@/lib/courses";
+import { BreadthCategories, SortKey, SortOrder, encodeCourseCode } from "@/lib/courses";
 import { cn, roundToNearest } from "@/lib/utils";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ColumnDef, Header } from "@tanstack/react-table";
@@ -82,6 +82,9 @@ function courseRowData(course: GetCoursesResponse["courses"][0]): ExploreCourseR
 const ExplorePage = () => {
   const [sortKey, setSortKey] = useState<SortKey>("liked");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [minRatings, setMinRatings] = useState(0);
+  const [hasPreReqs, setHasPreReqs] = useState<boolean | undefined>(undefined);
+  const [breadth, setBreadth] = useState<BreadthCategories>(["A", "B", "C"]);
 
   const {
     data: coursesData,
@@ -94,13 +97,19 @@ const ExplorePage = () => {
     status,
     isSuccess,
   } = useInfiniteQuery({
-    queryKey: ["explore-courses", sortKey, sortOrder],
+    queryKey: ["explore-courses", sortKey, sortOrder, minRatings, hasPreReqs, breadth],
     queryFn: async ({ pageParam = 0 }) => {
       const searchParams = new URLSearchParams({
         cursor: pageParam,
         sortkey: sortKey,
         sortorder: sortOrder,
+        minratings: minRatings.toString(),
+        breadth: breadth.join(""),
       });
+
+      if (hasPreReqs) {
+        searchParams.append("hasprereqs", hasPreReqs.toString());
+      }
 
       const response = await fetch(`/api/courses?${searchParams.toString()}`);
       if (!response.ok) throw new Error("Courses were not found");

@@ -17,7 +17,7 @@ export function searchCourses(query: string) {
   });
 }
 
-type GetCoursesParams = {
+export type GetCoursesParams = {
   sortKey?: SortKey;
   sortOrder?: SortOrder;
   pageSize?: number;
