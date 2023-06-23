@@ -308,7 +308,7 @@ const ExplorePage = () => {
               </Label>
               <Slider
                 min={0}
-                max={36}
+                max={26}
                 step={1}
                 value={[minRatings]}
                 onValueChange={(value) => setMinRatings(value[0])}
@@ -321,7 +321,7 @@ const ExplorePage = () => {
               />
               <Label className="font-bold text-md text-muted-foreground">No Prerequisites</Label>
             </div>
-            <div className="space-y-4 flex flex-col">
+            <div className="flex flex-col gap-2">
               <Label className="font-bold text-md text-muted-foreground">
                 Breadth Requirements
               </Label>

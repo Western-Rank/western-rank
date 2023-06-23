@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 //@ts-ignore
 import commandScore from "command-score";
 
-import { GraduationCap, Search } from "lucide-react";
+import { Compass, GraduationCap, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -96,7 +96,7 @@ export function Searchbar({ onSelect }: SearchbarProps) {
     } else {
       setResults(null);
     }
-  }, 75);
+  }, 100);
 
   const onCourseSelect = (value: string) => {
     // e.g. CALC 1000A/B: Calculus I -> calc-1000a:b
@@ -106,7 +106,7 @@ export function Searchbar({ onSelect }: SearchbarProps) {
   };
 
   return (
-    <Command shouldFilter={false} className={cn("border light relative", dm_sans.className)}>
+    <Command shouldFilter={false} className={cn("border light relative z-50", dm_sans.className)}>
       <CommandInput placeholder="Search for a Course..." onValueChange={onSearchTermChange} />
       <CommandList inputMode="search">
         {isSuccess && results != null && results?.length > 0 && (
@@ -132,7 +132,18 @@ export function Searchbar({ onSelect }: SearchbarProps) {
             </div>
           </CommandEmpty>
         )}
-        {!isLoading && results != null && <CommandEmpty>No results found.</CommandEmpty>}
+        {results != null && (
+          <CommandGroup heading="Explore">
+            <CommandItem value="explore" onSelect={() => router.push("/explore")}>
+              <Compass className="mr-1.5 min-w-4 min-h-4 flex-shrink-0 flex-grow-0" />
+              <h4 className="overflow-hidden whitespace-nowrap overflow-ellipsis">
+                <span className="font-semibold text-xs md:text-sm pr-1">
+                  Explore All Western University Courses
+                </span>
+              </h4>
+            </CommandItem>
+          </CommandGroup>
+        )}
       </CommandList>
     </Command>
   );
