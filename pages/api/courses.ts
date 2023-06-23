@@ -16,11 +16,12 @@ const querySchema = z.object({
   format: z.enum(["search"]).optional(),
   sortkey: z.enum(SortKeys).optional(),
   sortorder: z.enum(SortOrderOptions).optional(),
-  hasprereqs: z
+  noprereqs: z
     .enum(["true", "false"])
     .transform((val) => val === "true")
     .pipe(z.boolean())
-    .optional(),
+    .optional()
+    .default("false"),
   minratings: z
     .string()
     .transform((val) => parseInt(val))
@@ -33,6 +34,7 @@ const querySchema = z.object({
     .pipe(z.number().int().min(0))
     .optional()
     .default("0"),
+  cat: z.string().optional(),
 });
 
 export type GetCoursesResponse = {
@@ -48,7 +50,7 @@ export type GetCoursesResponse = {
  */
 async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { sortkey, sortorder, minratings, hasprereqs, breadth, format, cursor } =
+    const { sortkey, sortorder, minratings, noprereqs, breadth, format, cursor, cat } =
       querySchema.parse(req.query);
 
     if (format === "search") {
@@ -59,10 +61,11 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
         sortOrder: sortorder,
         sortKey: sortkey,
         minratings: minratings,
-        hasprereqs: hasprereqs,
+        noprereqs: noprereqs,
         breadth: breadth?.split("") as BreadthCategories,
         pageSize: 20,
         cursor: cursor,
+        cat: cat,
       });
 
       const next_cursor = Math.min(cursor + 20, length - (length % 20));

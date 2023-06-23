@@ -86,7 +86,7 @@ const ExplorePage = () => {
   const [sortKey, setSortKey] = useState<SortKey>("liked");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [minRatings, setMinRatings] = useState(0);
-  const [hasPreReqs, setHasPreReqs] = useState<boolean | undefined>(true);
+  const [noPreReqs, setNoPreReqs] = useState<boolean>(false);
   const [breadth, setBreadth] = useState<(BreadthCategories[number] | "")[]>(["A", "B", "C"]);
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -102,7 +102,7 @@ const ExplorePage = () => {
     status,
     isSuccess,
   } = useInfiniteQuery({
-    queryKey: ["explore-courses", sortKey, sortOrder, minRatings, hasPreReqs, breadth],
+    queryKey: ["explore-courses", sortKey, sortOrder, minRatings, noPreReqs, breadth],
     queryFn: async ({ pageParam = 0 }) => {
       const searchParams = new URLSearchParams({
         cursor: pageParam,
@@ -110,11 +110,8 @@ const ExplorePage = () => {
         sortorder: sortOrder,
         minratings: minRatings.toString(),
         breadth: breadth.join(""),
+        noprereqs: noPreReqs.toString(),
       });
-
-      if (hasPreReqs) {
-        searchParams.append("hasprereqs", hasPreReqs.toString());
-      }
 
       const response = await fetch(`/api/courses?${searchParams.toString()}`);
       if (!response.ok) throw new Error("Courses were not found");
@@ -315,10 +312,7 @@ const ExplorePage = () => {
               />
             </div>
             <div className="flex items-center gap-2">
-              <Checkbox
-                checked={!hasPreReqs}
-                onCheckedChange={(checked) => setHasPreReqs(!hasPreReqs)}
-              />
+              <Checkbox checked={noPreReqs} onCheckedChange={() => setNoPreReqs(!noPreReqs)} />
               <Label className="font-bold text-md text-muted-foreground">No Prerequisites</Label>
             </div>
             <div className="flex flex-col gap-2">

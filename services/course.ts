@@ -25,7 +25,7 @@ export type GetCoursesParams = {
 } & GetCoursesFilterParams;
 
 type GetCoursesFilterParams = {
-  hasprereqs?: boolean;
+  noprereqs?: boolean;
   minratings?: number;
   cat?: string;
   breadth?: BreadthCategories;
@@ -65,15 +65,17 @@ export async function getCourses({
   minratings = 0,
   pageSize = 20,
   cursor = 0,
-  hasprereqs,
+  noprereqs,
   cat,
 }: GetCoursesParams): Promise<GetCoursesServiceReturn> {
   const categoryFilters: Partial<Prisma.CourseWhereInput["category"]> = {};
-  if (cat) categoryFilters.category_code = cat;
+  if (cat) categoryFilters.category_code = { equals: cat };
   if (breadth) categoryFilters.breadth = { hasSome: breadth };
 
   const prereqFilters: Partial<Prisma.CourseWhereInput["prerequisites_text"]> = {};
-  if (!hasprereqs) prereqFilters.equals = [];
+  if (noprereqs) prereqFilters.equals = [];
+
+  console.log(prereqFilters);
 
   const _courses = await prisma.course.findMany({
     select: {
@@ -92,6 +94,8 @@ export async function getCourses({
       ],
     },
   });
+
+  // console.log(_courses);
 
   const aggregates = await prisma.course_Review.groupBy({
     by: ["course_code"],
@@ -116,6 +120,8 @@ export async function getCourses({
     },
   });
 
+  // console.log(aggregates);
+
   const aggregates_map = new Map<string, Omit<(typeof aggregates)[0], "course_code">>();
   const isFilteringAggregates = minratings !== 0; // add difficulty, attendance, useful, liked
 
@@ -136,6 +142,8 @@ export async function getCourses({
       ...aggregates_map.get(course.course_code),
     };
   });
+
+  // console.log(courses);
 
   if (sort_func) {
     courses.sort(sort_func);
