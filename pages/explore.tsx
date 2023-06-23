@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 import { SortKey, SortOrder, encodeCourseCode } from "@/lib/courses";
-import { roundToNearest } from "@/lib/utils";
+import { cn, roundToNearest } from "@/lib/utils";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ColumnDef, Header } from "@tanstack/react-table";
-import { ChevronDown, ChevronUp, Compass } from "lucide-react";
+import { ChevronDown, ChevronUp, Compass, Star } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
@@ -31,6 +31,12 @@ type CourseHeaderProps = {
   setSortOrder: (order: SortOrder) => void;
 };
 
+const topCoursesColours = [
+  "text-purple-800 hover:text-purple-800 decoration-purple-800",
+  "text-purple-600 hover:text-purple-600 decoration-purple-600",
+  "text-purple-400 hover:text-purple-400 decoration-purple-400",
+];
+
 const CourseHeader = ({
   header,
   columnTitle,
@@ -52,7 +58,7 @@ const CourseHeader = ({
         }}
         pressed={sortKey === header.id}
         size="sm"
-        className="p-1 h-5 "
+        className="p-2 h-6 "
       >
         <span>{columnTitle}</span>
         {sortKey === header.id && sortOrder === "desc" && <ChevronDown width={16} />}
@@ -121,14 +127,19 @@ const ExplorePage = () => {
           columnTitle="Course Code"
         />
       ),
-      cell: ({ cell }) => (
+      cell: ({ cell, row }) => (
         <div className="flex gap-1 items-center justify-start">
-          <Button variant="link" className="text-blue-500 m-0 h-1.5 py-0 px-0" asChild>
+          <Button
+            variant="link"
+            className={cn("text-blue-500 m-0 h-1.5 py-0 px-0", topCoursesColours[row.index])}
+            asChild
+          >
             <Link
-              className="whitespace-nowrap "
+              className="whitespace-nowrap space-x-1"
               href={`/course/${encodeCourseCode(cell.renderValue<string>())}`}
             >
-              {cell.renderValue<string>()}
+              {(row.index === 0 || row.index === 1 || row.index === 2) && <Star width={16} />}
+              <span>{cell.renderValue<string>()}</span>
             </Link>
           </Button>
         </div>
