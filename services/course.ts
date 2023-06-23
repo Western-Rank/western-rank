@@ -143,7 +143,7 @@ export async function getCourses({
 
   return {
     courses: courses.slice(cursor, cursor + pageSize),
-    length: _courses.length,
+    length: courses.length,
   };
 }
 
