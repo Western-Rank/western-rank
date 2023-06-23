@@ -49,7 +49,7 @@ const CourseHeader = ({
   setSortOrder,
 }: CourseHeaderProps) => {
   return (
-    <div className="flex gap-0.5 items-center">
+    <div className="flex gap-0.5 items-center w-full whitespace-nowrap">
       <Toggle
         onPressedChange={(pressed) => {
           if (sortKey !== header.id) {
@@ -182,7 +182,10 @@ const ExplorePage = () => {
             sortKey={sortKey}
             setSortKey={setSortKey}
             sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
+            setSortOrder={(order) => {
+              setSortOrder(order);
+              setMinRatings(1);
+            }}
             header={header}
             columnTitle="Liked"
           />
@@ -195,7 +198,10 @@ const ExplorePage = () => {
             sortKey={sortKey}
             setSortKey={setSortKey}
             sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
+            setSortOrder={(order) => {
+              setSortOrder(order);
+              setMinRatings(1);
+            }}
             header={header}
             columnTitle="Difficulty"
           />
@@ -208,7 +214,10 @@ const ExplorePage = () => {
             sortKey={sortKey}
             setSortKey={setSortKey}
             sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
+            setSortOrder={(order) => {
+              setSortOrder(order);
+              setMinRatings(1);
+            }}
             header={header}
             columnTitle="Useful"
           />
@@ -221,7 +230,10 @@ const ExplorePage = () => {
             sortKey={sortKey}
             setSortKey={setSortKey}
             sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
+            setSortOrder={(order) => {
+              setSortOrder(order);
+              setMinRatings(1);
+            }}
             header={header}
             columnTitle="Attendance"
           />
@@ -296,8 +308,8 @@ const ExplorePage = () => {
               </Label>
               <Slider
                 min={0}
-                max={1000}
-                step={50}
+                max={36}
+                step={1}
                 value={[minRatings]}
                 onValueChange={(value) => setMinRatings(value[0])}
               />
