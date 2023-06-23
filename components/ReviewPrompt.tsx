@@ -307,7 +307,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                                 <Select
                                   value={field.value}
                                   onValueChange={(value) => {
-                                    field.onChange(value);
+                                    field.onChange(value as Terms);
                                     console.log("combobox value:", value);
                                   }}
                                 >
@@ -455,7 +455,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                       <FormControl>
                         <Checkbox
                           checked={field.value}
-                          onCheckedChange={field.onChange}
+                          onCheckedChange={(checked) => field.onChange(!!checked)}
                           className="data-[state=checked]:bg-destructive border-destructive"
                         />
                       </FormControl>
