@@ -30,3 +30,11 @@ export const requisiteDescription = {
 export function formatFullCourseName(courseCode: string, courseName: string): FullCourseName {
   return `${courseCode}: ${courseName}`;
 }
+
+export function encodeCourseCode(courseCode: string) {
+  return courseCode.replace(" ", "-").replaceAll("/", ":").toLowerCase();
+}
+
+export function decodeCourseCode(courseCode: string) {
+  return courseCode.replace("-", " ").replaceAll(":", "/").toUpperCase();
+}

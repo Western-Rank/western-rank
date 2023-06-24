@@ -61,7 +61,8 @@ type ReviewPromptButtonProps = {
 };
 
 const reviewFormSchema = z.object({
-  professor: z.string().nonempty(),
+  professor_name: z.string().nonempty(),
+  professor_id: z.number().int(),
   review: z.string().optional(),
   liked: z.boolean(),
   difficulty: z.array(z.number().min(0).max(5)),
@@ -73,37 +74,41 @@ const reviewFormSchema = z.object({
 });
 
 const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) => {
-  if (edit) {
+  if (!auth) {
     return (
-      <Button
-        disabled={!auth}
-        onClick={onClick}
-        variant="ghost"
-        className="text-purple-600 hover:bg-purple-100 sm:w-auto rounded-l-none"
-      >
-        Edit
-      </Button>
+      <TooltipProvider>
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger className="cursor-not-allowed w-full md:w-fit">
+            <Button disabled onClick={onClick} variant="gradient" className="w-full">
+              Review
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top">Please login to review.</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   }
 
-  if (auth) {
+  if (edit) {
     return (
-      <Button onClick={onClick} variant="gradient" className="w-full md:w-fit">
-        Review
-      </Button>
+      <TooltipProvider>
+        <Button
+          disabled={!auth}
+          onClick={onClick}
+          variant="ghost"
+          className="text-purple-600 hover:bg-purple-100 sm:w-auto rounded-l-none"
+        >
+          Edit
+        </Button>
+      </TooltipProvider>
     );
   }
 
   return (
     <TooltipProvider>
-      <Tooltip delayDuration={100}>
-        <TooltipTrigger className="cursor-not-allowed">
-          <Button disabled onClick={onClick} variant="gradient" className="w-full md:w-fit">
-            Review
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top">Please login to review.</TooltipContent>
-      </Tooltip>
+      <Button onClick={onClick} variant="gradient" className="w-full md:w-fit">
+        Review
+      </Button>
     </TooltipProvider>
   );
 };
@@ -121,25 +126,29 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
 
   const edit = review !== undefined;
 
+  const reviewButtonText = !auth?.user ? "Log in to Review" : "Review";
+
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
     defaultValues: {
-      professor: "",
-      review: undefined,
-      liked: true,
-      difficulty: [2.5],
-      useful: [2.5],
-      attendance: [50],
-      anon: false,
-      date_taken: new Date().getFullYear(),
-      term_taken: "Fall",
+      professor_name: "",
+      professor_id: -1,
+      review: edit && review?.review != null ? review?.review : undefined,
+      liked: edit ? review.liked : true,
+      difficulty: [edit ? review.difficulty / 2 : 2.5],
+      useful: [edit ? review.useful / 2 : 2.5],
+      attendance: [edit ? review.attendance : 50],
+      anon: edit ? review.anon : false,
+      date_taken: edit ? review.date_taken.getFullYear() : new Date().getFullYear(),
+      term_taken: edit ? review.term_taken : "Fall",
     },
   });
 
   useEffect(() => {
     if (review) {
       reviewForm.reset({
-        professor: review.professor,
+        professor_name: review.professor_name,
+        professor_id: -1,
         review: review?.review != null ? review?.review : undefined,
         liked: review.liked,
         difficulty: [review.difficulty / 2],
@@ -334,7 +343,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                                 <Select
                                   value={field.value}
                                   onValueChange={(value) => {
-                                    field.onChange(value);
+                                    field.onChange(value as Terms);
                                     console.log("combobox value:", value);
                                   }}
                                 >
@@ -359,7 +368,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
 
                     <FormField
                       control={reviewForm.control}
-                      name="professor"
+                      name="professor_name"
                       render={({ field }) => (
                         <FormItem className="flex flex-col items-start px-1">
                           <FormLabel>Professor</FormLabel>

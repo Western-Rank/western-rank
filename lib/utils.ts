@@ -37,6 +37,42 @@ export function formatTimeAgo(date: Date) {
 }
 
 /**
+ * 0 -> 10, 13 -> 10, 46 -> 40, 1123 -> 1000, etc.
+ *
+ * @param x number
+ * @returns
+ */
+export function formatCount(x: number): number {
+  if (x === 0) {
+    return 10;
+  }
+
+  // 13
+
+  const numDigits = x.toString().length; // 2
+  // 10^2 = 100
+  // 13
+  return Math.floor(x / 10 ** (numDigits - 1)) * 10 ** (numDigits - 1);
+}
+
+export default function formatNumber(num: number, precision = 2): string {
+  const map = [
+    { suffix: "T", threshold: 1e12 },
+    { suffix: "B", threshold: 1e9 },
+    { suffix: "M", threshold: 1e6 },
+    { suffix: "K", threshold: 1e3 },
+  ];
+
+  const found = map.find((x) => Math.abs(num) >= x.threshold);
+  if (found) {
+    const formatted = (num / found.threshold).toFixed(precision) + found.suffix;
+    return formatted;
+  }
+
+  return num.toString();
+}
+
+/**
  * Generate tick labels for a MUI material slider's 'marks' prop from min to max, inclusive
  */
 export function generateSliderTicks(min: number, max: number, step = 1) {

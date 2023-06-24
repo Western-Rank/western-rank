@@ -1,4 +1,5 @@
-import Navbar from "@/components/Navbar";
+import BackToTop from "@/components/BackToTop";
+import NavbarHeader from "@/components/NavbarHeader";
 import PercentBar from "@/components/PercentBar";
 import PercentCircle from "@/components/PercentCircle";
 import Requisite, { RequisiteTextItem } from "@/components/Requisite";
@@ -7,12 +8,14 @@ import Stars from "@/components/Stars";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useShowMore from "@/hooks/useShowMore";
-import { FullCourse } from "@/lib/courses";
+import { decodeCourseCode, encodeCourseCode, FullCourse } from "@/lib/courses";
 import { roundToNearest } from "@/lib/utils";
 import { getAllCoursesSearch, getCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
+import { GraduationCap } from "lucide-react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
+import { useInView } from "react-intersection-observer";
 
 interface CourseProps {
   course: FullCourse; // the course information for the course displayed on this page
@@ -23,7 +26,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const course_paths = courses.map((course) => {
     return {
       params: {
-        course_code: course.course_code,
+        course_code: encodeCourseCode(course.course_code),
       },
     };
   });
@@ -43,7 +46,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<CourseProps> = async ({ params }) => {
   const { course_code } = params as { course_code: string };
-  const course = await getCourse(course_code);
+  const course = await getCourse(decodeCourseCode(course_code));
 
   return {
     props: {
@@ -61,6 +64,14 @@ const Course = ({ course }: CourseProps) => {
     text: course?.description ?? "",
     maxLength: 200,
   });
+
+  const { ref, inView: listInView } = useInView({
+    rootMargin: "-150px",
+  });
+
+  const { ref: navRef, inView: navInView } = useInView();
+
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const likedPercent = Math.round(
     ((course?.count_liked ?? 0) /
@@ -93,19 +104,18 @@ const Course = ({ course }: CourseProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <NavbarHeader
+        heading={course?.course_code ?? ""}
+        subHeading={course?.course_name ?? ""}
+        searchBar
+        className="dark bg-opacity-5"
+        sticky
+        Icon={GraduationCap}
+      />
+      <span ref={navRef} className="h-0"></span>
       <div className="light bg-background text-primary min-h-[110vh]">
-        <Navbar searchBar className="dark z-1" />
         <div className="flex flex-col light">
-          <div className="py-4 pt-16 bg-background dark relative">
-            <div className="h-40 w-[10vw] absolute bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-0 left-0 blur-2xl opacity-25"></div>
-            <h4 className="px-4 md:px-8 lg:px-15 xl:px-40 text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-400 to-55% py-1">
-              {course?.course_code}
-            </h4>
-            <h5 className="px-4 md:px-8 lg:px-15 xl:px-40 text-lg text-primary">
-              {course?.course_name}
-            </h5>
-          </div>
-
+          <BackToTop visible={listInView && !navInView} onClick={scrollTop} />
           <div className="py-8 px-4 md:px-8 lg:px-15 xl:px-40 flex flex-col-reverse lg:flex-row lg:gap-10">
             <p className="flex-1 text-primary flex flex-col">
               {course_description}
@@ -144,9 +154,8 @@ const Course = ({ course }: CourseProps) => {
           <div className="px-4 md:px-8 lg:px-15 xl:px-40">
             <Separator className="border-primary" />
           </div>
-
           <div className="px-4 md:px-8 lg:px-15 xl:px-40 flex-grow flex flex-col-reverse gap-4 lg:gap-6 lg:flex-row py-6">
-            <div className="flex-grow">
+            <div ref={ref} className="flex-grow">
               {course?.course_code && <ReviewList courseCode={course?.course_code} />}
             </div>
 

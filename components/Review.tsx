@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
+import { encodeCourseCode } from "@/lib/courses";
 import { cn, formatTimeAgo } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal, ThumbsDown, ThumbsUp } from "lucide-react";
@@ -148,23 +149,23 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
           <div>
             {includeCourseCode && (
               <Button variant="link" className="text-sm text-blue-400 p-0 pr-1 h-2" asChild>
-                <Link href={`/course/${encodeURIComponent(review.course_code)}`}>
+                <Link href={`/course/${encodeCourseCode(review.course_code)}`}>
                   {review.course_code}
                 </Link>
               </Button>
             )}
             <h6 className="text-sm">
-              {review?.professor && (
+              {review?.professor_name && (
                 <>
                   {"taught by "}
                   <a
                     href={`https://www.ratemyprofessors.com/search/professors/1491?q=${encodeURIComponent(
-                      review?.professor || "",
+                      review?.professor_name || "",
                     )}`}
                     className="hover:underline text-blue-400"
                     target="_blank"
                   >
-                    {review?.professor}
+                    {review?.professor_name}
                   </a>
                   {", "}
                 </>

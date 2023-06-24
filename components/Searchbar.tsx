@@ -18,6 +18,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
+import { encodeCourseCode } from "@/lib/courses";
 import { cn } from "@/lib/utils";
 import { dm_sans } from "@/pages/_app";
 import { Skeleton } from "./ui/skeleton";
@@ -98,8 +99,9 @@ export function Searchbar({ onSelect }: SearchbarProps) {
   }, 75);
 
   const onCourseSelect = (value: string) => {
-    // e.g. CALC 1000: Calculus I -> CALC%201000
-    const courseCodeURI = encodeURIComponent(value.toUpperCase().split(":")[0]);
+    // e.g. CALC 1000A/B: Calculus I -> calc-1000a:b
+    const courseCode = value.toUpperCase().split(":")[0];
+    const courseCodeURI = encodeCourseCode(courseCode);
     router.push(`/course/${courseCodeURI}`);
   };
 

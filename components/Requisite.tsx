@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { requisiteDescription, requisiteTypes } from "@/lib/courses";
+import { encodeCourseCode, requisiteDescription, requisiteTypes } from "@/lib/courses";
 import { Info } from "lucide-react";
 import Link from "next/link";
 
@@ -34,7 +34,7 @@ const Requisite = ({ type, requisiteText }: RequisiteProps) => {
             const course_code = item?.text;
             return (
               <Button key={index} variant="link" className="p-0 h-3 pr-1 text-blue-500" asChild>
-                <Link href={`/course/${encodeURIComponent(course_code)}`}>{item.text}</Link>
+                <Link href={`/course/${encodeCourseCode(course_code)}`}>{item.text}</Link>
               </Button>
             );
           } else {
