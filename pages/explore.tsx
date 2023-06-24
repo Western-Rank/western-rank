@@ -16,6 +16,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { type GetCoursesResponse } from "./api/courses";
+import Spinner from "@/components/ui/spinner";
 
 type ExploreCourseRow = {
   coursecode: string;
@@ -396,9 +397,14 @@ const ExplorePage = () => {
                 </Toggle>
               </div>
             </div>
-            {isSuccess && (
-              <p className="text-purple-600">{coursesData?.pages[0]._count ?? ""} course results</p>
-            )}
+            <div className="flex space-x-2 items-center">
+              {isSuccess && (
+                <p className="text-purple-600 py-2">
+                  {coursesData?.pages[0]._count ?? ""} course results
+                </p>
+              )}
+              {isFetching && <Spinner text="applying filters" className="scale-50" />}
+            </div>
           </div>
         </div>
       </div>
