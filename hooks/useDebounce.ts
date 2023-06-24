@@ -11,7 +11,7 @@ function useDebounce<T>(value: T, delay?: number) {
     };
   }, [value, delay]);
 
-  return [debouncedValue, setDebouncedValue];
+  return [debouncedValue, setDebouncedValue] as const;
 }
 
 export default useDebounce;
