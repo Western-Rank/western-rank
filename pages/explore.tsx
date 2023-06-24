@@ -136,7 +136,7 @@ const ExplorePage = () => {
         noprereqs: noPreReqs.toString(),
       });
 
-      if (category) searchParams.set("category", category);
+      if (category) searchParams.set("cat", category.toUpperCase());
 
       const response = await fetch(`/api/courses?${searchParams.toString()}`);
       if (!response.ok) throw new Error("Courses were not found");
