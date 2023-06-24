@@ -125,7 +125,7 @@ const ExplorePage = () => {
     status,
     isSuccess,
   } = useInfiniteQuery({
-    queryKey: ["explore-courses", sortKey, sortOrder, minRatings, noPreReqs, breadth],
+    queryKey: ["explore-courses", sortKey, sortOrder, minRatings, noPreReqs, breadth, category],
     queryFn: async ({ pageParam = 0 }) => {
       const searchParams = new URLSearchParams({
         cursor: pageParam,
@@ -135,6 +135,8 @@ const ExplorePage = () => {
         breadth: breadth.join(""),
         noprereqs: noPreReqs.toString(),
       });
+
+      if (category) searchParams.set("category", category);
 
       const response = await fetch(`/api/courses?${searchParams.toString()}`);
       if (!response.ok) throw new Error("Courses were not found");
@@ -334,6 +336,15 @@ const ExplorePage = () => {
                 onValueChange={(value) => setMinRatings(value[0])}
               />
             </div>
+            <div className="flex flex-col space-y-2">
+              <Label className="font-bold text-md text-muted-foreground">Subjects</Label>
+              <Combobox
+                value={category}
+                options={categoriesOptions ?? []}
+                onChangeValue={(value) => setCategory(value)}
+                placeholder="All Subjects"
+              />
+            </div>
             <div className="flex items-center gap-2">
               <Checkbox checked={noPreReqs} onCheckedChange={() => setNoPreReqs(!noPreReqs)} />
               <Label className="font-bold text-md text-muted-foreground">No Prerequisites</Label>
@@ -384,14 +395,6 @@ const ExplorePage = () => {
                   C
                 </Toggle>
               </div>
-            </div>
-            <div>
-              <Combobox
-                value={category}
-                options={categoriesOptions ?? []}
-                onChangeValue={(value) => setCategory(value)}
-                placeholder="All Subjects"
-              />
             </div>
             {isSuccess && (
               <p className="text-purple-600">{coursesData?.pages[0]._count ?? ""} course results</p>
