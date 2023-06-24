@@ -347,9 +347,8 @@ const ExplorePage = () => {
             <div className="flex flex-col space-y-2">
               <Label className="font-bold text-md text-muted-foreground">Subjects</Label>
               <Combobox
-                // TODO: for some reason this is lowercases?
                 value={category}
-                options={categoriesOptions ?? []}
+                options={categoriesOptions?.sort((a, b) => (a.value > b.value ? 1 : -1)) ?? []}
                 onChangeValue={(value) => setCategory(value)}
                 placeholder="All Subjects"
               />
