@@ -1,4 +1,4 @@
-type ProfessorItem = {
+export type ProfessorItem = {
   id: number;
   name: string;
 };

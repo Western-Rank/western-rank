@@ -40,14 +40,14 @@ import { Toggle } from "@/components/ui/toggle";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import useWarnIfUnsavedChanges from "@/hooks/useWarnIfUnsavedChanges";
-import { ProfessorResponse } from "@/lib/professors";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ProfessorCombobox } from "./ProfessorCombobox";
 
 type ReviewPromptProps = {
   courseCode: Course["course_code"];
@@ -175,8 +175,8 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   useEffect(() => {
     if (review) {
       reviewForm.reset({
-        professor_name: review.professor_name,
-        professor_id: -1,
+        professor_name: review.professor_name ?? "Other",
+        professor_id: review.professor_id ?? -1,
         review: review?.review != null ? review?.review : undefined,
         liked: review.liked,
         difficulty: [review.difficulty / 2],
@@ -189,7 +189,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
     } else {
       reviewForm.reset();
     }
-  }, [reviewForm, courseCode, review]);
+  }, [reviewForm, review]);
 
   useWarnIfUnsavedChanges(
     reviewForm.formState.isDirty,
@@ -241,22 +241,6 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
         description: "Try again.",
         variant: "destructive",
       });
-    },
-  });
-
-  const { data: professorOptions } = useQuery({
-    queryKey: ["professors"],
-    queryFn: async () => {
-      const response = await fetch("/api/courses/professors?format=compact");
-      if (!response.ok) throw new Error("Professors were not found");
-      const professors: ProfessorResponse = await response.json();
-
-      const professorOptions = professors.map((professor) => ({
-        label: professor.name,
-        value: professor.id,
-      }));
-
-      return professorOptions;
     },
   });
 
@@ -415,8 +399,8 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
 
                     <FormField
                       control={reviewForm.control}
-                      name="professor_name"
-                      render={({ field }) => (
+                      name="professor_id"
+                      render={({ field, formState }) => (
                         <FormItem className="flex flex-col items-start px-1">
                           <FormLabel>Professor</FormLabel>
                           <FormDescription>
@@ -424,10 +408,16 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                           </FormDescription>
                           <FormControl className="place-items-center">
                             <div className="flex-1 flex-grow w-full">
-                              <Input
-                                placeholder="Name"
-                                value={field.value}
-                                onChange={field.onChange}
+                              <ProfessorCombobox
+                                value={{
+                                  id: reviewForm.getValues().professor_id,
+                                  name: reviewForm.getValues().professor_name,
+                                }}
+                                onChangeProfessor={(prof) => {
+                                  reviewForm.setValue("professor_id", prof.id);
+                                  reviewForm.setValue("professor_name", prof.name);
+                                }}
+                                placeholder="Select a prof"
                               />
                             </div>
                           </FormControl>
