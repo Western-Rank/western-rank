@@ -103,7 +103,6 @@ function Profile({ user }: ProfileProps) {
         heading="Your Profile"
         subHeading={user.email ?? ""}
         Icon={User2}
-        sticky
       ></NavbarHeader>
       <div className="light text-primary bg-background flex-grow py-4 px-4 md:px-8 lg:px-15 xl:px-40">
         <h5 className="py-1 text-secondary-foreground">

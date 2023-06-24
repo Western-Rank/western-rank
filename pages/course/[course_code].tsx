@@ -109,7 +109,6 @@ const Course = ({ course }: CourseProps) => {
         subHeading={course?.course_name ?? ""}
         searchBar
         className="dark bg-opacity-5"
-        sticky
         Icon={GraduationCap}
       />
       <span ref={navRef} className="h-0"></span>
