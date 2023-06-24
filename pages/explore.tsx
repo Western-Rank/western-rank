@@ -340,6 +340,7 @@ const ExplorePage = () => {
             <div className="flex flex-col space-y-2">
               <Label className="font-bold text-md text-muted-foreground">Subjects</Label>
               <Combobox
+                // TODO: for some reason this is lowercases?
                 value={category}
                 options={categoriesOptions ?? []}
                 onChangeValue={(value) => setCategory(value)}
