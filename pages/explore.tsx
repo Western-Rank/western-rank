@@ -6,17 +6,17 @@ import { Combobox } from "@/components/ui/combobox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
+import Spinner from "@/components/ui/spinner";
 import { Toggle } from "@/components/ui/toggle";
 import { BreadthCategories, SortKey, SortOrder, encodeCourseCode } from "@/lib/courses";
 import { cn, roundToNearest } from "@/lib/utils";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef, Header } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, Compass, Star } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { type GetCoursesResponse } from "./api/courses";
-import Spinner from "@/components/ui/spinner";
 
 type ExploreCourseRow = {
   coursecode: string;
@@ -115,6 +115,8 @@ const ExplorePage = () => {
     },
   });
 
+  const queryClient = useQueryClient();
+
   const {
     data: coursesData,
     error,
@@ -128,6 +130,9 @@ const ExplorePage = () => {
   } = useInfiniteQuery({
     queryKey: ["explore-courses", sortKey, sortOrder, minRatings, noPreReqs, breadth, category],
     queryFn: async ({ pageParam = 0 }) => {
+      if (queryClient.isFetching(["explore-courses"]))
+        queryClient.cancelQueries(["explore-courses"]);
+
       const searchParams = new URLSearchParams({
         cursor: pageParam,
         sortkey: sortKey,
@@ -279,6 +284,7 @@ const ExplorePage = () => {
     async (containerRefElement?: HTMLDivElement | null) => {
       if (containerRefElement) {
         const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
+        console.log("scrollHeight", scrollHeight);
         //once the user has scrolled within 300px of the bottom of the table, fetch more data if there is any
         if (
           scrollHeight - scrollTop - clientHeight < 100 &&
