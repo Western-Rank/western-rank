@@ -155,7 +155,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
               </Button>
             )}
             <h6 className="text-sm">
-              {review?.professor_name && (
+              {review?.professor_name && review?.professor_id && review?.professor_id > 0 && (
                 <>
                   {"taught by "}
                   <a
