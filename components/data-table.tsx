@@ -10,20 +10,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { useVirtual } from "@tanstack/react-virtual";
+import { useInView } from "react-intersection-observer";
 
 interface DataTableProps<TData, TValue, TSortKey> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onBottomReached: (containerRefElement?: HTMLDivElement | null) => void;
+  onLastRowReached?: () => void;
 }
 
 export function DataTable<TData, TValue, TSortKey>({
   columns,
   data,
   onBottomReached,
+  onLastRowReached,
 }: DataTableProps<TData, TValue, TSortKey>) {
   const table = useReactTable({
     data,
@@ -45,6 +48,14 @@ export function DataTable<TData, TValue, TSortKey>({
   const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
   const paddingBottom =
     virtualRows.length > 0 ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0) : 0;
+
+  const { ref: lastItemRef, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      onLastRowReached?.();
+    }
+  }, [inView, onLastRowReached]);
 
   return (
     <div
@@ -77,7 +88,7 @@ export function DataTable<TData, TValue, TSortKey>({
               <TableCell style={{ height: `${paddingTop}px` }} />
             </TableRow>
           )}
-          {virtualRows ? (
+          {/* {virtualRows ? (
             virtualRows.map((virtualRow) => {
               const row = rows[virtualRow.index];
               return (
@@ -96,12 +107,32 @@ export function DataTable<TData, TValue, TSortKey>({
                 No results.
               </TableCell>
             </TableRow>
+          )} */}
+          {rows ? (
+            rows.map((row) => (
+              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
           )}
-          {paddingBottom > 0 && (
+          <TableRow ref={lastItemRef}>
+            <TableCell style={{ height: `2px` }} />
+          </TableRow>
+          {/* {paddingBottom > 0 && (
             <TableRow>
               <TableCell style={{ height: `${paddingBottom}px` }} />
             </TableRow>
-          )}
+          )} */}
         </TableBody>
       </Table>
     </div>

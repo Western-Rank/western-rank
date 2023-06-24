@@ -321,6 +321,7 @@ const ExplorePage = () => {
               columns={columns}
               data={flatCoursesData ?? []}
               onBottomReached={fetchMoreOnBottomReached}
+              onLastRowReached={fetchNextPage}
             />
           </div>
           <Separator orientation="vertical" className="w-[1px] h-200" />
