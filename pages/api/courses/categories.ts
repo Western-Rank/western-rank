@@ -15,7 +15,7 @@ async function handleGetCategories(req: NextApiRequest, res: NextApiResponse) {
   try {
     const categories = await getCourseCategories();
 
-    return res.status(200).json(categories.map(({ category }) => category.category_code));
+    return res.status(200).json(categories.map((category) => category.category_code));
   } catch (err: any) {
     if (err instanceof z.ZodError) {
       return res.status(400).send(`Invalid query parameters: ${err.message}`);

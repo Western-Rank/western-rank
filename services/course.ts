@@ -216,13 +216,9 @@ export async function getCourse(courseCode: string) {
 }
 
 export async function getCourseCategories() {
-  return prisma.course.findMany({
+  return prisma.category.findMany({
     select: {
-      category: {
-        select: {
-          category_code: true,
-        },
-      },
+      category_code: true,
     },
   });
 }

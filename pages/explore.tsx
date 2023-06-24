@@ -93,13 +93,24 @@ const ExplorePage = () => {
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
-  const {} = useQuery({
+  const { data: categoriesOptions } = useQuery({
     queryKey: ["explore-categories"],
     queryFn: async () => {
-      const response = await fetch("/api/categories");
+      const response = await fetch("/api/courses/categories");
       if (!response.ok) throw new Error("Categories were not found");
-      const categories = await response.json();
-      return categories;
+      const categories: string[] = await response.json();
+
+      const categoriesOptions = categories.map((category) => ({
+        label: category,
+        value: category,
+      }));
+
+      categoriesOptions.push({
+        label: "All Subjects",
+        value: "",
+      });
+
+      return categoriesOptions;
     },
   });
 
@@ -377,9 +388,9 @@ const ExplorePage = () => {
             <div>
               <Combobox
                 value={category}
-                options={[]}
+                options={categoriesOptions ?? []}
                 onChangeValue={(value) => setCategory(value)}
-                placeholder="Course Category"
+                placeholder="All Subjects"
               />
             </div>
             {isSuccess && (
