@@ -44,7 +44,7 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full md:w-[300px] justify-between"
+          className="w-full md:w-[300px] justify-between border-border"
         >
           {currentValue ? currentValue.toUpperCase() : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
