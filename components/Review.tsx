@@ -155,17 +155,17 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
               </Button>
             )}
             <h6 className="text-sm">
-              {review?.professor && (
+              {review?.professor_name && (
                 <>
                   {"taught by "}
                   <a
                     href={`https://www.ratemyprofessors.com/search/professors/1491?q=${encodeURIComponent(
-                      review?.professor || "",
+                      review?.professor_name || "",
                     )}`}
                     className="hover:underline text-blue-400"
                     target="_blank"
                   >
-                    {review?.professor}
+                    {review?.professor_name}
                   </a>
                   {", "}
                 </>

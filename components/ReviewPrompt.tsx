@@ -1,6 +1,6 @@
 import { Course, Course_Review, Term as Terms } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Checkbox } from "@/components//ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -39,10 +39,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import useWarnIfUnsavedChanges from "@/hooks/useWarnIfUnsavedChanges";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -59,15 +61,43 @@ type ReviewPromptButtonProps = {
 };
 
 const reviewFormSchema = z.object({
-  professor: z.string().nonempty(),
-  review: z.string().optional(),
-  liked: z.boolean(),
-  difficulty: z.array(z.number().min(0).max(5)),
-  useful: z.array(z.number().min(0).max(5)),
-  attendance: z.array(z.number().min(0).max(100)),
-  anon: z.boolean(),
-  date_taken: z.number().min(2010).max(new Date().getFullYear()),
-  term_taken: z.nativeEnum(Terms),
+  professor_name: z
+    .string({
+      invalid_type_error: "Invalid Professor Name",
+      required_error: "Professor is required",
+    })
+    .nonempty("Professor is required"),
+  professor_id: z
+    .number({ invalid_type_error: "Invalid Professor Id", required_error: "Professor is required" })
+    .int(),
+  review: z.string({ invalid_type_error: "Invalid Review" }).optional(),
+  liked: z.boolean({
+    invalid_type_error: "Invalid Liked (True or False)",
+    required_error: "Liked is required",
+  }),
+  difficulty: z.array(z.number().min(0).max(5), {
+    invalid_type_error: "Invalid Difficulty",
+    required_error: "Difficulty is required",
+  }),
+  useful: z.array(z.number().min(0).max(5), {
+    invalid_type_error: "Invalid Useful",
+    required_error: "Useful is required",
+  }),
+  attendance: z.array(z.number().min(0).max(100), {
+    invalid_type_error: "Invalid Attendance",
+    required_error: "Attendance is required",
+  }),
+  anon: z.boolean({
+    invalid_type_error: "Invalid Anonymous",
+    required_error: "Choose if you want the review to be anonymous or not",
+  }),
+  date_taken: z
+    .number()
+    .min(2010, "Years before 2010 are not valid")
+    .max(new Date().getFullYear(), "Years in the future are invalid"),
+  term_taken: z.nativeEnum(Terms, {
+    invalid_type_error: "Only Fall, Winter, or Summer are valid terms",
+  }),
 });
 
 const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) => {
@@ -75,8 +105,8 @@ const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) =>
     return (
       <TooltipProvider>
         <Tooltip delayDuration={100}>
-          <TooltipTrigger className="cursor-not-allowed">
-            <Button disabled onClick={onClick} variant="gradient" className="w-full md:w-fit">
+          <TooltipTrigger className="cursor-not-allowed w-full md:w-fit">
+            <Button disabled onClick={onClick} variant="gradient" className="w-full">
               Review
             </Button>
           </TooltipTrigger>
@@ -116,16 +146,20 @@ const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) =>
 const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps) => {
   const { data: auth } = useSession();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
   const edit = review !== undefined;
 
+  const reviewButtonText = !auth?.user ? "Log in to Review" : "Review";
+
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
     defaultValues: {
-      professor: edit ? review.professor : "",
+      professor_name: "",
+      professor_id: -1,
       review: edit && review?.review != null ? review?.review : undefined,
       liked: edit ? review.liked : true,
       difficulty: [edit ? review.difficulty / 2 : 2.5],
@@ -136,6 +170,34 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
       term_taken: edit ? review.term_taken : "Fall",
     },
   });
+
+  useEffect(() => {
+    if (review) {
+      reviewForm.reset({
+        professor_name: review.professor_name,
+        professor_id: -1,
+        review: review?.review != null ? review?.review : undefined,
+        liked: review.liked,
+        difficulty: [review.difficulty / 2],
+        useful: [review.useful / 2],
+        attendance: [review.attendance],
+        anon: review.anon,
+        date_taken: review.date_taken.getFullYear(),
+        term_taken: review.term_taken,
+      });
+    } else {
+      reviewForm.reset();
+    }
+  }, [reviewForm, courseCode, review]);
+
+  useWarnIfUnsavedChanges(
+    reviewForm.formState.isDirty,
+    () => confirm("Warning! You have unsubmitted changes."),
+    (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "Save your changes before exiting.";
+    },
+  );
 
   const createReviewMutationFn = useCallback(
     async (review: Course_Review_Create) => {
@@ -210,7 +272,11 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
       </DialogTrigger>
       <DialogContent className="light text-primary sm:max-w-[900px] max-h-[100vh]">
         <Form {...reviewForm}>
-          <form onSubmit={reviewForm.handleSubmit(onSubmit)} className="space-y-4 flex flex-col">
+          <form
+            onSubmit={reviewForm.handleSubmit(onSubmit)}
+            className="space-y-4 flex flex-col"
+            noValidate
+          >
             <DialogHeader>
               <DialogTitle className="md:text-2xl">
                 Review{" "}
@@ -307,7 +373,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                                 <Select
                                   value={field.value}
                                   onValueChange={(value) => {
-                                    field.onChange(value);
+                                    field.onChange(value as Terms);
                                     console.log("combobox value:", value);
                                   }}
                                 >
@@ -332,7 +398,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
 
                     <FormField
                       control={reviewForm.control}
-                      name="professor"
+                      name="professor_name"
                       render={({ field }) => (
                         <FormItem className="flex flex-col items-start px-1">
                           <FormLabel>Professor</FormLabel>
@@ -455,7 +521,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                       <FormControl>
                         <Checkbox
                           checked={field.value}
-                          onCheckedChange={field.onChange}
+                          onCheckedChange={(checked) => field.onChange(!!checked)}
                           className="data-[state=checked]:bg-destructive border-destructive"
                         />
                       </FormControl>
