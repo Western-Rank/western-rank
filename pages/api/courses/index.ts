@@ -3,6 +3,8 @@ import { getAllCoursesSearch, getCourses, type ExploreCourse } from "@/services/
 import type { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
 
+const PAGE_SIZE = 20;
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
@@ -40,7 +42,7 @@ const querySchema = z.object({
 export type GetCoursesResponse = {
   courses: ExploreCourse[];
   _count: number;
-  next_cursor: number;
+  next_cursor: number | undefined;
 };
 
 /**
@@ -63,12 +65,12 @@ async function handleGetCourses(req: NextApiRequest, res: NextApiResponse) {
         minratings: minratings,
         noprereqs: noprereqs,
         breadth: breadth?.split("") as BreadthCategories,
-        pageSize: 20,
+        pageSize: PAGE_SIZE,
         cursor: cursor,
         cat: cat,
       });
 
-      const next_cursor = Math.min(cursor + 20, length - (length % 20));
+      const next_cursor = cursor + PAGE_SIZE < length ? cursor + PAGE_SIZE : undefined;
 
       const response: GetCoursesResponse = {
         courses: courses,
