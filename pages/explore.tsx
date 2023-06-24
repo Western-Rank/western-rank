@@ -313,7 +313,6 @@ const ExplorePage = () => {
           subHeading={`See all Western University Courses`}
           Icon={Compass}
           searchBar
-          sticky
         />
         <div className="flex flex-col-reverse md:flex-row gap-4 light text-primary bg-background py-4 px-2 md:px-8 lg:px-15 xl:px-40 flex-grow">
           <div className="h-[64vh] md:items-center justify-between">
