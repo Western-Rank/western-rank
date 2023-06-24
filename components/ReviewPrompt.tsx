@@ -40,9 +40,10 @@ import { Toggle } from "@/components/ui/toggle";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import useWarnIfUnsavedChanges from "@/hooks/useWarnIfUnsavedChanges";
+import { ProfessorResponse } from "@/lib/professors";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -240,6 +241,22 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
         description: "Try again.",
         variant: "destructive",
       });
+    },
+  });
+
+  const { data: professorOptions } = useQuery({
+    queryKey: ["professors"],
+    queryFn: async () => {
+      const response = await fetch("/api/courses/professors?format=compact");
+      if (!response.ok) throw new Error("Professors were not found");
+      const professors: ProfessorResponse = await response.json();
+
+      const professorOptions = professors.map((professor) => ({
+        label: professor.name,
+        value: professor.id,
+      }));
+
+      return professorOptions;
     },
   });
 
