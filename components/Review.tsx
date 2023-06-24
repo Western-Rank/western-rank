@@ -159,8 +159,8 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
                 <>
                   {"taught by "}
                   <a
-                    href={`https://www.ratemyprofessors.com/search/professors/1491?q=${encodeURIComponent(
-                      review?.professor_name || "",
+                    href={`https://www.ratemyprofessors.com/professor/${encodeURIComponent(
+                      review?.professor_id || "",
                     )}`}
                     className="hover:underline text-blue-400"
                     target="_blank"

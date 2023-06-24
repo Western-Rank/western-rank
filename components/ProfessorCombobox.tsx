@@ -87,16 +87,16 @@ export function ProfessorCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full md:w-[300px] justify-between"
+          className="w-full md:max-w-[50%] justify-between"
         >
           {currentProfessor ? currentProfessor.name : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent side="top" className="w-full md:w-[300px] p-0 light">
+      <PopoverContent side="top" className="w-full md:w-[400px] p-0 light">
         <Command shouldFilter={false}>
           <CommandInput
-            className="h-10"
+            className=""
             placeholder="Search..."
             required={required}
             id={id}
@@ -131,6 +131,19 @@ export function ProfessorCombobox({
                   {professor.name}
                 </CommandItem>
               ))}
+            {!!currentProfessor && currentProfessor.id > 0 && results === null && (
+              <CommandItem
+                key={currentProfessor.id}
+                onSelect={() => {
+                  setCurrentProfessor(otherProfessor);
+                  if (onChangeProfessor) onChangeProfessor(otherProfessor);
+                  setOpen(false);
+                }}
+              >
+                <Check className="mr-2 h-4 w-4" />
+                {currentProfessor.name}
+              </CommandItem>
+            )}
             {!isSuccess && results == null && (
               <CommandEmpty className="grid place-items-center">
                 <div className="p-1 w-full space-y-1">
