@@ -31,7 +31,12 @@ const Navbar = ({ sticky, searchBar, className }: NavbarProps) => {
       <div className="flex items-center space-x-2">
         {searchBar && (
           <>
-            <Button id="explore-btn" variant="gradient" size="sm" className="px-3">
+            <Button
+              id="explore-btn"
+              variant="gradient"
+              size="sm"
+              className="px-3 dark text-primary"
+            >
               <Link href="/explore">
                 <Compass className="h-5 w-[1.1rem] shrink-0 opacity-90" />
               </Link>

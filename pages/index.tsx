@@ -59,7 +59,7 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
               <h3 className="text-muted">
                 {formatNumber(reviewCount, 1)}+ reviews for {courseCount} courses.
               </h3>
-              <Button size="sm" variant="gradient" asChild>
+              <Button size="sm" variant="gradient" asChild className="dark text-primary">
                 <Link href="/explore" className="space-x-2">
                   <Compass />
                   <span>Explore Courses</span>
