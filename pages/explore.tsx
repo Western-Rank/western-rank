@@ -19,6 +19,7 @@ import { useMemo, useState } from "react";
 import { type GetCoursesResponse } from "./api/courses";
 
 type ExploreCourseRow = {
+  rank: number;
   coursecode: string;
   ratings: number;
   liked: string;
@@ -26,6 +27,12 @@ type ExploreCourseRow = {
   useful: string;
   attendance: string;
 };
+
+const topCoursesColours = [
+  "text-purple-800 hover:text-purple-800 decoration-purple-800",
+  "text-purple-600 hover:text-purple-600 decoration-purple-600",
+  "text-purple-400 hover:text-purple-400 decoration-purple-400",
+];
 
 type CourseHeaderProps = {
   header: Header<ExploreCourseRow, unknown>;
@@ -35,12 +42,6 @@ type CourseHeaderProps = {
   sortOrder: SortOrder;
   setSortOrder: (order: SortOrder) => void;
 };
-
-const topCoursesColours = [
-  "text-purple-800 hover:text-purple-800 decoration-purple-800",
-  "text-purple-600 hover:text-purple-600 decoration-purple-600",
-  "text-purple-400 hover:text-purple-400 decoration-purple-400",
-];
 
 const CourseHeader = ({
   header,
@@ -73,8 +74,9 @@ const CourseHeader = ({
   );
 };
 
-function courseRowData(course: GetCoursesResponse["courses"][0]): ExploreCourseRow {
+function courseRowData(course: GetCoursesResponse["courses"][0], rank: number): ExploreCourseRow {
   return {
+    rank: course.rank ?? "",
     coursecode: course.course_code,
     ratings: course._count?.review_id ?? 0,
     liked: roundToNearest(course._count?.liked ?? 0, 0) + "%",
@@ -154,6 +156,23 @@ const ExplorePage = () => {
   const columns: ColumnDef<ExploreCourseRow>[] = useMemo(
     () => [
       {
+        accessorKey: "rank",
+        header: ({ header }) => (
+          <div className="flex gap-0.5 items-center w-full whitespace-nowrap opacity-75">Rank</div>
+        ),
+        cell: ({ cell, row }) => (
+          <div className="flex gap-1 items-center justify-start">
+            <Button
+              variant="link"
+              className={cn("text-zinc-300 m-0 h-1.5 py-0 px-0", topCoursesColours[row.index])}
+              asChild
+            >
+              <span>{cell.renderValue<string>()}</span>
+            </Button>
+          </div>
+        ),
+      },
+      {
         accessorKey: "coursecode",
         header: ({ header }) => (
           <CourseHeader
@@ -176,7 +195,7 @@ const ExplorePage = () => {
                 className="whitespace-nowrap space-x-1"
                 href={`/course/${encodeCourseCode(cell.renderValue<string>())}`}
               >
-                {(row.index === 0 || row.index === 1 || row.index === 2) && <Star width={16} />}
+                {/* {(row.index === 0 || row.index === 1 || row.index === 2) && <Star width={16} />} */}
                 <span>{cell.renderValue<string>()}</span>
               </Link>
             </Button>
