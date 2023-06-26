@@ -1,9 +1,13 @@
+import { CourseSearchItem } from "@/components/Searchbar";
+import { BreadthCategories, SORT_MAP_ASC, SORT_MAP_DESC, SortKey, SortOrder } from "@/lib/courses";
 import { prisma } from "@/lib/db";
+import { roundToNearest } from "@/lib/utils";
+import { Prisma } from "@prisma/client";
 
 /**
  * Search for courses stored in the database.
  * @param query Substring to match course names/codes with
- * @returns List of courses that match  the given query
+ * @returns List of courses that match the given query
  */
 export function searchCourses(query: string) {
   return prisma.course.findMany({
@@ -13,16 +17,134 @@ export function searchCourses(query: string) {
   });
 }
 
+export type GetCoursesParams = {
+  sortKey?: SortKey;
+  sortOrder?: SortOrder;
+  pageSize?: number;
+  cursor?: number;
+} & GetCoursesFilterParams;
+
+type GetCoursesFilterParams = {
+  noprereqs?: boolean;
+  minratings?: number;
+  cat?: string;
+  breadth?: BreadthCategories;
+};
+
+export type ExploreCourse = {
+  _count?:
+    | {
+        liked: number;
+        review_id: number;
+      }
+    | undefined;
+  _avg?:
+    | {
+        difficulty: number | null;
+        attendance: number | null;
+        useful: number | null;
+      }
+    | undefined;
+} & CourseSearchItem;
+
+// export type ExploreCourse = Omit<Course, "precorequisites">;
+
+type GetCoursesServiceReturn = {
+  courses: ExploreCourse[];
+  length: number;
+};
+
 /**
  * Get all courses stored in the database.
- * @returns List of all courses stored in the database
+ * @returns List of all courses stored in the database, total amount of courses.
  */
-export function getAllCourses() {
-  return prisma.course.findMany({
+export async function getCourses({
+  sortKey = "liked",
+  sortOrder = "asc",
+  breadth = ["A", "B", "C"],
+  minratings = 0,
+  pageSize = 20,
+  cursor = 0,
+  noprereqs,
+  cat,
+}: GetCoursesParams): Promise<GetCoursesServiceReturn> {
+  const categoryFilters: Partial<Prisma.CourseWhereInput["category"]> = {};
+  if (cat) categoryFilters.category_code = { equals: cat };
+  if (breadth) categoryFilters.breadth = { hasSome: breadth };
+
+  const prereqFilters: Partial<Prisma.CourseWhereInput["prerequisites_text"]> = {};
+  if (noprereqs) prereqFilters.equals = [];
+
+  const _courses = await prisma.course.findMany({
+    select: {
+      course_name: true,
+      course_code: true,
+    },
     orderBy: {
-      course_code: "asc",
+      course_code: sortOrder,
+    },
+    where: {
+      AND: [
+        {
+          category: categoryFilters,
+          prerequisites_text: prereqFilters,
+        },
+      ],
     },
   });
+
+  const aggregates = await prisma.course_Review.groupBy({
+    by: ["course_code"],
+    _count: {
+      liked: true,
+      review_id: true,
+    },
+    _avg: {
+      difficulty: true,
+      attendance: true,
+      useful: true,
+    },
+    having: {
+      course_code: {
+        in: _courses.map((course) => course.course_code),
+      },
+      review_id: {
+        _count: {
+          gte: minratings,
+        },
+      },
+    },
+  });
+
+  const aggregates_map = new Map<string, Omit<(typeof aggregates)[0], "course_code">>();
+  const isFilteringAggregates = minratings !== 0; // add difficulty, attendance, useful, liked
+
+  aggregates.forEach(({ course_code, ...agg }) => {
+    agg._count.liked = roundToNearest((agg?._count?.liked / agg?._count?.review_id) * 100 || 0, 1);
+    aggregates_map.set(course_code, agg);
+  });
+
+  const sort_func = sortOrder === "desc" ? SORT_MAP_DESC.get(sortKey) : SORT_MAP_ASC.get(sortKey);
+
+  const courses = (
+    !isFilteringAggregates
+      ? _courses
+      : _courses.filter((course) => aggregates_map.has(course.course_code))
+  ).map((course) => {
+    return {
+      ...course,
+      ...aggregates_map.get(course.course_code),
+    };
+  });
+
+  if (sort_func) {
+    courses.sort(sort_func);
+  }
+
+  return {
+    courses: courses.slice(cursor, cursor + pageSize),
+    length: courses.length,
+  };
 }
 
 export function getCourseCount() {
@@ -91,4 +213,12 @@ export async function getCourse(courseCode: string) {
     ...aggregate,
     count_liked,
   };
+}
+
+export async function getCourseCategories() {
+  return prisma.category.findMany({
+    select: {
+      category_code: true,
+    },
+  });
 }

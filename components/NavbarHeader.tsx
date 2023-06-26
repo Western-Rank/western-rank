@@ -27,7 +27,9 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
 
   useEffect(() => {
     const handleScroll = () => {
-      setHasScrolled(true);
+      if (!hasScrolled) {
+        setHasScrolled(true);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -35,7 +37,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [hasScrolled]);
 
   useEffect(() => {
     if (!sticky || Date.now() - lastUpdateTime <= 100) {
@@ -55,13 +57,14 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
       <span ref={fromTopRef}></span>
       <div
         className={cn(
-          "z-10 bg-background shadow-2xl border-b-0 shadow-background/30",
-          headerSticky ? "sticky top-0" : "",
+          "z-30 bg-background",
+          headerSticky ? "sticky top-0 shadow-2xl border-b-0 shadow-background/30" : "",
         )}
       >
         <Navbar {...navbarProps} sticky key="nav" />
         <motion.div
           initial={false}
+          transition={{ duration: 0.25 }}
           animate={{
             paddingTop: headerSticky ? "0px" : "4rem",
             paddingBottom: headerSticky ? "0px" : "0.75rem",

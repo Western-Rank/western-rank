@@ -1,6 +1,5 @@
-import { SortKey, SortOrder } from "@/components/ReviewList";
 import { prisma } from "@/lib/db";
-import { Course_Review_Create } from "@/lib/reviews";
+import { Course_Review_Create, SortKey, SortOrder } from "@/lib/reviews";
 import { Course_Review } from "@prisma/client";
 
 /**

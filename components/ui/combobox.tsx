@@ -44,9 +44,9 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full md:w-[300px] justify-between"
+          className="w-full md:w-[300px] justify-between border-border"
         >
-          {currentValue ? currentValue : placeholder}
+          {currentValue ? currentValue.toUpperCase() : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -70,8 +70,8 @@ export function Combobox({
               >
                 <Check
                   className={cn(
-                    "mr-2 h-4 w-4",
-                    currentValue === option.value ? "opacity-100" : "opacity-0",
+                    "mr-2 h-4 w-4 stroke-black stroke-4",
+                    currentValue?.toUpperCase() === option.value ? "opacity-100" : "opacity-0",
                   )}
                 />
                 {option.label}

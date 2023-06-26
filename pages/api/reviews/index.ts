@@ -1,4 +1,4 @@
-import type { SortKey, SortOrder } from "@/components/ReviewList";
+import type { SortKey, SortOrder } from "@/lib/reviews";
 import type { Course_Review } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";

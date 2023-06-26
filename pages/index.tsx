@@ -1,10 +1,13 @@
 import Navbar from "@/components/Navbar";
 import Searchbar from "@/components/Searchbar";
+import { Button } from "@/components/ui/button";
 import formatNumber from "@/lib/utils";
 import { getCourseCount } from "@/services/course";
 import { getReviewCount } from "@/services/review";
+import { Compass } from "lucide-react";
 import { type GetStaticProps } from "next";
 import Head from "next/head";
+import Link from "next/link";
 
 type HomeProps = {
   reviewCount: number;
@@ -51,10 +54,18 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
             students
           </h1>
           <div className="relative group">
-            <h3 className="absolute top-[60px] text-lg text-muted">
-              {formatNumber(reviewCount, 1)}+ reviews for {courseCount} courses.
-            </h3>
             <Searchbar />
+            <div className="absolute top-[60px] flex flex-col sm:flex-row gap-2 sm:items-center w-full justify-between text-md whitespace-nowrap">
+              <h3 className="text-muted">
+                {formatNumber(reviewCount, 1)}+ reviews for {courseCount} courses.
+              </h3>
+              <Button size="sm" variant="gradient" asChild>
+                <Link href="/explore" className="space-x-2">
+                  <Compass />
+                  <span>Explore Courses</span>
+                </Link>
+              </Button>
+            </div>
             <div className="z-[-1] absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-80 group-focus-within:opacity-80 animate-tilt"></div>
           </div>
         </div>

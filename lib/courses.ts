@@ -1,8 +1,40 @@
-import { getCourse } from "@/services/course";
+import { ExploreCourse, getCourse } from "@/services/course";
 import { Course } from "@prisma/client";
 
 export type FullCourseName = `${Course["course_code"]}: ${Course["course_name"]}`;
 export type FullCourse = Awaited<ReturnType<typeof getCourse>>;
+
+export const SortKeys = [
+  "coursecode",
+  "ratings",
+  "liked",
+  "difficulty",
+  "attendance",
+  "useful",
+] as const;
+export type SortKey = (typeof SortKeys)[number];
+
+export const SortOrderOptions = ["asc", "desc"] as const;
+export type SortOrder = (typeof SortOrderOptions)[number];
+
+export const BreadthCategoryOptions = ["A", "B", "C"] as const;
+export type BreadthCategories = (typeof BreadthCategoryOptions)[number][];
+
+export const SORT_MAP_DESC = new Map<string, (a: ExploreCourse, b: ExploreCourse) => number>([
+  ["ratings", (a, b) => (b?._count?.review_id ?? 0) - (a?._count?.review_id ?? 0)],
+  ["liked", (a, b) => (b?._count?.liked ?? 0) - (a?._count?.liked ?? 0)],
+  ["useful", (a, b) => (b?._avg?.useful ?? 0) - (a?._avg?.useful ?? 0)],
+  ["attendance", (a, b) => (b?._avg?.attendance ?? 0) - (a?._avg?.attendance ?? 0)],
+  ["difficulty", (a, b) => (b?._avg?.difficulty ?? 0) - (a?._avg?.difficulty ?? 0)],
+]);
+
+export const SORT_MAP_ASC = new Map<string, (a: ExploreCourse, b: ExploreCourse) => number>([
+  ["ratings", (a, b) => (a?._count?.review_id ?? 0) - (b?._count?.review_id ?? 0)],
+  ["liked", (a, b) => (a?._count?.liked ?? 0) - (b?._count?.liked ?? 0)],
+  ["useful", (a, b) => (a?._avg?.useful ?? 0) - (b?._avg?.useful ?? 0)],
+  ["attendance", (a, b) => (a?._avg?.attendance ?? 0) - (b?._avg?.attendance ?? 0)],
+  ["difficulty", (a, b) => (a?._avg?.difficulty ?? 0) - (b?._avg?.difficulty ?? 0)],
+]);
 
 export const requisiteTypes = [
   "Prerequisites",
