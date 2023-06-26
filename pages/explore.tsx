@@ -15,7 +15,7 @@ import { ColumnDef, Header } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, Compass, Star } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { type GetCoursesResponse } from "./api/courses";
 
 type ExploreCourseRow = {
@@ -92,8 +92,6 @@ const ExplorePage = () => {
   const [breadth, setBreadth] = useState<(BreadthCategories[number] | "")[]>(["A", "B", "C"]);
   const [category, setCategory] = useState("");
 
-  const tableContainerRef = useRef<HTMLDivElement>(null);
-
   const { data: categoriesOptions } = useQuery({
     queryKey: ["explore-categories"],
     queryFn: async () => {
@@ -119,13 +117,8 @@ const ExplorePage = () => {
 
   const {
     data: coursesData,
-    error,
-    fetchPreviousPage,
     fetchNextPage,
-    hasNextPage,
     isFetching,
-    isFetchingNextPage,
-    status,
     isSuccess,
   } = useInfiniteQuery({
     queryKey: ["explore-courses", sortKey, sortOrder, minRatings, noPreReqs, breadth, category],
@@ -277,29 +270,6 @@ const ExplorePage = () => {
     [coursesData],
   );
 
-  const totalDBRowCount = coursesData?.pages[0]._count ?? 0;
-  const totalFetched = flatCoursesData.length;
-
-  const fetchMoreOnBottomReached = useCallback(
-    async (containerRefElement?: HTMLDivElement | null) => {
-      if (containerRefElement) {
-        const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-        console.log("scrollHeight", scrollHeight);
-        //once the user has scrolled within 300px of the bottom of the table, fetch more data if there is any
-        if (
-          scrollHeight - scrollTop - clientHeight < 100 &&
-          !isFetching &&
-          totalFetched < totalDBRowCount
-        ) {
-          console.log("fetching next page");
-          const nextPage = await fetchNextPage();
-          console.log(nextPage);
-        }
-      }
-    },
-    [fetchNextPage, isFetching, totalFetched, totalDBRowCount],
-  );
-
   return (
     <>
       <Head>
@@ -319,7 +289,6 @@ const ExplorePage = () => {
             <DataTable
               columns={columns}
               data={flatCoursesData ?? []}
-              onBottomReached={fetchMoreOnBottomReached}
               onLastRowReached={fetchNextPage}
             />
           </div>
