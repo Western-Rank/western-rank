@@ -45,6 +45,7 @@ export type ExploreCourse = {
         useful: number | null;
       }
     | undefined;
+  rank: number;
 } & CourseSearchItem;
 
 // export type ExploreCourse = Omit<Course, "precorequisites">;
@@ -142,7 +143,9 @@ export async function getCourses({
   }
 
   return {
-    courses: courses.slice(cursor, cursor + pageSize),
+    courses: courses
+      .slice(cursor, cursor + pageSize)
+      .map((c, idx) => ({ ...c, rank: cursor + idx + 1 })),
     length: courses.length,
   };
 }
