@@ -74,7 +74,7 @@ const CourseHeader = ({
   );
 };
 
-function courseRowData(course: GetCoursesResponse["courses"][0], rank: number): ExploreCourseRow {
+function courseRowData(course: GetCoursesResponse["courses"][0]): ExploreCourseRow {
   return {
     rank: course.rank ?? "",
     coursecode: course.course_code,
