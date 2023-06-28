@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import formatNumber from "@/lib/utils";
 import { getCourseCount } from "@/services/course";
 import { getReviewCount } from "@/services/review";
-import { Compass } from "lucide-react";
+import { Compass, Star } from "lucide-react";
 import { type GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
 import Head from "next/head";
@@ -62,8 +62,9 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
             asChild
           >
             <Link href="/about">
-              <Badge variant="outline" className="max-w-fit border-blue-500">
-                We just launched! Learn more here.
+              <Badge variant="outline" className="max-w-fit border-blue-500 space-x-1.5">
+                <Star className="w-3 h-3 stroke-blue-500" />
+                <span>We just launched! Learn more here.</span>
               </Badge>
             </Link>
           </Button>
