@@ -9,7 +9,7 @@ const BackToTop = ({ visible = false, onClick }: BackToTopProps) => {
   if (!visible) return null;
 
   return (
-    <Button variant={"outline"} className="fixed bottom-3 right-3 bg-background" onClick={onClick}>
+    <Button variant={"outline"} className="fixed bottom-3 right-5 bg-background" onClick={onClick}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
