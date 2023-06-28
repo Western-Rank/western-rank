@@ -1,8 +1,9 @@
+import { MagicLinkEmail } from "@/emails/email";
 import { Theme } from "next-auth";
 import { SendVerificationRequestParams } from "next-auth/providers";
 import { sendEmail } from "./email";
 
-function isUwoEmail(email: string) {
+export function isUwoEmail(email: string) {
   return email.endsWith("@uwo.ca") || email.endsWith("@ivey.ca");
 }
 
@@ -17,12 +18,12 @@ export async function sendVerificationRequest(params: SendVerificationRequestPar
   }
 
   try {
-    await sendEmail({
+    sendEmail({
       to: identifier,
       from: provider.from || "westernrank@gmail.com",
       subject: `Sign in to ${host}`,
-      text: text({ url, host }),
-      html: html({ url, host, theme }),
+      text: "",
+      react: MagicLinkEmail({ magicLinkUrl: url, emailAddress: identifier }),
     });
   } catch (e) {
     throw new Error("Email could not be sent: " + e);

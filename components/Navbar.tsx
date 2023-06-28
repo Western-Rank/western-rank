@@ -56,8 +56,8 @@ const Navbar = ({ sticky, searchBar, className }: NavbarProps) => {
           </>
         ) : (
           <Button asChild variant="link" className="px-1">
-            <Link href="/api/auth/signin" className="text-sm">
-              Log in
+            <Link href="/auth/signin" className="text-sm">
+              Sign in
             </Link>
           </Button>
         )}

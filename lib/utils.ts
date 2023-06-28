@@ -36,25 +36,6 @@ export function formatTimeAgo(date: Date) {
   }
 }
 
-/**
- * 0 -> 10, 13 -> 10, 46 -> 40, 1123 -> 1000, etc.
- *
- * @param x number
- * @returns
- */
-export function formatCount(x: number): number {
-  if (x === 0) {
-    return 10;
-  }
-
-  // 13
-
-  const numDigits = x.toString().length; // 2
-  // 10^2 = 100
-  // 13
-  return Math.floor(x / 10 ** (numDigits - 1)) * 10 ** (numDigits - 1);
-}
-
 export default function formatNumber(num: number, precision = 2): string {
   const map = [
     { suffix: "T", threshold: 1e12 },
