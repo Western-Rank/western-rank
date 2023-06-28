@@ -42,12 +42,12 @@ export function DataTable<TData, TValue, TSortKey>({
   }, [inView, onLastRowReached]);
 
   return (
-    <div className="rounded-md border flex-1 h-full w-full md:w-[50vw] overflow-y-scroll">
+    <div className="rounded-md border flex-1 h-full w-full md:w-[50vw]">
       <Table className="">
         <TableHeader className="sticky top-0 rounded-md z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
-              className="bg-white hover:bg-white text-sm rounded-md border-separate overflow-hidden"
+              className="bg-white hover:bg-white text-sm rounded-md border-separate overflow-scroll"
               key={headerGroup.id}
             >
               {headerGroup.headers.map((header) => {
