@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import NavbarHeader from "@/components/NavbarHeader";
 import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
@@ -19,7 +20,7 @@ const PrivacyPolicy = () => {
           subHeading="Last updated June 27th, 2023"
           Icon={Lock}
         />
-        <div className="light text-primary bg-background flex-grow py-8 pb-36 px-4 md:px-8 lg:px-15 xl:px-40">
+        <div className="light text-primary bg-background flex-grow py-8 pb-24 px-4 md:px-8 lg:px-15 xl:px-40">
           <div className="lg:max-w-[50vw] text-justify space-y-10">
             <p className="text-primary/80">
               At Western Rank (
@@ -37,7 +38,7 @@ const PrivacyPolicy = () => {
                 <a href="mailto:info@westernrank.com">info@westernrank.com.</a>
               </Button> */}
             </p>
-            <section title="Information We Collect" className="space-y-2">
+            <section className="space-y-2">
               <h2 className="text-xl font-bold">Information We Collect</h2>
               <p className="text-primary/80">
                 We may collect certain personally identifiable information from you when you
@@ -46,14 +47,14 @@ const PrivacyPolicy = () => {
                 information related to the reviews you leave on our platform.
               </p>
             </section>
-            <section title="Use of Information" className="space-y-2">
+            <section className="space-y-2">
               <h2 className="text-xl font-bold">Use of Information</h2>
               <p className="text-primary/80">
                 We may use the personal information you provide to us to personalize and improve
                 your experience on our website, or to comply with applicable laws and regulations.
               </p>
             </section>
-            <section title="Cookies" className="space-y-2">
+            <section className="space-y-2">
               <h2 className="text-xl font-bold">Cookies</h2>
               <p className="text-primary/80">
                 We may use cookies, web beacons, and other similar technologies to collect and store
@@ -63,7 +64,7 @@ const PrivacyPolicy = () => {
                 through your browser settings.
               </p>
             </section>
-            <section title="Links to Third-Party Websites" className="space-y-2">
+            <section className="space-y-2">
               <h2 className="text-xl font-bold">Links to Third-Party Websites</h2>
               <p className="text-primary/80">
                 Our website may contain links to third-party websites that are not owned or
@@ -76,7 +77,7 @@ const PrivacyPolicy = () => {
                 providing any personal information.
               </p>
             </section>
-            <section title="Children's Privacy" className="space-y-2">
+            <section className="space-y-2">
               <h2 className="text-xl font-bold">Children&apos;s Privacy</h2>
               <p className="text-primary/80">
                 Our website is not intended for children under the age of 13. Hopefully this is
@@ -86,7 +87,7 @@ const PrivacyPolicy = () => {
                 will promptly delete the information.
               </p>
             </section>
-            <section title="Changes to this Privacy Policy" className="space-y-2">
+            <section className="space-y-2">
               <h2 className="text-xl font-bold">Changes to this Privacy Policy</h2>
               <p className="text-primary/80">
                 We reserve the right to modify this Privacy Policy at any time. Any changes will be
@@ -95,7 +96,7 @@ const PrivacyPolicy = () => {
                 the revised Privacy Policy.
               </p>
             </section>
-            <h3 className="text-primary/60">
+            <h3 className="text-primary">
               The{" "}
               <span className="font-bold text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400">
                 Western Rank
@@ -104,6 +105,7 @@ const PrivacyPolicy = () => {
             </h3>
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );
