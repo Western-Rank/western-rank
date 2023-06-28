@@ -1,4 +1,5 @@
 import BackToTop from "@/components/BackToTop";
+import Footer from "@/components/Footer";
 import NavbarHeader from "@/components/NavbarHeader";
 import PercentBar from "@/components/PercentBar";
 import PercentCircle from "@/components/PercentCircle";
@@ -185,6 +186,7 @@ const Course = ({ course }: CourseProps) => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Goose from "@/components/Goose";
 import Navbar from "@/components/Navbar";
 import Head from "next/head";
@@ -25,6 +26,7 @@ export default function Custom500() {
             </div>
           </Goose>
         </div>
+        <Footer />
       </div>
     </>
   );

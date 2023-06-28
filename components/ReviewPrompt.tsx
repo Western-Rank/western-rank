@@ -43,7 +43,8 @@ import useWarnIfUnsavedChanges from "@/hooks/useWarnIfUnsavedChanges";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { Lock, ThumbsDown, ThumbsUp } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -285,9 +286,17 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                   {courseCode}
                 </span>
               </DialogTitle>
-              <DialogDescription>
-                You&apos;re rating and an (optional) written review for the course. You can even
-                edit the review later!
+              <DialogDescription className="flex flex-col">
+                <>
+                  <p>
+                    You&apos;re rating and an (optional) written review for the course. You can even
+                    edit the review later!
+                  </p>
+                  <Button variant="link" className="py-3 h-2 text-blue-500 self-end space-x-1">
+                    <Lock width={15} />
+                    <Link href="/privacy-policy">See our privacy policy.</Link>
+                  </Button>
+                </>
               </DialogDescription>
             </DialogHeader>
             <Tabs defaultValue="ratings" className="w-full">
