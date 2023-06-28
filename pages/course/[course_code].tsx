@@ -15,6 +15,7 @@ import { getAllCoursesSearch, getCourse } from "@/services/course";
 import { type Course } from "@prisma/client";
 import { GraduationCap } from "lucide-react";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { NextSeo } from "next-seo";
 import Head from "next/head";
 import { useInView } from "react-intersection-observer";
 
@@ -100,10 +101,17 @@ const Course = ({ course }: CourseProps) => {
   return (
     <>
       <Head>
-        <title>{course?.course_code} | Western Rank</title>
-        <meta name="description" content={`See reviews for ${course?.course_code} from `} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <NextSeo
+        title={`${course?.course_code} | Western Rank`}
+        description={`See reviews for ${course?.course_code} on Western Rank, the course review platform for Western University.`}
+        openGraph={{
+          url: "https://www.westernrank.com",
+          title: "Western Rank",
+          description: "Western Rank, the course review platform for Western University.",
+        }}
+      />
 
       <NavbarHeader
         heading={course?.course_code ?? ""}

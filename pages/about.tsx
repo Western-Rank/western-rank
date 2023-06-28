@@ -3,6 +3,7 @@ import NavbarHeader from "@/components/NavbarHeader";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Github, Globe, HelpCircle, Linkedin } from "lucide-react";
+import { NextSeo } from "next-seo";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,10 +12,18 @@ const AboutPage = () => {
   return (
     <>
       <Head>
-        <title>About | Western Rank</title>
-        <meta name="description" content="Western Rank's Privacy Policy" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <NextSeo
+        title="About | Western Rank"
+        description="About Western Rank, the course review platform for Western University."
+        openGraph={{
+          url: "https://www.westernrank.com/about",
+          title: "About | Western Rank",
+          description: "About Western Rank, the course review platform for Western University.",
+        }}
+      />
+
       <div className="h-screen flex flex-col">
         <NavbarHeader
           searchBar
@@ -23,7 +32,7 @@ const AboutPage = () => {
           Icon={HelpCircle}
         />
         <div className="light text-primary bg-background flex-grow space-y-10 py-8 pb-24 px-4 md:px-8 lg:px-15 xl:px-40">
-          <div className="lg:max-w-[50vw] text-justify space-y-8 text-primary">
+          <div className="lg:max-w-[50vw] space-y-8 text-primary">
             <div className="space-y-6">
               <h2 className="text-2xl font-bold">Welcome! 👋</h2>
               <section className="space-y-2 text-primary/80">
@@ -262,7 +271,7 @@ const AboutPage = () => {
               <div className="flex flex-col lg:flex-row gap-5">
                 <Image
                   className="rounded-full flex-grow-0 self-start min-w-[180px]"
-                  src="/arsalaan-ali.jpeg"
+                  src="/arsalaan-ali.png"
                   alt="Arsalaan Ali"
                   width={180}
                   height={180}
