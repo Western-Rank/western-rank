@@ -3,6 +3,7 @@ import NavbarHeader from "@/components/NavbarHeader";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Github, Globe, HelpCircle, Linkedin } from "lucide-react";
+import { NextSeo } from "next-seo";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,10 +12,18 @@ const AboutPage = () => {
   return (
     <>
       <Head>
-        <title>About | Western Rank</title>
-        <meta name="description" content="Western Rank's Privacy Policy" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <NextSeo
+        title="About | Western Rank"
+        description="About Western Rank, the course review platform for Western University."
+        openGraph={{
+          url: "https://www.westernrank.com/about",
+          title: "About | Western Rank",
+          description: "About Western Rank, the course review platform for Western University.",
+        }}
+      />
+
       <div className="h-screen flex flex-col">
         <NavbarHeader
           searchBar
