@@ -55,7 +55,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
   return (
     <>
       <span ref={fromTopRef}></span>
-      <Navbar {...navbarProps} sticky key="nav" />
+      <Navbar {...navbarProps} sticky />
       <div
         className={cn(
           "z-30 bg-background",
