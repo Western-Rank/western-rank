@@ -62,8 +62,8 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
             asChild
           >
             <Link href="/about">
-              <Badge variant="outline" className="max-w-fit border-blue-500 space-x-1.5">
-                <Star className="w-3 h-3 stroke-blue-500" />
+              <Badge variant="outline" className="max-w-fit border-blue-500 space-x-1.5 group">
+                <Star className="w-3 h-3 stroke-blue-500 animate-bounce" />
                 <span>We just launched! Learn more here.</span>
               </Badge>
             </Link>
