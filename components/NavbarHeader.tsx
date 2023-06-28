@@ -55,13 +55,13 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
   return (
     <>
       <span ref={fromTopRef}></span>
+      <Navbar {...navbarProps} sticky key="nav" />
       <div
         className={cn(
           "z-30 bg-background",
           headerSticky ? "sticky top-0 shadow-2xl border-b-0 shadow-background/30" : "",
         )}
       >
-        <Navbar {...navbarProps} sticky key="nav" />
         <motion.div
           initial={false}
           transition={{ duration: 0.25 }}
