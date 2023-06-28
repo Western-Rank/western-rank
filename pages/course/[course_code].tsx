@@ -169,7 +169,7 @@ const Course = ({ course }: CourseProps) => {
 
             <Separator orientation="vertical" className="w-[1px] h-200" />
 
-            <div className="flex flex-col gap-4 lg:w-[30vw]">
+            <div className="flex flex-col gap-4 lg:min-w-[30vw] lg:w-[30vw]">
               {prerequisites?.length > 0 && (
                 <Requisite type="Prerequisites" requisiteText={prerequisites} />
               )}
