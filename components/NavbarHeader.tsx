@@ -27,7 +27,9 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
 
   useEffect(() => {
     const handleScroll = () => {
-      setHasScrolled(true);
+      if (!hasScrolled) {
+        setHasScrolled(true);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -35,7 +37,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [hasScrolled]);
 
   useEffect(() => {
     if (!sticky || Date.now() - lastUpdateTime <= 100) {
@@ -53,15 +55,16 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
   return (
     <>
       <span ref={fromTopRef}></span>
+      <Navbar {...navbarProps} sticky />
       <div
         className={cn(
-          "z-10 bg-background shadow-2xl border-b-0 shadow-background/30",
-          headerSticky ? "sticky top-0" : "",
+          "z-30 bg-background",
+          headerSticky ? "sticky top-0 shadow-2xl border-b-0 shadow-background/30" : "",
         )}
       >
-        <Navbar {...navbarProps} sticky key="nav" />
         <motion.div
           initial={false}
+          transition={{ duration: 0.25 }}
           animate={{
             paddingTop: headerSticky ? "0px" : "4rem",
             paddingBottom: headerSticky ? "0px" : "0.75rem",
@@ -69,7 +72,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
             alignItems: headerSticky ? "center" : "",
           }}
           key="header"
-          className="flex flex-col px-4 md:px-8 lg:px-15 xl:px-40 pb-1 z-8 bg-background max-w-screen 0.75rem"
+          className="flex flex-col gap-1 px-4 md:px-8 lg:px-15 xl:px-40 pb-1 z-8 bg-background max-w-screen 0.75rem"
         >
           {!headerSticky && !!Icon && <Icon className="stroke-purple-500" width={36} height={36} />}
           <motion.h4

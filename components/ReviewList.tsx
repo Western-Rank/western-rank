@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Toggle } from "@/components/ui/toggle";
 import { toast } from "@/components/ui/use-toast";
+import { SortKey, SortKeys, SortOrder } from "@/lib/reviews";
 import { Course_ReviewsData } from "@/pages/api/reviews";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
@@ -24,12 +25,6 @@ const TAKE_DEFAULT = 5;
 interface ReviewListProps {
   courseCode: string;
 }
-
-const SortKeys = ["date_created", "difficulty", "useful", "attendance"] as const;
-export type SortKey = (typeof SortKeys)[number];
-
-const SortOrderOptions = ["asc", "desc"] as const;
-export type SortOrder = (typeof SortOrderOptions)[number];
 
 /**
  * A component that renders all reviews for a course, a user's review
@@ -50,7 +45,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
     isLoading,
     isError,
     isSuccess,
-  } = useQuery({
+  } = useQuery<Course_ReviewsData>({
     queryKey: ["reviews", courseCode, sortKey, sortOrder, take],
     queryFn: async () => {
       const searchParams = new URLSearchParams({
@@ -64,10 +59,10 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
       }
       const response = await fetch(`/api/reviews?${searchParams.toString()}`);
       if (!response.ok) throw new Error("Courses were not found");
-      return response.json() as Promise<Course_ReviewsData>;
+      return response.json();
     },
     refetchOnWindowFocus: false,
-    onError(err: Error) {
+    onError(err: any) {
       toast({
         title: `Error loading reviews for ${courseCode}`,
         description: `${err.message.slice(0, 100) + "..." ?? ""}`,

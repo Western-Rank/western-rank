@@ -43,10 +43,12 @@ import useWarnIfUnsavedChanges from "@/hooks/useWarnIfUnsavedChanges";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { Lock, ThumbsDown, ThumbsUp } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ProfessorCombobox } from "./ProfessorCombobox";
 
 type ReviewPromptProps = {
   courseCode: Course["course_code"];
@@ -158,7 +160,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
     defaultValues: {
-      professor_name: "",
+      professor_name: "Other",
       professor_id: -1,
       review: edit && review?.review != null ? review?.review : undefined,
       liked: edit ? review.liked : true,
@@ -174,8 +176,8 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   useEffect(() => {
     if (review) {
       reviewForm.reset({
-        professor_name: review.professor_name,
-        professor_id: -1,
+        professor_name: review.professor_name ?? "Other",
+        professor_id: review.professor_id ?? -1,
         review: review?.review != null ? review?.review : undefined,
         liked: review.liked,
         difficulty: [review.difficulty / 2],
@@ -188,7 +190,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
     } else {
       reviewForm.reset();
     }
-  }, [reviewForm, courseCode, review]);
+  }, [reviewForm, review]);
 
   useWarnIfUnsavedChanges(
     reviewForm.formState.isDirty,
@@ -284,9 +286,23 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                   {courseCode}
                 </span>
               </DialogTitle>
-              <DialogDescription>
-                You&apos;re rating and an (optional) written review for the course. You can even
-                edit the review later!
+              <DialogDescription className="flex flex-col">
+                <>
+                  <p>
+                    You&apos;re rating and an (optional) written review for the course. You can even
+                    edit the review later!
+                  </p>
+                  <Button
+                    variant="link"
+                    className="py-3 h-2 text-blue-500 self-end space-x-1"
+                    asChild
+                  >
+                    <span>
+                      <Lock width={15} />
+                      <Link href="/privacy-policy">See our privacy policy</Link>
+                    </span>
+                  </Button>
+                </>
               </DialogDescription>
             </DialogHeader>
             <Tabs defaultValue="ratings" className="w-full">
@@ -398,8 +414,8 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
 
                     <FormField
                       control={reviewForm.control}
-                      name="professor_name"
-                      render={({ field }) => (
+                      name="professor_id"
+                      render={({ field, formState }) => (
                         <FormItem className="flex flex-col items-start px-1">
                           <FormLabel>Professor</FormLabel>
                           <FormDescription>
@@ -407,10 +423,16 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                           </FormDescription>
                           <FormControl className="place-items-center">
                             <div className="flex-1 flex-grow w-full">
-                              <Input
-                                placeholder="Name"
-                                value={field.value}
-                                onChange={field.onChange}
+                              <ProfessorCombobox
+                                value={{
+                                  id: reviewForm.getValues().professor_id,
+                                  name: reviewForm.getValues().professor_name,
+                                }}
+                                onChangeProfessor={(prof) => {
+                                  reviewForm.setValue("professor_id", prof.id);
+                                  reviewForm.setValue("professor_name", prof.name);
+                                }}
+                                placeholder="Select a prof"
                               />
                             </div>
                           </FormControl>

@@ -10,6 +10,7 @@ export function isUwoEmail(email: string) {
 export async function sendVerificationRequest(params: SendVerificationRequestParams) {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
+  console.log(url);
   if (process.env.NODE_ENV == "development") console.log(url);
 
   if (!isUwoEmail(identifier)) {

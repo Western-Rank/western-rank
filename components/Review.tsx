@@ -102,7 +102,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
             )}
             {review.email === auth?.user?.email && (
               <Popover>
-                <PopoverTrigger className="text-xs text-muted-foreground font-bold">
+                <PopoverTrigger className="text-xs text-muted-foreground font-bold outline-ring rounded-xl">
                   <MoreHorizontal />
                 </PopoverTrigger>
                 <PopoverContent side="top" className="p-0 w-fit flex flex-row">
@@ -155,18 +155,20 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
               </Button>
             )}
             <h6 className="text-sm">
-              {review?.professor_name && (
+              {review?.professor_name && review?.professor_id && review?.professor_id > 0 && (
                 <>
                   {"taught by "}
-                  <a
-                    href={`https://www.ratemyprofessors.com/search/professors/1491?q=${encodeURIComponent(
-                      review?.professor_name || "",
-                    )}`}
-                    className="hover:underline text-blue-400"
-                    target="_blank"
-                  >
-                    {review?.professor_name}
-                  </a>
+                  <Button variant="link" className="p-0 h-2.5 text-blue-500" asChild>
+                    <a
+                      href={`https://www.ratemyprofessors.com/professor/${encodeURIComponent(
+                        review?.professor_id || "",
+                      )}`}
+                      className="hover:underline text-blue-400"
+                      target="_blank"
+                    >
+                      {review?.professor_name}
+                    </a>
+                  </Button>
                   {", "}
                 </>
               )}
