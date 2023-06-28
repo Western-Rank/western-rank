@@ -61,7 +61,7 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
           </Button>
           <h1 className="text-primary font-bold text-2xl md:text-3xl lg:text-4xl">
             Explore course reviews from <br />{" "}
-            <span className="text-transparent bg-clip-text bg-[size:200%] animate-gradient-pulse duration-[10s] bg-gradient-to-br from-purple-600 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-[size:200%] animate-gradient-pulse duration-&lsqb;12000ms&rsqb; bg-gradient-to-br from-purple-600 to-blue-400">
               Western University
             </span>{" "}
             students
