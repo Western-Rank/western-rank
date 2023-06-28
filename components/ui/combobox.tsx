@@ -50,7 +50,10 @@ export function Combobox({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full md:w-[300px] p-0 light">
+      <PopoverContent
+        side="top"
+        className="w-full md:w-[300px] max-h-[250px] overflow-scroll p-0 light"
+      >
         <Command>
           <CommandInput placeholder="Search..." required={required} id={id} />
           <CommandEmpty>Nothing found.</CommandEmpty>
