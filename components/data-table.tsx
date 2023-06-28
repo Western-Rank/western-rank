@@ -42,8 +42,8 @@ export function DataTable<TData, TValue, TSortKey>({
   }, [inView, onLastRowReached]);
 
   return (
-    <div className="rounded-md border flex-1 h-full w-full md:w-[50vw]">
-      <Table className="">
+    <div className="rounded-md border flex-1 h-full w-full md:w-[52vw]">
+      <Table>
         <TableHeader className="sticky top-0 rounded-md z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
