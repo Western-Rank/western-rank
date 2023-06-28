@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import formatNumber from "@/lib/utils";
 import { getCourseCount } from "@/services/course";
 import { getReviewCount } from "@/services/review";
-import { Compass } from "lucide-react";
+import { Compass, Star } from "lucide-react";
 import { type GetStaticProps } from "next";
 import { NextSeo } from "next-seo";
 import Head from "next/head";
@@ -62,8 +62,9 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
             asChild
           >
             <Link href="/about">
-              <Badge variant="outline" className="max-w-fit border-blue-500">
-                We just launched! Learn more here.
+              <Badge variant="outline" className="max-w-fit border-blue-500 space-x-1.5 group">
+                <Star className="w-3 h-3 stroke-blue-500 animate-bounce" />
+                <span>We just launched! Learn more here.</span>
               </Badge>
             </Link>
           </Button>
@@ -90,7 +91,7 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
             <div className="z-[-1] absolute inset-0.5 bg-opacity-1 bg-gradient-to-br from-purple-600 to-blue-400 rounded-lg blur-lg opacity-0 transition duration-1000 group-hover:opacity-80 group-focus-within:opacity-80 animate-tilt"></div>
           </div>
         </div>
-        <div className="h-[40vh] w-[20vw] absolute bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-1 left-1 blur-3xl opacity-20 animate-tilt"></div>
+        <div className="h-[40vh] w-[20vw] absolute bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-800 via-purple-800 to-background bottom-1 left-1 blur-3xl opacity-20"></div>
       </div>
       <Footer />
     </>

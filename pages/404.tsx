@@ -10,7 +10,12 @@ export default function Custom404() {
       <Head>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <NextSeo title="404 Error | Western Rank" description="Western Rank 404 Error" />
+      <NextSeo
+        title="404 Error | Western Rank"
+        description="Western Rank 404 Error"
+        nofollow
+        noindex
+      />
 
       <div className={"overflow-hidden flex flex-col h-screen"}>
         <Navbar className="z-10 bg-transparent" />

@@ -93,7 +93,7 @@ export function ProfessorCombobox({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent side="top" className="w-full md:w-[400px] p-0 light">
+      <PopoverContent side="top" className="w-full md:w-[400px] p-0 light overflow-y-scroll">
         <Command shouldFilter={false}>
           <CommandInput
             className=""
@@ -102,9 +102,9 @@ export function ProfessorCombobox({
             id={id}
             onValueChange={onSearchTermChange}
           />
-          <CommandGroup inputMode="search" className="max-h-[200px] overflow-scroll">
+          <CommandGroup inputMode="search" className="max-h-[200px]">
             {results != null &&
-              results?.slice(0, 7)?.map((professor) => (
+              results?.slice(0, 6)?.map((professor) => (
                 <CommandItem
                   key={professor.id}
                   onSelect={(professorId) => {

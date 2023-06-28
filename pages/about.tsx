@@ -55,8 +55,8 @@ const AboutPage = () => {
                   <span className="font-bold text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400">
                     Rank
                   </span>{" "}
-                  your course options? Well, now you can. Quickly explore courses, and compare them
-                  based on your needs using the{" "}
+                  your course options? Well, now you can. You can quickly explore UWO&apos;s course
+                  offering, and compare them against eachother based on your needs using the{" "}
                   <Button
                     variant="link"
                     className="p-0 h-4 font-semibold text-primary text-blue-500"
