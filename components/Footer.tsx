@@ -10,7 +10,7 @@ const Footer = () => {
           Western Rank
         </Link>
       </Button>
-      <Button asChild variant="link" className="px-2 md:px-2">
+      <Button variant="link" className="px-2 md:px-2" asChild>
         <Link href="/privacy-policy" className="text-sm">
           Privacy Policy
         </Link>

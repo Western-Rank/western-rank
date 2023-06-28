@@ -292,9 +292,15 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                     You&apos;re rating and an (optional) written review for the course. You can even
                     edit the review later!
                   </p>
-                  <Button variant="link" className="py-3 h-2 text-blue-500 self-end space-x-1">
-                    <Lock width={15} />
-                    <Link href="/privacy-policy">See our privacy policy.</Link>
+                  <Button
+                    variant="link"
+                    className="py-3 h-2 text-blue-500 self-end space-x-1"
+                    asChild
+                  >
+                    <span>
+                      <Lock width={15} />
+                      <Link href="/privacy-policy">See our privacy policy</Link>
+                    </span>
                   </Button>
                 </>
               </DialogDescription>

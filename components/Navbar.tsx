@@ -24,14 +24,14 @@ const Navbar = ({ sticky, searchBar, className }: NavbarProps) => {
         className,
       )}
     >
-      <Link href="/" className="p-2 flex flex-col items-center">
+      <Link href="/" className="light p-1 my-1 outline-ring flex flex-col items-center">
         <Image src="/logo.svg" alt="logo" width={42} height={30} />
-        <span className="text-primary font-extrabold text-sm">Rank</span>
+        <span className="dark text-primary font-extrabold text-sm">Rank</span>
       </Link>
       <div className="flex items-center space-x-2">
         {searchBar && (
           <>
-            <Button id="explore-btn" variant="gradient" size="sm" className="px-3">
+            <Button id="explore-btn" variant="gradient" size="sm" className="px-3" asChild>
               <Link href="/explore">
                 <Compass className="h-5 w-[1.1rem] shrink-0 opacity-90" />
               </Link>
