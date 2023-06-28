@@ -107,7 +107,11 @@ export function Searchbar({ onSelect }: SearchbarProps) {
 
   return (
     <Command shouldFilter={false} className={cn("border light relative z-50", dm_sans.className)}>
-      <CommandInput placeholder="Search for a Course..." onValueChange={onSearchTermChange} />
+      <CommandInput
+        placeholder="Search for a Course..."
+        onValueChange={onSearchTermChange}
+        autoFocus
+      />
       <CommandList inputMode="search">
         {isSuccess && results != null && results?.length > 0 && (
           <CommandGroup heading="Courses">
