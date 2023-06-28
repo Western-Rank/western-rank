@@ -104,42 +104,44 @@ function Profile({ user }: ProfileProps) {
         nofollow
         noindex
       />
-      <NavbarHeader searchBar heading="Your Profile" subHeading={user.email ?? ""} Icon={User2} />
-      <div className="light text-primary bg-background flex-grow py-4 pb-16 px-4 md:px-8 lg:px-15 xl:px-40">
-        <h5 className="py-1 text-secondary-foreground">
-          You&apos;ve made{" "}
-          <span className="font-semibold">{user.Course_Review.length} reviews</span>
-        </h5>
-        <div className="grid lg:grid-cols-2 gap-3 py-2 pb-6">
-          {user.Course_Review.map((review, index) => (
-            <UserReview key={index} review={review} includeCourseCode />
-          ))}
+      <div className="flex flex-col min-h-screen">
+        <NavbarHeader searchBar heading="Your Profile" subHeading={user.email ?? ""} Icon={User2} />
+        <div className="flex flex-col light text-primary bg-background flex-grow flex-1 py-4 pb-16 px-4 md:px-8 lg:px-15 xl:px-40">
+          <h5 className="py-1 text-secondary-foreground">
+            You&apos;ve made{" "}
+            <span className="font-semibold">{user.Course_Review.length} reviews</span>
+          </h5>
+          <div className="grid lg:grid-cols-2 gap-3 py-2 pb-6 flex-grow flex-1">
+            {user.Course_Review.map((review, index) => (
+              <UserReview key={index} review={review} includeCourseCode />
+            ))}
+          </div>
+          <Separator />
+          <div className="pt-3 flex justify-end">
+            <AlertDialog>
+              <Button variant="destructive" className="my-3 w-full md:w-fit" asChild>
+                <AlertDialogTrigger>Delete Account</AlertDialogTrigger>
+              </Button>
+              <AlertDialogContent className="light">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to delete your account?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete {user.email} and its
+                    associated account.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <Button variant="destructive" asChild>
+                    <AlertDialogAction onClick={() => mutate()}>Continue</AlertDialogAction>
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
-        <Separator />
-        <div className="pt-3 flex justify-end flex-grow">
-          <AlertDialog>
-            <Button variant="destructive" className="my-3 w-full md:w-fit" asChild>
-              <AlertDialogTrigger>Delete Account</AlertDialogTrigger>
-            </Button>
-            <AlertDialogContent className="light">
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure you want to delete your account?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete {user.email} and its
-                  associated account.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <Button variant="destructive" asChild>
-                  <AlertDialogAction onClick={() => mutate()}>Continue</AlertDialogAction>
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 }
