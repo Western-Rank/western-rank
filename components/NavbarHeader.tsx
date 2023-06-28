@@ -72,7 +72,7 @@ const NavbarHeader = ({ heading, subHeading, Icon, sticky, ...navbarProps }: Nav
             alignItems: headerSticky ? "center" : "",
           }}
           key="header"
-          className="flex flex-col px-4 md:px-8 lg:px-15 xl:px-40 pb-1 z-8 bg-background max-w-screen 0.75rem"
+          className="flex flex-col gap-1 px-4 md:px-8 lg:px-15 xl:px-40 pb-1 z-8 bg-background max-w-screen 0.75rem"
         >
           {!headerSticky && !!Icon && <Icon className="stroke-purple-500" width={36} height={36} />}
           <motion.h4

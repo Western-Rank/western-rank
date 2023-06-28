@@ -11,6 +11,11 @@ const Footer = () => {
         </Link>
       </Button>
       <Button asChild variant="link" className="px-2 md:px-2">
+        <Link href="/about" className="text-sm">
+          About
+        </Link>
+      </Button>
+      <Button asChild variant="link" className="px-2 md:px-2">
         <Link href="/privacy-policy" className="text-sm">
           Privacy Policy
         </Link>
