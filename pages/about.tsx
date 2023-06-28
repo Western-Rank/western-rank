@@ -369,16 +369,16 @@ const AboutPage = () => {
                       </Button>
                       <Button variant="link" className="text-purple-400 p-0" asChild>
                         <Link
-                          href="https://github.com/davidtranhq"
+                          href="https://www.linkedin.com/in/david-tran-b476851b5/"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Github />
+                          <Linkedin />
                         </Link>
                       </Button>
                       <Button variant="link" className="text-purple-400 p-0" asChild>
                         <Link
-                          href="https://www.linkedin.com/in/david-tran-b476851b5/"
+                          href="https://github.com/davidtranhq"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
