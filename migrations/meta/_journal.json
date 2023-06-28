@@ -1,0 +1,41 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1683770600537,
+      "tag": "0000_huge_molecule_man",
+      "breakpoints": false
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1683773561102,
+      "tag": "0001_slimy_morph",
+      "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1683773711048,
+      "tag": "0002_clammy_doctor_strange",
+      "breakpoints": false
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1683774254657,
+      "tag": "0003_aspiring_jack_flag",
+      "breakpoints": false
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1684200781278,
+      "tag": "0004_short_steve_rogers",
+      "breakpoints": false
+    }
+  ]
+}
