@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Searchbar from "@/components/Searchbar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import formatNumber from "@/lib/utils";
 import { getCourseCount } from "@/services/course";
@@ -46,7 +47,18 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
         }
       >
         <Navbar className="z-10 bg-transparent" />
-        <div className="flex flex-col gap-8 flex-grow flex-1 w-screen max-w-[100vw] px-4 md:px-10 lg:px-20 xl:px-72 py-32 lg:py-42 relative">
+        <div className="flex flex-col gap-6 flex-grow flex-1 w-screen max-w-[100vw] px-4 md:px-10 lg:px-20 xl:px-72 py-32 lg:py-42 relative">
+          <Button
+            variant="ghost"
+            className="max-w-fit p-0 m-0 h-fit rounded-full hover:bg-blue-300/20"
+            asChild
+          >
+            <Link href="/about">
+              <Badge variant="outline" className="max-w-fit border-blue-500">
+                We just launched! Learn more here.
+              </Badge>
+            </Link>
+          </Button>
           <h1 className="text-primary font-bold text-2xl md:text-3xl lg:text-4xl">
             Explore course reviews from <br />{" "}
             <span className="text-transparent bg-clip-text bg-[size:200%] animate-gradient-pulse duration-[10s] bg-gradient-to-br from-purple-600 to-blue-400">
