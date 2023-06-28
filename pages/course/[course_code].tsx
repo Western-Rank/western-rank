@@ -122,7 +122,7 @@ const Course = ({ course }: CourseProps) => {
               {isExpanded != undefined && (
                 <Button
                   variant="link"
-                  className="text-muted-foreground px-0 pt-4 my-0 h-2 self-start"
+                  className="text-muted-foreground px-0 py-2.5 my-2 h-2 self-start"
                   onClick={toggleExpand}
                 >
                   Show {!isExpanded ? "More" : "Less"}

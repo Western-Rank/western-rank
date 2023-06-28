@@ -24,7 +24,7 @@ const PrivacyPolicy = () => {
           <div className="lg:max-w-[50vw] text-justify space-y-10">
             <p className="text-primary/80">
               At Western Rank (
-              <Button variant="link" className="text-blue-500 px-0 h-1.5">
+              <Button variant="link" className="text-blue-500 px-0 h-1.5" asChild>
                 <Link href="/">westernrank.com</Link>
               </Button>
               ), we prioritize the privacy of our visitors, especially as privacy conscious students
@@ -69,7 +69,7 @@ const PrivacyPolicy = () => {
               <p className="text-primary/80">
                 Our website may contain links to third-party websites that are not owned or
                 controlled by us (ex.{" "}
-                <Button variant="link" className="px-0 h-2 text-blue-500">
+                <Button variant="link" className="px-0 h-2 text-blue-500" asChild>
                   <Link href="https://www.ratemyprofessors.com/">ratemyprofessors.com</Link>
                 </Button>
                 ). We are not responsible for the privacy practices or the content of such websites.
