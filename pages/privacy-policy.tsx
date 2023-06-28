@@ -31,7 +31,7 @@ const PrivacyPolicy = () => {
           Icon={Lock}
         />
         <div className="light text-primary bg-background flex-grow py-8 pb-24 px-4 md:px-8 lg:px-15 xl:px-40">
-          <div className="lg:max-w-[50vw] text-justify space-y-10">
+          <div className="lg:max-w-[50vw] space-y-10">
             <p className="text-primary/80">
               At Western Rank (
               <Button variant="link" className="text-blue-500 px-0 h-1.5" asChild>
