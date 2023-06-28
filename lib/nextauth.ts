@@ -1,6 +1,5 @@
 import { Theme } from "next-auth";
 import { SendVerificationRequestParams } from "next-auth/providers";
-import { Resend } from "resend";
 import { sendEmail } from "./email";
 
 function isUwoEmail(email: string) {
@@ -10,6 +9,7 @@ function isUwoEmail(email: string) {
 export async function sendVerificationRequest(params: SendVerificationRequestParams) {
   const { identifier, url, provider, theme } = params;
   const { host } = new URL(url);
+  console.log(url);
   if (process.env.NODE_ENV == "development") console.log(url);
 
   if (!isUwoEmail(identifier)) {
