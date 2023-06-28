@@ -2,6 +2,7 @@ import Footer from "@/components/Footer";
 import NavbarHeader from "@/components/NavbarHeader";
 import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
+import { NextSeo } from "next-seo";
 import Head from "next/head";
 import Link from "next/link";
 
@@ -9,10 +10,19 @@ const PrivacyPolicy = () => {
   return (
     <>
       <Head>
-        <title>Privacy Policy | Western Rank</title>
-        <meta name="description" content="Western Rank's Privacy Policy" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <NextSeo
+        title="Privacy Policy | Western Rank"
+        description="The Privacy Policy for Western Rank, the course review platform for Western University."
+        openGraph={{
+          url: "https://www.westernrank.com/privacy-policy",
+          title: "Privacy Policy | Western Rank",
+          description:
+            "The Privacy Policy for Western Rank, the course review platform for Western University.",
+        }}
+      />
+
       <div className="h-screen flex flex-col">
         <NavbarHeader
           searchBar
