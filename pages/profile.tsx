@@ -130,12 +130,12 @@ function Profile({ user }: ProfileProps) {
       />
       <div className="flex flex-col h-screen">
         <NavbarHeader searchBar heading="Your Profile" subHeading={user.email ?? ""} Icon={User2} />
-        <div className="flex-grow flex-1 light text-primary bg-background h- py-4 pb-16 px-4 md:px-8 lg:px-15 xl:px-40">
+        <div className="flex flex-col flex-grow light text-primary bg-background py-4 pb-16 px-4 md:px-8 lg:px-15 xl:px-40">
           <h5 className="py-1 text-secondary-foreground">
             You&apos;ve made{" "}
             <span className="font-semibold">{userData.Course_Review.length} reviews</span>
           </h5>
-          <div className="grid lg:grid-cols-2 gap-3 py-2 pb-6">
+          <div className="flex-1 flex-grow grid lg:grid-cols-2 gap-3 py-2 pb-6">
             {!isSuccess && (
               <>
                 <Skeleton className="h-40 w-full" />
@@ -154,7 +154,7 @@ function Profile({ user }: ProfileProps) {
               ))}
           </div>
           <Separator />
-          <div className="pt-3 flex justify-end flex-grow">
+          <div className="pt-3 self-end">
             <AlertDialog>
               <Button variant="destructive" className="my-3 w-full md:w-fit" asChild>
                 <AlertDialogTrigger>Delete Account</AlertDialogTrigger>
