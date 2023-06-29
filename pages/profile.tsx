@@ -132,7 +132,7 @@ function Profile({ user }: ProfileProps) {
       <div className="light text-primary bg-background flex-grow py-4 pb-16 px-4 md:px-8 lg:px-15 xl:px-40">
         <h5 className="py-1 text-secondary-foreground">
           You&apos;ve made{" "}
-          <span className="font-semibold">{user.Course_Review.length} reviews</span>
+          <span className="font-semibold">{userData.Course_Review.length} reviews</span>
         </h5>
         <div className="grid lg:grid-cols-2 gap-3 py-2 pb-6">
           {!isSuccess && (
@@ -143,7 +143,13 @@ function Profile({ user }: ProfileProps) {
           )}
           {isSuccess &&
             userData.Course_Review.map((review, index) => (
-              <UserReview key={index} review={review} includeCourseCode />
+              <UserReview
+                key={index}
+                review={review}
+                onDelete={() => queryClient.invalidateQueries(["user"])}
+                onEdit={() => queryClient.invalidateQueries(["user"])}
+                includeCourseCode
+              />
             ))}
         </div>
         <Separator />

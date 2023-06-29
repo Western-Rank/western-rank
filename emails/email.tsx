@@ -70,7 +70,7 @@ export const MagicLinkEmail = ({
               {magicLinkUrl}
             </Link>
             <Hr className="border border-solid border-[#eaeaea] my-[20px] mt-[50px] mx-0 w-full" />
-            <Link className="text-[14px]" href={baseUrl}>
+            <Link className="text-[14px] break-all" href={baseUrl}>
               Western Rank
             </Link>
             <Text className="text-[#666666] text-[12px] leading-[20px]">

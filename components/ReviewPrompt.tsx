@@ -221,12 +221,9 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
       if (!res.ok) {
         throw new Error(`Error: Submitting your edited ${courseCode} review failed!`);
       }
-      if (onSubmitReview) {
-        onSubmitReview();
-      }
       return res;
     },
-    [review?.review_id, courseCode, onSubmitReview],
+    [review?.review_id, courseCode],
   );
 
   const reviewMutation = useMutation({
@@ -236,8 +233,10 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
         title: `Your ${edit ? "Edited" : ""} ${courseCode} Review was submitted!`,
         description: "You can edit it at any time after signing in.",
       });
+      if (onSubmitReview) {
+        onSubmitReview();
+      }
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["reviews"] });
     },
     onError(err: Error) {
       toast({
@@ -265,9 +264,6 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
     };
 
     reviewMutation.mutate(review);
-    if (onSubmitReview) {
-      onSubmitReview();
-    }
   }
 
   return (

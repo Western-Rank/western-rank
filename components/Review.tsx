@@ -25,7 +25,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal, ThumbsDown, ThumbsUp } from "lucide-react";
 import Link from "next/link";
 
-// profile pic, review text,
 interface ReviewProps {
   review: Course_Review;
   onDelete?: () => void;
@@ -34,7 +33,7 @@ interface ReviewProps {
   includeCourseCode?: boolean;
 }
 
-export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
+export const UserReview = ({ review, includeCourseCode, onDelete, onEdit }: ReviewProps) => {
   const queryClient = useQueryClient();
 
   const deleteReviewMutation = useMutation({
@@ -54,6 +53,10 @@ export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
         description: "Feel free to send a new review.",
       });
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
+
+      if (onDelete) {
+        onDelete();
+      }
     },
     onError(err: Error) {
       toast({
@@ -73,6 +76,7 @@ export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
         date_taken: new Date(review.date_taken),
       }}
       onDelete={deleteReviewMutation.mutate}
+      onEdit={onEdit}
       isUser
       includeCourseCode={includeCourseCode}
     />
@@ -81,7 +85,6 @@ export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
 
 export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: ReviewProps) => {
   const { data: auth } = useSession();
-  const queryClient = useQueryClient();
 
   return (
     <div
@@ -137,9 +140,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
                   <ReviewPrompt
                     courseCode={review.course_code}
                     review={review}
-                    onSubmitReview={() => {
-                      queryClient.invalidateQueries({ queryKey: ["user"] });
-                    }}
+                    onSubmitReview={onEdit}
                   />
                 </PopoverContent>
               </Popover>
