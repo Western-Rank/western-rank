@@ -14,11 +14,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/use-toast";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getUserByEmail } from "@/services/user";
 import { Course_Review, User } from "@prisma/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { User2 } from "lucide-react";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
@@ -57,8 +58,30 @@ function Profile({ user }: ProfileProps) {
     required: true,
   });
   const router = useRouter();
-
   const queryClient = useQueryClient();
+
+  const {
+    data: userData,
+    isSuccess,
+    refetch,
+  } = useQuery<User & { Course_Review: Course_Review[] }>({
+    queryKey: ["user", session.data?.user?.email],
+    queryFn: async () => {
+      const response = await fetch("/api/user");
+      if (!response.ok) throw new Error("Courses were not found");
+      return response.json();
+    },
+    initialData: user,
+    refetchOnWindowFocus: false,
+    onError(err: any) {
+      toast({
+        title: `Error loading reviews for ${user.email}`,
+        description: `${err.message.slice(0, 100) + "..." ?? ""}`,
+        variant: "destructive",
+      });
+    },
+    keepPreviousData: false,
+  });
 
   const { mutate } = useMutation({
     mutationKey: ["delete-user", user],
@@ -80,9 +103,10 @@ function Profile({ user }: ProfileProps) {
         title: `User was deleted!`,
         description: "Feel free to make a new account.",
       });
-      queryClient.invalidateQueries({ queryKey: ["reviews"] });
-      session.update();
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      refetch();
       router.reload();
+      session.update();
     },
     onError(err: Error) {
       toast({
@@ -111,9 +135,16 @@ function Profile({ user }: ProfileProps) {
           <span className="font-semibold">{user.Course_Review.length} reviews</span>
         </h5>
         <div className="grid lg:grid-cols-2 gap-3 py-2 pb-6">
-          {user.Course_Review.map((review, index) => (
-            <UserReview key={index} review={review} includeCourseCode />
-          ))}
+          {!isSuccess && (
+            <>
+              <Skeleton className="h-40 w-full" />
+              <Skeleton className="h-40 w-full" />
+            </>
+          )}
+          {isSuccess &&
+            userData.Course_Review.map((review, index) => (
+              <UserReview key={index} review={review} includeCourseCode />
+            ))}
         </div>
         <Separator />
         <div className="pt-3 flex justify-end flex-grow">

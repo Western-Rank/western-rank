@@ -81,6 +81,7 @@ export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
 
 export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: ReviewProps) => {
   const { data: auth } = useSession();
+  const queryClient = useQueryClient();
 
   return (
     <div
@@ -133,7 +134,13 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
                     </AlertDialogContent>
                   </AlertDialog>
                   <Separator orientation="vertical" className="w-[1px] h-200" />
-                  <ReviewPrompt courseCode={review.course_code} review={review} />
+                  <ReviewPrompt
+                    courseCode={review.course_code}
+                    review={review}
+                    onSubmitReview={() => {
+                      queryClient.invalidateQueries({ queryKey: ["user"] });
+                    }}
+                  />
                 </PopoverContent>
               </Popover>
             )}
