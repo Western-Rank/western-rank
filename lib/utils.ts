@@ -5,6 +5,16 @@ export function isUwoEmail(email: string) {
   return email.endsWith("@uwo.ca") || email.endsWith("@ivey.ca");
 }
 
+export function hasActiveInput() {
+  var activeElement = document.activeElement;
+  var inputs = ["input", "select", "button", "textarea"];
+
+  if (activeElement && inputs.indexOf(activeElement.tagName.toLowerCase()) !== -1) {
+    return true;
+  }
+  return false;
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
