@@ -16,7 +16,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { toast } from "@/components/ui/use-toast";
 import { SortKey, SortKeys, SortOrder } from "@/lib/reviews";
 import { Course_ReviewsData } from "@/pages/api/reviews";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowDownNarrowWide, ArrowUpNarrowWide } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
 
@@ -36,6 +36,7 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
   const [sortKey, setSortKey] = useState<SortKey>("date_created");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [take, setTake] = useState<number | undefined>(TAKE_DEFAULT);
+  const queryClient = useQueryClient();
   const resetTake = () => {
     setTake(TAKE_DEFAULT);
   };
@@ -120,7 +121,12 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
             </Toggle>
           </div>
         </div>
-        {!hasReviewed && isSuccess && <ReviewPrompt courseCode={courseCode} />}
+        {!hasReviewed && isSuccess && (
+          <ReviewPrompt
+            courseCode={courseCode}
+            onSubmitReview={() => queryClient.invalidateQueries(["reviews", courseCode])}
+          />
+        )}
       </div>
       <div className="flex flex-col gap-4 py-2">
         {isSuccess && hasReviewed && reviewsData?.userReview && (

@@ -184,7 +184,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
             </h6>
           </div>
         </div>
-        <div className="w-42 flex flex-row flex-wrap items-center justify-between sm:flex-col md:items-end gap-2">
+        <div className="w-42 flex flex-row flex-wrap items-center sm:flex-col md:items-end gap-2">
           <div className="flex flex-col md:items-end">
             <h6 className="text-sm font-semibold">Difficulty</h6>
             <Stars value={review.difficulty / 2.0} size={25} theme="purple" />
