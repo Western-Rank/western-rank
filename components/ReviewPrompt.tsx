@@ -221,9 +221,12 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
       if (!res.ok) {
         throw new Error(`Error: Submitting your edited ${courseCode} review failed!`);
       }
+      if (onSubmitReview) {
+        onSubmitReview();
+      }
       return res;
     },
-    [review?.review_id, courseCode],
+    [review?.review_id, courseCode, onSubmitReview],
   );
 
   const reviewMutation = useMutation({
