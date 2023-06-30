@@ -1,3 +1,18 @@
+<p align="center">
+<img style="width:250px;" src="https://western-rank-fe.vercel.app/logo.svg"/>
+</p>
+
+# Western Rank
+Western Rank is a course review platform for Western University and affiliate colleges!
+
+## Getting Started
+The site is available at [westernrank.com](https://www.westernrank.com/). All you need to get started with submitting reviews is a valid `@uwo.ca` or `@ivey.ca` email address. Simply click "Sign In" in the top right, and a one time login link will be sent to your email address.
+
+## Bug Reporting
+If you happen to find any bugs, please submit an issue to this GitHub repository. A default issue template will be provided, so please make sure to fill out all the fields before submission. Thank you for your help!
+
+---
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
