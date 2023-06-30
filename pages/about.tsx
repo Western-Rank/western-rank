@@ -40,9 +40,9 @@ const AboutPage = () => {
                   <span className="font-bold text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400">
                     Western Rank
                   </span>{" "}
-                  is a course review platform for Western University, an interesting university in
-                  London ON, Canada. We want to be the primary place for UWO students to explore the
-                  courses offerred at Western. Rank does this by relying on Western&apos;s greatest
+                  is a course review platform for Western University, a university in London ON,
+                  Canada. We want to be the primary place for UWO students to explore the courses
+                  offerred at Western. Rank does this by relying on Western&apos;s greatest
                   strength: its supportive and involved student body. We know the pain of selecting
                   courses, finding one review on Reddit or Must Knows, and using all of
                   Western&apos;s web based tools.
@@ -51,12 +51,12 @@ const AboutPage = () => {
               <section className="space-y-2 text-primary/80">
                 <h3 className="text-lg font-bold text-muted-foreground">Powerfully Helpful</h3>
                 <p>
-                  Finding your next course has never been easier. Ever want to{" "}
+                  Finding your next course has never been easier. Ever wanted to{" "}
                   <span className="font-bold text-transparent bg-clip-text bg-gradient-to-br from-purple-600 to-blue-400">
                     Rank
                   </span>{" "}
-                  your course options? Well, now you can. You can quickly explore UWO&apos;s course
-                  offering, and compare them against eachother based on your needs using the{" "}
+                  your course options against each other? Well, now you can. You can quickly explore
+                  UWO&apos;s course offering with the help of our rating system using the{" "}
                   <Button
                     variant="link"
                     className="p-0 h-4 font-semibold text-primary text-blue-500"
@@ -64,16 +64,16 @@ const AboutPage = () => {
                   >
                     <Link href="/explore">Explore page</Link>
                   </Button>
-                  . Wondering how a course will be like? See course reviews from peers, and see if
-                  the course matches your expectations of it.
+                  . Wondering how a course will be like? You can see exactly how liked, difficult,
+                  and useful a course is, with written reviews from UWO students.
                 </p>
               </section>
               <section className="space-y-2 text-primary/80">
                 <h3 className="text-lg font-bold text-muted-foreground">Get Involved</h3>
                 <p>
                   Students can quickly and easily rate and review courses that they&apos;ve taken,
-                  leaving their wisdom for other students, and empowering this resource for the next
-                  students.
+                  leaving their wisdom for other students, and empowering this platform for the next
+                  generation.
                 </p>
               </section>
               <section className="space-y-2 text-primary/80">
