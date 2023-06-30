@@ -130,7 +130,11 @@ const ReviewList = ({ courseCode }: ReviewListProps) => {
       </div>
       <div className="flex flex-col gap-4 py-2">
         {isSuccess && hasReviewed && reviewsData?.userReview && (
-          <UserReview review={reviewsData?.userReview} />
+          <UserReview
+            review={reviewsData?.userReview}
+            onEdit={() => queryClient.invalidateQueries(["reviews", courseCode])}
+            onDelete={() => queryClient.invalidateQueries(["reviews", courseCode])}
+          />
         )}
         {isLoading && (
           <>
