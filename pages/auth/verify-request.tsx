@@ -20,7 +20,9 @@ const Verify = () => {
             <h3 className="text-primary text-xl">
               A sign in link has been sent to your email address.
             </h3>
-            <p className="text-muted-foreground">Hold tight! It might take 1-2 minutes.</p>
+            <p className="text-muted-foreground">
+              Hold tight! It might take 1-2 minutes, and the email might be in junk mail.
+            </p>
           </div>
         </div>
       </div>
