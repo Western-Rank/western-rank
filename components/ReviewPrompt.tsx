@@ -177,6 +177,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
   });
 
   useEffect(() => {
+    if (!reviewForm.formState.isDirty) return;
     if (review) {
       reviewForm.reset({
         professor_name: review.professor_name ?? "Other",

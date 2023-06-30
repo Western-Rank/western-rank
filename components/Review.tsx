@@ -93,8 +93,8 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
         isUser && !includeCourseCode ? "border-muted-foreground" : "border-border",
       )}
     >
-      <div className="flex gap-3 flex-col sm:flex-row sm:justify-between">
-        <div className="flex flex-col flex-1">
+      <div className="flex gap-3 flex-col sm:flex-row sm:justify-between h-full">
+        <div className="flex flex-col flex-1 h-full">
           <div className="flex items-end px-0 gap-1">
             <h5 className="text-sm font-medium">{`${
               review.anon ? "Anonymous" : review.email.split("@")[0]
@@ -151,7 +151,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
               ? formatTimeAgo(review.last_edited)
               : formatTimeAgo(review.date_created)}
           </h6>
-          <p className="text-sm flex-grow py-2">
+          <p className="text-sm flex-grow flex-1 py-2">
             {review.review ?? <span className="text-muted-foreground">(no written review)</span>}
           </p>
           <div>
