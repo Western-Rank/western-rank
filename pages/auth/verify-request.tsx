@@ -11,7 +11,7 @@ const Verify = () => {
       <div className="flex flex-col-reverse md:flex-row h-full">
         <div className="w-full h-[10vh] flex-grow"></div>
         <div className="light text-primary bg-background flex flex-col justify-center items-center gap-8 w-full h-[90vh] md:h-screen flex-grow px-3 lg:px-16 pb-20">
-          <div className="w-full md:space-y-1">
+          <div className="w-full md:space-y-2">
             <Link href="/" className="p-2 flex flex-col items-center w-fit px-0">
               <Image src="/logo.svg" alt="logo" width={42} height={30} />
               <span className="text-primary font-extrabold text-sm">Rank</span>
@@ -20,6 +20,7 @@ const Verify = () => {
             <h3 className="text-primary text-xl">
               A sign in link has been sent to your email address.
             </h3>
+            <p className="text-muted-foreground">Hold tight! It might take 1-2 minutes.</p>
           </div>
         </div>
       </div>
