@@ -261,7 +261,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
       difficulty: values.difficulty[0] * 2,
       useful: values.useful[0] * 2,
       attendance: values.attendance[0],
-      date_taken: new Date(values.date_taken.toString()),
+      date_taken: new Date((values.date_taken + 1).toString()),
       review: values.review || null,
     };
 
