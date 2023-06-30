@@ -94,7 +94,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
       )}
     >
       <div className="flex flex-grow gap-3 flex-col sm:flex-row sm:justify-between h-full">
-        <div className="flex flex-col flex-1 md:max-w-md overflow-hidden">
+        <div className="flex flex-col flex-1 md:max-w-md 2xl:max-w-3xl overflow-hidden">
           <div className="flex items-end px-0 gap-1">
             <h5 className="text-sm font-medium">{`${
               review.anon ? "Anonymous" : review.email.split("@")[0]
