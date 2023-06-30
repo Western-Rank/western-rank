@@ -19,9 +19,10 @@ const deactivatedFill = {
 };
 
 const Stars = ({ value, size, theme }: StarsProps) => {
-  const quotient = Math.floor(value);
+  const starValue = value >= 0 ? value : 0;
+  const quotient = Math.floor(starValue);
   const remainder = value - quotient;
-  const rest = 5 - Math.ceil(value);
+  const rest = 5 - Math.ceil(starValue);
 
   return (
     <TooltipProvider>
