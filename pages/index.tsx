@@ -1,7 +1,6 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Searchbar from "@/components/Searchbar";
-import Stars from "@/components/Stars";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import formatNumber from "@/lib/utils";
@@ -81,7 +80,6 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
             <div className="absolute top-[60px] flex flex-col sm:flex-row gap-2 sm:items-center w-full justify-between text-md whitespace-nowrap">
               <h3 className="text-muted">
                 {formatNumber(reviewCount, 1)}+ reviews for {courseCount} courses.
-                <Stars value={-200} size={10} theme="blue" />
               </h3>
               <Button size="sm" variant="gradient" asChild>
                 <Link href="/explore" className="space-x-2">
