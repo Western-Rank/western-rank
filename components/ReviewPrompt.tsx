@@ -62,6 +62,9 @@ type ReviewPromptButtonProps = {
   onClick: () => void;
 };
 
+const optionalTextInput = (schema: z.ZodString) =>
+  z.union([z.string(), z.undefined()]).refine((val) => !val || schema.safeParse(val).success);
+
 const reviewFormSchema = z.object({
   professor_name: z
     .string({
@@ -72,7 +75,7 @@ const reviewFormSchema = z.object({
   professor_id: z
     .number({ invalid_type_error: "Invalid Professor Id", required_error: "Professor is required" })
     .int(),
-  review: z.string({ invalid_type_error: "Invalid Review" }).min(100).max(800).optional(),
+  review: optionalTextInput(z.string({ invalid_type_error: "Invalid Review" }).min(30).max(800)),
   liked: z.boolean({
     invalid_type_error: "Invalid Liked (True or False)",
     required_error: "Liked is required",
@@ -521,7 +524,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                         <Textarea {...field} rows={9} />
                       </FormControl>
                       <FormDescription>
-                        What else would you like to share about the course (100-800 characters)?
+                        What else would you like to share about the course (30-800 characters)?
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
