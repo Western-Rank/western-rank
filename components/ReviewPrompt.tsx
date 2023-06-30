@@ -1,5 +1,5 @@
 import { Course, Course_Review, Term as Terms } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 
 import { Checkbox } from "@/components//ui/checkbox";
@@ -42,10 +42,9 @@ import { useToast } from "@/components/ui/use-toast";
 import useWarnIfUnsavedChanges from "@/hooks/useWarnIfUnsavedChanges";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Lock, ThumbsDown, ThumbsUp } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ProfessorCombobox } from "./ProfessorCombobox";
@@ -111,11 +110,15 @@ const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) =>
       <TooltipProvider>
         <Tooltip delayDuration={100}>
           <TooltipTrigger className="cursor-not-allowed w-full md:w-fit">
-            <Button disabled onClick={onClick} variant="gradient" className="w-full">
-              Review
+            <Button
+              onClick={() => signIn()}
+              variant="gradient"
+              className="w-full whitespace-nowrap"
+            >
+              Sign in
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="top">Please login to review.</TooltipContent>
+          <TooltipContent side="top">Please sign in to review.</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     );
@@ -150,15 +153,11 @@ const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) =>
  */
 const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps) => {
   const { data: auth } = useSession();
-  const queryClient = useQueryClient();
-  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
   const edit = review !== undefined;
-
-  const reviewButtonText = !auth?.user ? "Log in to Review" : "Review";
 
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
