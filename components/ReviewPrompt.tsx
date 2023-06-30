@@ -1,5 +1,5 @@
 import { Course, Course_Review, Term as Terms } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 
 import { Checkbox } from "@/components//ui/checkbox";
@@ -42,10 +42,9 @@ import { useToast } from "@/components/ui/use-toast";
 import useWarnIfUnsavedChanges from "@/hooks/useWarnIfUnsavedChanges";
 import { Course_Review_Create } from "@/lib/reviews";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Lock, ThumbsDown, ThumbsUp } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ProfessorCombobox } from "./ProfessorCombobox";
@@ -62,6 +61,9 @@ type ReviewPromptButtonProps = {
   onClick: () => void;
 };
 
+const optionalTextInput = (schema: z.ZodString) =>
+  z.union([z.string(), z.undefined()]).refine((val) => !val || schema.safeParse(val).success);
+
 const reviewFormSchema = z.object({
   professor_name: z
     .string({
@@ -72,7 +74,7 @@ const reviewFormSchema = z.object({
   professor_id: z
     .number({ invalid_type_error: "Invalid Professor Id", required_error: "Professor is required" })
     .int(),
-  review: z.string({ invalid_type_error: "Invalid Review" }).optional(),
+  review: optionalTextInput(z.string({ invalid_type_error: "Invalid Review" }).min(30).max(800)),
   liked: z.boolean({
     invalid_type_error: "Invalid Liked (True or False)",
     required_error: "Liked is required",
@@ -108,11 +110,15 @@ const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) =>
       <TooltipProvider>
         <Tooltip delayDuration={100}>
           <TooltipTrigger className="cursor-not-allowed w-full md:w-fit">
-            <Button disabled onClick={onClick} variant="gradient" className="w-full">
-              Review
+            <Button
+              onClick={() => signIn()}
+              variant="gradient"
+              className="w-full whitespace-nowrap"
+            >
+              Sign in
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="top">Please login to review.</TooltipContent>
+          <TooltipContent side="top">Please sign in to review.</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     );
@@ -147,15 +153,11 @@ const ReviewPromptButton = ({ edit, auth, onClick }: ReviewPromptButtonProps) =>
  */
 const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps) => {
   const { data: auth } = useSession();
-  const queryClient = useQueryClient();
-  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
   const edit = review !== undefined;
-
-  const reviewButtonText = !auth?.user ? "Log in to Review" : "Review";
 
   const reviewForm = useForm<z.infer<typeof reviewFormSchema>>({
     resolver: zodResolver(reviewFormSchema),
@@ -233,8 +235,10 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
         title: `Your ${edit ? "Edited" : ""} ${courseCode} Review was submitted!`,
         description: "You can edit it at any time after signing in.",
       });
+      if (onSubmitReview) {
+        onSubmitReview();
+      }
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["reviews"] });
     },
     onError(err: Error) {
       toast({
@@ -262,9 +266,6 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
     };
 
     reviewMutation.mutate(review);
-    if (onSubmitReview) {
-      onSubmitReview();
-    }
   }
 
   return (
@@ -517,12 +518,12 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                   name="review"
                   render={({ field }) => (
                     <FormItem className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-2 py-2 md:py-4 md:pt-7">
-                      <FormLabel>Written Review</FormLabel>
+                      <FormLabel>Written Review ({field.value?.length || 0} characters)</FormLabel>
                       <FormControl>
                         <Textarea {...field} rows={9} />
                       </FormControl>
                       <FormDescription>
-                        What else would you like to share about the course (15-300 words )?
+                        What else would you like to share about the course (30-800 characters)?
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

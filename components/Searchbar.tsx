@@ -19,7 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import { encodeCourseCode } from "@/lib/courses";
-import { cn } from "@/lib/utils";
+import { cn, hasActiveInput } from "@/lib/utils";
 import { dm_sans } from "@/pages/_app";
 import { Skeleton } from "./ui/skeleton";
 
@@ -158,7 +158,7 @@ export function SearchbarDialog({ onSelect }: SearchbarProps) {
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "/") {
+      if (!hasActiveInput() && e.key === "/") {
         setOpen(true);
       }
     };
