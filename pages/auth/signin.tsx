@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { isUwoEmail } from "@/lib/nextauth";
-import { cn } from "@/lib/utils";
+
+import { cn, isUwoEmail } from "@/lib/utils";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";

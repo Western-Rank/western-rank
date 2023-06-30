@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
 
+export type UserWithCourseReviews = ReturnType<typeof getUserByEmail>;
+
 /**
  * Get a user by their email
  * @param email email of the user

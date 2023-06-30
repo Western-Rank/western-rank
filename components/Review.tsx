@@ -25,7 +25,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal, ThumbsDown, ThumbsUp } from "lucide-react";
 import Link from "next/link";
 
-// profile pic, review text,
 interface ReviewProps {
   review: Course_Review;
   onDelete?: () => void;
@@ -34,7 +33,7 @@ interface ReviewProps {
   includeCourseCode?: boolean;
 }
 
-export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
+export const UserReview = ({ review, includeCourseCode, onDelete, onEdit }: ReviewProps) => {
   const queryClient = useQueryClient();
 
   const deleteReviewMutation = useMutation({
@@ -54,6 +53,10 @@ export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
         description: "Feel free to send a new review.",
       });
       queryClient.invalidateQueries({ queryKey: ["reviews"] });
+
+      if (onDelete) {
+        onDelete();
+      }
     },
     onError(err: Error) {
       toast({
@@ -73,6 +76,7 @@ export const UserReview = ({ review, includeCourseCode }: ReviewProps) => {
         date_taken: new Date(review.date_taken),
       }}
       onDelete={deleteReviewMutation.mutate}
+      onEdit={onEdit}
       isUser
       includeCourseCode={includeCourseCode}
     />
@@ -89,8 +93,8 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
         isUser && !includeCourseCode ? "border-muted-foreground" : "border-border",
       )}
     >
-      <div className="flex gap-3 flex-col sm:flex-row sm:justify-between">
-        <div className="flex flex-col flex-1">
+      <div className="flex gap-3 flex-col sm:flex-row sm:justify-between h-full">
+        <div className="flex flex-col flex-1 h-full">
           <div className="flex items-end px-0 gap-1">
             <h5 className="text-sm font-medium">{`${
               review.anon ? "Anonymous" : review.email.split("@")[0]
@@ -133,7 +137,11 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
                     </AlertDialogContent>
                   </AlertDialog>
                   <Separator orientation="vertical" className="w-[1px] h-200" />
-                  <ReviewPrompt courseCode={review.course_code} review={review} />
+                  <ReviewPrompt
+                    courseCode={review.course_code}
+                    review={review}
+                    onSubmitReview={onEdit}
+                  />
                 </PopoverContent>
               </Popover>
             )}
@@ -143,7 +151,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
               ? formatTimeAgo(review.last_edited)
               : formatTimeAgo(review.date_created)}
           </h6>
-          <p className="text-sm flex-grow break-all py-2">
+          <p className="text-sm flex-grow flex-1 py-2">
             {review.review ?? <span className="text-muted-foreground">(no written review)</span>}
           </p>
           <div>
@@ -176,7 +184,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
             </h6>
           </div>
         </div>
-        <div className="w-42 flex flex-row flex-wrap items-center justify-between sm:flex-col md:items-end gap-2">
+        <div className="w-42 flex flex-row flex-wrap items-center sm:flex-col md:items-end gap-2">
           <div className="flex flex-col md:items-end">
             <h6 className="text-sm font-semibold">Difficulty</h6>
             <Stars value={review.difficulty / 2.0} size={25} theme="purple" />
