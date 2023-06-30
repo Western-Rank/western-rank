@@ -72,7 +72,7 @@ const reviewFormSchema = z.object({
   professor_id: z
     .number({ invalid_type_error: "Invalid Professor Id", required_error: "Professor is required" })
     .int(),
-  review: z.string({ invalid_type_error: "Invalid Review" }).optional(),
+  review: z.string({ invalid_type_error: "Invalid Review" }).min(100).max(800).optional(),
   liked: z.boolean({
     invalid_type_error: "Invalid Liked (True or False)",
     required_error: "Liked is required",
@@ -516,12 +516,12 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                   name="review"
                   render={({ field }) => (
                     <FormItem className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-2 py-2 md:py-4 md:pt-7">
-                      <FormLabel>Written Review</FormLabel>
+                      <FormLabel>Written Review ({field.value?.length || 0} characters)</FormLabel>
                       <FormControl>
                         <Textarea {...field} rows={9} />
                       </FormControl>
                       <FormDescription>
-                        What else would you like to share about the course (15-300 words )?
+                        What else would you like to share about the course (100-800 characters)?
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
