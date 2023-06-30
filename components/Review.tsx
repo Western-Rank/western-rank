@@ -89,12 +89,12 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
   return (
     <div
       className={cn(
-        "px-6 py-5 border-[1px] rounded-md group",
+        "px-6 py-5 border-[1px] rounded-md group lg:max-w-[61vw] xl:max-w-[45vw]",
         isUser && !includeCourseCode ? "border-muted-foreground" : "border-border",
       )}
     >
-      <div className="flex gap-3 flex-col sm:flex-row sm:justify-between h-full">
-        <div className="flex flex-col flex-1 h-full">
+      <div className="flex flex-grow gap-3 flex-col sm:flex-row sm:justify-between h-full">
+        <div className="flex flex-col flex-1 lg:max-w-md md:max-w-lg">
           <div className="flex items-end px-0 gap-1">
             <h5 className="text-sm font-medium">{`${
               review.anon ? "Anonymous" : review.email.split("@")[0]
@@ -151,7 +151,7 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
               ? formatTimeAgo(review.last_edited)
               : formatTimeAgo(review.date_created)}
           </h6>
-          <p className="text-sm flex-grow flex-1 py-2">
+          <p className="text-sm flex-grow flex-1 py-2 break-words hyphens-auto w-full" lang="en">
             {review.review ?? <span className="text-muted-foreground">(no written review)</span>}
           </p>
           <div>
