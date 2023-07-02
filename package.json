@@ -52,6 +52,7 @@
     "@tanstack/react-query-devtools": "^4.29.13",
     "@tanstack/react-table": "^8.9.2",
     "@tanstack/react-virtual": "^3.0.0-alpha.0",
+    "@vercel/analytics": "^1.0.1",
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
