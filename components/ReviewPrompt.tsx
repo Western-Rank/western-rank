@@ -290,8 +290,8 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
               <DialogDescription className="flex flex-col">
                 <>
                   <p>
-                    You&apos;re rating and an (optional) written review for the course. You can even
-                    edit the review later!
+                    How would you rate this course? You can optionally include a written review for
+                    the course. Don&apos;t worry, you can edit the review later!
                   </p>
                   <Button
                     variant="link"
