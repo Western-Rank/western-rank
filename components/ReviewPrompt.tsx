@@ -520,7 +520,7 @@ const ReviewPrompt = ({ courseCode, onSubmitReview, review }: ReviewPromptProps)
                     <FormItem className="h-[300px] sm:h-[400px] md:h-[350px] lg:h-[400px] px-2 py-2 md:py-4 md:pt-7">
                       <FormLabel>Written Review ({field.value?.length || 0} characters)</FormLabel>
                       <FormControl>
-                        <Textarea {...field} rows={9} />
+                        <Textarea {...field} rows={9} className="whitespace-pre-wrap" />
                       </FormControl>
                       <FormDescription>
                         What else would you like to share about the course (30-800 characters)?

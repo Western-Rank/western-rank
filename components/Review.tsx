@@ -151,7 +151,10 @@ export const Review = ({ review, onDelete, onEdit, isUser, includeCourseCode }: 
               ? formatTimeAgo(review.last_edited)
               : formatTimeAgo(review.date_created)}
           </h6>
-          <p className="text-sm flex-grow flex-1 py-2 break-words w-full" lang="en">
+          <p
+            className="text-sm flex-grow flex-1 py-2 break-words w-full whitespace-pre-line"
+            lang="en"
+          >
             {review.review ?? <span className="text-muted-foreground">(no written review)</span>}
           </p>
           <div>
