@@ -24,6 +24,7 @@ export const createReviewSchema = z.object({
       invalid_type_error: "Invalid Professor Name",
       required_error: "Professor is required",
     })
+    .max(50)
     .nonempty("Professor is required"),
   professor_id: z
     .number({ invalid_type_error: "Invalid Professor Id", required_error: "Professor is required" })
