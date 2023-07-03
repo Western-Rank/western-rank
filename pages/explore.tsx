@@ -303,6 +303,15 @@ const ExplorePage = () => {
           url: "https://www.westernrank.com/explore",
           title: "Explore | Western Rank",
           description: "Explore all courses at Western University.",
+          images: [
+            {
+              url: "/og-image.jpg",
+              width: 1200,
+              height: 627,
+              alt: "Western Rank",
+              type: "image/jpg",
+            },
+          ],
         }}
       />
       <div className="flex flex-col min-h-screen">

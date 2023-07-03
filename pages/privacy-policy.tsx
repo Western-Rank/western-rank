@@ -20,6 +20,15 @@ const PrivacyPolicy = () => {
           title: "Privacy Policy | Western Rank",
           description:
             "The Privacy Policy for Western Rank, the course review platform for Western University.",
+          images: [
+            {
+              url: "/og-image.jpg",
+              width: 1200,
+              height: 627,
+              alt: "Western Rank",
+              type: "image/jpg",
+            },
+          ],
         }}
       />
 
