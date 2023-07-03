@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { createReview, getReviewsbyCourse } from "../../../services/review";
 import { authOptions } from "../auth/[...nextauth]";
+import { createReviewSchema } from "./[id]";
 
 export type Course_ReviewsData = {
   reviews: Course_Review[];
@@ -75,13 +76,7 @@ async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
       throw new Error("Failed to authenticate.");
     }
 
-    const review = JSON.parse(req.body);
-
-    if (data?.user.email !== review.email) {
-      throw new Error(
-        `User ${data.user.email} not authenticated to create a review for ${review.email}`,
-      );
-    }
+    const review = createReviewSchema.parse(JSON.parse(req.body));
 
     const result = await createReview(review);
 
