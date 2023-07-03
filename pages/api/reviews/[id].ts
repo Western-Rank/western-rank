@@ -28,7 +28,7 @@ export const createReviewSchema = z.object({
   professor_id: z
     .number({ invalid_type_error: "Invalid Professor Id", required_error: "Professor is required" })
     .int(),
-  review: z.string({ invalid_type_error: "Invalid Review" }).min(30).max(800),
+  review: z.string({ invalid_type_error: "Invalid Review" }).min(30).max(800).nullable(),
   liked: z.boolean({
     invalid_type_error: "Invalid Liked (True or False)",
     required_error: "Liked is required",
