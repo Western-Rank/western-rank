@@ -60,7 +60,10 @@ export const createReviewSchema = z.object({
   }),
   date_taken: z.coerce
     .date()
-    .max(new Date(), "Date taken cannot be in the future")
+    .max(
+      new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+      "Date taken cannot be in the future",
+    )
     .min(new Date(2010, 1, 1), "Date taken cannot be before 2010"),
   term_taken: z.nativeEnum(Term, {
     invalid_type_error: "Only Fall, Winter, or Summer are valid terms",
@@ -97,6 +100,7 @@ async function handlePutReview(req: NextApiRequest, res: NextApiResponse) {
     console.log(`Updated ${upsert_res.review_id} ${upsert_res?.course_code} ${upsert_res?.email}`);
     return res.status(200).json({ message: "Review updated" });
   } catch (err: any) {
+    console.log(err);
     return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }

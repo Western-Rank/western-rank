@@ -60,6 +60,7 @@ async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
       throw new Error("Must specify either a course code or email of reviews exclusively.");
     }
   } catch (err: any) {
+    console.log(err);
     return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
@@ -84,6 +85,8 @@ async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
 
     return res.status(200).json({ message: "Review created" });
   } catch (err: any) {
+    console.log(err);
+    console.log(req.body.date_taken);
     return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
