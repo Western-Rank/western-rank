@@ -8,7 +8,11 @@ import type { AppProps } from "next/app";
 import { DM_Sans } from "next/font/google";
 
 const queryClient = new QueryClient();
-export const dm_sans = DM_Sans({ weight: ["400", "500", "700"], subsets: ["latin"] });
+export const dm_sans = DM_Sans({
+  weight: ["400", "500", "700"],
+  subsets: ["latin"],
+  fallback: ["Inter", "sans-serif"],
+});
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (

@@ -48,6 +48,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ProfessorCombobox } from "./ProfessorCombobox";
+import { optionalTextInput } from "@/lib/utils";
 
 type ReviewPromptProps = {
   courseCode: Course["course_code"];
@@ -60,9 +61,6 @@ type ReviewPromptButtonProps = {
   auth?: boolean;
   onClick: () => void;
 };
-
-const optionalTextInput = (schema: z.ZodString) =>
-  z.union([z.string(), z.undefined()]).refine((val) => !val || schema.safeParse(val).success);
 
 const reviewFormSchema = z.object({
   professor_name: z

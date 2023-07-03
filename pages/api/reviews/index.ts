@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { createReview, getReviewsbyCourse } from "../../../services/review";
 import { authOptions } from "../auth/[...nextauth]";
+import { createReviewSchema } from "./[id]";
 
 export type Course_ReviewsData = {
   reviews: Course_Review[];
@@ -43,7 +44,7 @@ async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
     };
 
     if (course_code) {
-      const [reviews, count, userReview] = await getReviewsbyCourse({
+      const [reviews, [count, userReview]] = await getReviewsbyCourse({
         courseCode: course_code,
         sortKey: sortKey,
         sortOrder: sortOrder,
@@ -59,6 +60,7 @@ async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
       throw new Error("Must specify either a course code or email of reviews exclusively.");
     }
   } catch (err: any) {
+    console.log(err);
     return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
@@ -75,13 +77,7 @@ async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
       throw new Error("Failed to authenticate.");
     }
 
-    const review = JSON.parse(req.body);
-
-    if (data?.user.email !== review.email) {
-      throw new Error(
-        `User ${data.user.email} not authenticated to create a review for ${review.email}`,
-      );
-    }
+    const review = createReviewSchema.parse(JSON.parse(req.body));
 
     const result = await createReview(review);
 
@@ -89,6 +85,8 @@ async function handlePostReview(req: NextApiRequest, res: NextApiResponse) {
 
     return res.status(200).json({ message: "Review created" });
   } catch (err: any) {
+    console.log(err);
+    console.log(req.body.date_taken);
     return res.status(500).send(`Error: ${err.message}\nDetails: ${err.details}`);
   }
 }
