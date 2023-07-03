@@ -46,6 +46,15 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
           url: "https://www.westernrank.com",
           title: "Western Rank",
           description: "Western Rank, the course review platform for Western University.",
+          images: [
+            {
+              url: "/og-image.jpg",
+              width: 1200,
+              height: 627,
+              alt: "Western Rank",
+              type: "image/jpg",
+            },
+          ],
         }}
       />
 

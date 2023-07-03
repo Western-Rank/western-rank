@@ -21,6 +21,15 @@ const AboutPage = () => {
           url: "https://www.westernrank.com/about",
           title: "About | Western Rank",
           description: "About Western Rank, the course review platform for Western University.",
+          images: [
+            {
+              url: "/og-image.jpg",
+              width: 1200,
+              height: 627,
+              alt: "Western Rank",
+              type: "image/jpg",
+            },
+          ],
         }}
       />
 
