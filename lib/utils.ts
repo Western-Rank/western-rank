@@ -1,5 +1,6 @@
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { z } from "zod";
 
 export function isUwoEmail(email: string) {
   return email.endsWith("@uwo.ca") || email.endsWith("@ivey.ca");
@@ -84,4 +85,11 @@ export function generateSliderTicks(min: number, max: number, step = 1) {
 
 export function roundToNearest(num: number, digits: number) {
   return Math.round(num * Math.pow(10, digits)) / Math.pow(10, digits);
+}
+
+// export const optionalTextInput = (schema: z.ZodString) =>
+export function optionalTextInput(schema: z.ZodString) {
+  return z
+    .union([z.string(), z.undefined()])
+    .refine((val) => !val || schema.safeParse(val).success);
 }
