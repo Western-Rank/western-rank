@@ -44,7 +44,7 @@ async function handleGetReviews(req: NextApiRequest, res: NextApiResponse) {
     };
 
     if (course_code) {
-      const [reviews, count, userReview] = await getReviewsbyCourse({
+      const [reviews, [count, userReview]] = await getReviewsbyCourse({
         courseCode: course_code,
         sortKey: sortKey,
         sortOrder: sortOrder,

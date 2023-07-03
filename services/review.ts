@@ -33,7 +33,7 @@ export async function getReviewCount() {
  * @param courseCode Course code of the course
  * @returns List of reviews for the course
  */
-export function getReviewsbyCourse({
+export async function getReviewsbyCourse({
   courseCode,
   sortKey,
   sortOrder,
@@ -46,21 +46,28 @@ export function getReviewsbyCourse({
   take?: number;
   email?: string;
 }) {
-  const reviewsQuery = prisma.course_Review.findMany({
-    where: {
-      course_code: courseCode,
-      review: {
-        not: null,
+  const reviews = prisma.course_Review
+    .findMany({
+      where: {
+        course_code: courseCode,
+        review: {
+          not: null,
+        },
+        email: {
+          not: email,
+        },
       },
-      email: {
-        not: email,
+      orderBy: {
+        [sortKey]: sortOrder,
       },
-    },
-    orderBy: {
-      [sortKey]: sortOrder,
-    },
-    take: take,
-  });
+      take: take,
+    })
+    .then((reviews) =>
+      reviews.map((review) => ({
+        ...review,
+        email: review.anon ? null : review.email,
+      })),
+    );
 
   const userReview = prisma.course_Review.findFirst({
     where: {
@@ -85,9 +92,9 @@ export function getReviewsbyCourse({
   });
 
   if (email) {
-    return prisma.$transaction([reviewsQuery, countQuery, userReview]);
+    return Promise.all([reviews, prisma.$transaction([countQuery, userReview])]);
   } else {
-    return prisma.$transaction([reviewsQuery, countQuery]);
+    return Promise.all([reviews, prisma.$transaction([countQuery])]);
   }
 }
 
