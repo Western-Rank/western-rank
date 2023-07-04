@@ -26,12 +26,7 @@ export const SORT_MAP_DESC = new Map<
   (a: _PresortExploreCourse, b: _PresortExploreCourse) => number
 >([
   ["ratings", (a, b) => (b?._count?.review_id ?? 0) - (a?._count?.review_id ?? 0)],
-  [
-    "liked",
-    (a, b) =>
-      (b?._count?.liked ?? 0) / (b?._count?.review_id ?? 1) -
-      (a?._count?.liked ?? 0) / (a?._count?.review_id ?? 1),
-  ],
+  ["liked", (a, b) => (b?._count?.liked ?? 0) - (a?._count?.liked ?? 0)],
   ["useful", (a, b) => (b?._avg?.useful ?? 0) - (a?._avg?.useful ?? 0)],
   ["attendance", (a, b) => (b?._avg?.attendance ?? 0) - (a?._avg?.attendance ?? 0)],
   ["difficulty", (a, b) => (b?._avg?.difficulty ?? 0) - (a?._avg?.difficulty ?? 0)],
@@ -42,12 +37,7 @@ export const SORT_MAP_ASC = new Map<
   (a: _PresortExploreCourse, b: _PresortExploreCourse) => number
 >([
   ["ratings", (a, b) => (a?._count?.review_id ?? 0) - (b?._count?.review_id ?? 0)],
-  [
-    "liked",
-    (a, b) =>
-      (a?._count?.liked ?? 0) / (a?._count?.review_id ?? 1) -
-      (b?._count?.liked ?? 0) / (b?._count?.review_id ?? 1),
-  ],
+  ["liked", (a, b) => (a?._count?.liked ?? 0) - (b?._count?.liked ?? 0)],
   ["useful", (a, b) => (a?._avg?.useful ?? 0) - (b?._avg?.useful ?? 0)],
   ["attendance", (a, b) => (a?._avg?.attendance ?? 0) - (b?._avg?.attendance ?? 0)],
   ["difficulty", (a, b) => (a?._avg?.difficulty ?? 0) - (b?._avg?.difficulty ?? 0)],
