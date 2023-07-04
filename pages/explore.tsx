@@ -81,9 +81,7 @@ function courseRowData(course: GetCoursesResponse["courses"][0]): ExploreCourseR
     rank: course.rank ?? "",
     coursecode: course.course_code,
     ratings: course._count?.review_id ?? 0,
-    liked:
-      roundToNearest(course._count?.liked ? course._count.liked / course._count.review_id : 0, 0) +
-      "%",
+    liked: roundToNearest((course?._count?.liked ?? 0) / (course?._count?.review_id ?? 1), 0) + "%",
     difficulty: `${roundToNearest((course._avg?.difficulty ?? 0) / 2, 1)}/5`,
     useful: `${roundToNearest((course._avg?.useful ?? 0) / 2, 1)}/5`,
     attendance: roundToNearest(course._avg?.attendance ?? 0, 0) + "%",
