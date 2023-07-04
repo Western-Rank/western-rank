@@ -1,7 +1,6 @@
 import { CourseSearchItem } from "@/components/Searchbar";
 import { BreadthCategories, SORT_MAP_ASC, SORT_MAP_DESC, SortKey, SortOrder } from "@/lib/courses";
 import { prisma } from "@/lib/db";
-import { roundToNearest } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
 
 /**
@@ -94,6 +93,30 @@ export async function getCourses({
     },
   });
 
+  const course_liked = await prisma.course_Review.groupBy({
+    by: ["course_code"],
+    _count: {
+      liked: true,
+    },
+    where: {
+      liked: {
+        equals: true,
+      },
+    },
+    having: {
+      course_code: {
+        in: _courses.map((course) => course.course_code),
+      },
+      review_id: {
+        _count: {
+          gte: minratings,
+        },
+      },
+    },
+  });
+
+  console.log(course_liked);
+
   const aggregates = await prisma.course_Review.groupBy({
     by: ["course_code"],
     _count: {
@@ -120,10 +143,21 @@ export async function getCourses({
   const aggregates_map = new Map<string, Omit<(typeof aggregates)[0], "course_code">>();
   const isFilteringAggregates = minratings !== 0; // add difficulty, attendance, useful, liked
 
+  // console.log(aggregates);
+
   aggregates.forEach(({ course_code, ...agg }) => {
-    agg._count.liked = roundToNearest((agg?._count?.liked / agg?._count?.review_id) * 100 || 0, 1);
+    agg._count.liked = 0;
     aggregates_map.set(course_code, agg);
   });
+
+  course_liked.forEach(({ course_code, ...course_liked }) => {
+    const count_agg = aggregates_map.get(course_code)?._count;
+    if (count_agg) {
+      count_agg.liked = ((course_liked._count.liked ?? 0) / (count_agg.review_id ?? 1)) * 100;
+    }
+  });
+
+  console.log(aggregates_map);
 
   const sort_func = sortOrder === "desc" ? SORT_MAP_DESC.get(sortKey) : SORT_MAP_ASC.get(sortKey);
 
