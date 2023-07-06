@@ -102,11 +102,11 @@ export async function getCourses({
       liked: {
         equals: true,
       },
-    },
-    having: {
       course_code: {
         in: _courses.map((course) => course.course_code),
       },
+    },
+    having: {
       review_id: {
         _count: {
           gte: minratings,
@@ -128,10 +128,12 @@ export async function getCourses({
       attendance: true,
       useful: true,
     },
-    having: {
+    where: {
       course_code: {
         in: _courses.map((course) => course.course_code),
       },
+    },
+    having: {
       review_id: {
         _count: {
           gte: minratings,
