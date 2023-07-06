@@ -115,8 +115,6 @@ export async function getCourses({
     },
   });
 
-  console.log(course_liked);
-
   const aggregates = await prisma.course_Review.groupBy({
     by: ["course_code"],
     _count: {
