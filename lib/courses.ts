@@ -77,3 +77,20 @@ export function encodeCourseCode(courseCode: string) {
 export function decodeCourseCode(courseCode: string) {
   return courseCode.replace("-", " ").replaceAll(":", "/").toUpperCase();
 }
+
+type RankCourseParams = {
+  ratings: number;
+  liked: number;
+  difficulty: number;
+  attendance: number;
+  useful: number;
+};
+export function rankCourse(agg: RankCourseParams) {
+  return (
+    agg.liked * 0.4 -
+    agg.difficulty * 0.2 +
+    agg.useful * 0.2 +
+    agg.attendance * 0.1 +
+    agg.ratings * 0.05
+  );
+}
