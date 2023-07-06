@@ -11,6 +11,7 @@ export const SortKeys = [
   "difficulty",
   "attendance",
   "useful",
+  "rank",
 ] as const;
 export type SortKey = (typeof SortKeys)[number];
 
@@ -85,7 +86,7 @@ type RankCourseParams = {
   attendance: number;
   useful: number;
 };
-export function rankCourse(agg: RankCourseParams) {
+export function rankCourse(agg: RankCourseParams): number {
   return (
     agg.liked * 0.4 -
     agg.difficulty * 0.2 +

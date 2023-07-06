@@ -1,5 +1,12 @@
 import { CourseSearchItem } from "@/components/Searchbar";
-import { BreadthCategories, SORT_MAP_ASC, SORT_MAP_DESC, SortKey, SortOrder } from "@/lib/courses";
+import {
+  BreadthCategories,
+  SORT_MAP_ASC,
+  SORT_MAP_DESC,
+  SortKey,
+  SortOrder,
+  rankCourse,
+} from "@/lib/courses";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
@@ -59,7 +66,7 @@ type GetCoursesServiceReturn = {
  * @returns List of all courses stored in the database, total amount of courses.
  */
 export async function getCourses({
-  sortKey = "liked",
+  sortKey = "rank",
   sortOrder = "asc",
   breadth = ["A", "B", "C"],
   minratings = 0,
@@ -79,9 +86,6 @@ export async function getCourses({
     select: {
       course_name: true,
       course_code: true,
-    },
-    orderBy: {
-      course_code: sortOrder,
     },
     where: {
       AND: [
@@ -142,12 +146,15 @@ export async function getCourses({
     },
   });
 
-  const aggregates_map = new Map<string, Omit<(typeof aggregates)[0], "course_code">>();
+  const aggregates_map = new Map<
+    string,
+    Omit<(typeof aggregates)[0], "course_code"> & { rankScore: number }
+  >();
   const isFilteringAggregates = minratings !== 0; // add difficulty, attendance, useful, liked
 
   aggregates.forEach(({ course_code, ...agg }) => {
     agg._count.liked = 0;
-    aggregates_map.set(course_code, agg);
+    aggregates_map.set(course_code, { ...agg, rankScore: -1 });
   });
 
   course_liked.forEach(({ course_code, ...course_liked }) => {
@@ -155,6 +162,18 @@ export async function getCourses({
     if (count_agg) {
       count_agg.liked = ((course_liked._count.liked ?? 0) / (count_agg.review_id ?? 1)) * 100;
     }
+  });
+
+  aggregates_map.forEach((agg) => {
+    const score = rankCourse({
+      attendance: agg._avg?.attendance ?? 0,
+      difficulty: agg._avg?.difficulty ?? 0,
+      useful: agg._avg?.useful ?? 0,
+      liked: agg._count?.liked,
+      ratings: agg._count?.review_id,
+    });
+
+    agg.rankScore = score;
   });
 
   const sort_func = sortOrder === "desc" ? SORT_MAP_DESC.get(sortKey) : SORT_MAP_ASC.get(sortKey);
