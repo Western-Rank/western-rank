@@ -93,6 +93,8 @@ export async function getCourses({
     },
   });
 
+  const searchCourses = _courses.map((course) => course.course_code);
+
   const course_liked = await prisma.course_Review.groupBy({
     by: ["course_code"],
     _count: {
@@ -103,7 +105,7 @@ export async function getCourses({
         equals: true,
       },
       course_code: {
-        in: _courses.map((course) => course.course_code),
+        in: searchCourses,
       },
     },
     having: {
@@ -128,7 +130,7 @@ export async function getCourses({
     },
     where: {
       course_code: {
-        in: _courses.map((course) => course.course_code),
+        in: searchCourses,
       },
     },
     having: {
