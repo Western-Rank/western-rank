@@ -143,8 +143,6 @@ export async function getCourses({
   const aggregates_map = new Map<string, Omit<(typeof aggregates)[0], "course_code">>();
   const isFilteringAggregates = minratings !== 0; // add difficulty, attendance, useful, liked
 
-  // console.log(aggregates);
-
   aggregates.forEach(({ course_code, ...agg }) => {
     agg._count.liked = 0;
     aggregates_map.set(course_code, agg);
@@ -156,8 +154,6 @@ export async function getCourses({
       count_agg.liked = ((course_liked._count.liked ?? 0) / (count_agg.review_id ?? 1)) * 100;
     }
   });
-
-  console.log(aggregates_map);
 
   const sort_func = sortOrder === "desc" ? SORT_MAP_DESC.get(sortKey) : SORT_MAP_ASC.get(sortKey);
 
