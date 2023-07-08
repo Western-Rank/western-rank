@@ -64,7 +64,7 @@ const Home = ({ reviewCount, courseCount }: HomeProps) => {
         }
       >
         <Navbar className="z-10 bg-transparent" />
-        <div className="flex flex-col gap-6 flex-grow flex-1 w-screen max-w-[100vw] px-4 md:px-10 lg:px-20 xl:px-72 py-32 lg:py-42 relative">
+        <div className="flex flex-col gap-6 flex-grow flex-1 w-screen px-4 md:px-10 lg:px-20 xl:px-72 py-32 lg:py-42 relative max-w-full">
           <Button
             variant="ghost"
             className="max-w-fit p-0 m-0 h-fit rounded-full hover:bg-blue-300/20"
