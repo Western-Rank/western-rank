@@ -33,7 +33,7 @@ export const MagicLinkEmail = ({
       <Preview>{username}, Sign in to Western Rank</Preview>
       <Tailwind>
         <Body
-          className="bg-white my-auto mx-auto"
+          className="bg-white my-auto mx-auto max-w-xs"
           style={{
             fontFamily:
               'BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
